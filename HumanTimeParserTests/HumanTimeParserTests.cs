@@ -49,7 +49,7 @@ namespace HumanTimeParserTests
             var expected = DateTime.Now.AddSeconds(33).AddMinutes(30);
 
             //the following chunk of code checks to see if the two time values are "close enough"
-            //execution time effects the final parsed time.  It is usually around a difference of 100 ticks or 3000 nano seconds
+            //execution time effects the final parsed time.  It is usually around a difference of 100 ticks or 10000 nano seconds
             bool closeEnough = false;
 
             // 0.1ms accuracy.  Seeing as the lib can only parse seconds as its lowest value it should be fine
@@ -58,6 +58,17 @@ namespace HumanTimeParserTests
 
 
             Assert.IsTrue(closeEnough);
+        }
+
+        [TestMethod]
+        public void IgnoreEnglish()
+        {
+            var time = HumanReadableTimeParser.ParseTime("33.5 minutes after 6:50am on 1/7/2021");
+
+            var timeOfDaySetup = DateTime.Parse("6:50 am").TimeOfDay;
+            var expected = DateTime.Parse("1/7/2021").Add(timeOfDaySetup).AddMinutes(33.5d);
+
+            Assert.AreEqual(expected, time);
         }
     }
 }
