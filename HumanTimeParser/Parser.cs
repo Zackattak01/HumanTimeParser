@@ -24,8 +24,14 @@ namespace HumanTimeParser
         {
             ReadTokens();
 
-            DateTime startingTime = DateTime.Now;
+            foreach (var item in tokenValues)
+            {
+                System.Console.WriteLine(item.Key);
+                System.Console.WriteLine(item.Value);
+            }
 
+            DateTime startingTime = DateTime.Now;
+            System.Console.WriteLine("test");
             if (tokenValues.TryGetValue(TimeToken.Date, out var date))
             {
                 startingTime = DateTime.Parse(date);
@@ -78,14 +84,36 @@ namespace HumanTimeParser
 
         private void ReadTokens()
         {
+            //System.Console.WriteLine(tokenizer.NextToken());
             while (tokenizer.TimeToken != TimeToken.END)
             {
+                tokenizer.NextToken();
+                System.Console.WriteLine("Before while loop");
+                System.Console.WriteLine(tokenizer.TimeToken);
+                System.Console.WriteLine(tokenizer.CurrentValue);
                 while (tokenizer.TimeToken == TimeToken.Value)
                 {
                     tokenizer.NextToken();
                 }
 
-                var success = tokenValues.TryAdd(tokenizer.TimeToken, tokenizer.CurrentValue.ToString());
+                System.Console.WriteLine("after while loop");
+                System.Console.WriteLine(tokenizer.TimeToken);
+                System.Console.WriteLine(tokenizer.CurrentValue);
+
+                bool success;
+                if (tokenizer.TimeToken == TimeToken.TimeOfDay)
+                {
+                    success = tokenValues.TryAdd(tokenizer.TimeToken, tokenizer.ProvidedTimeOfDay.ToString());
+                }
+                else if (tokenizer.TimeToken == TimeToken.Date)
+                {
+                    success = tokenValues.TryAdd(tokenizer.TimeToken, tokenizer.ProvidedDate.ToString());
+                }
+                else
+                {
+                    success = tokenValues.TryAdd(tokenizer.TimeToken, tokenizer.CurrentValue.ToString());
+                }
+
 
                 if (!success)
                 {

@@ -1,5 +1,6 @@
 using System;
 using System.Reflection.Metadata;
+using System.Reflection.Metadata.Ecma335;
 
 namespace HumanTimeParser
 {
@@ -7,9 +8,9 @@ namespace HumanTimeParser
     {
         private readonly string[] UnparsedTokens;
 
-        public DateTime ProvidedDate { get; private set; }
+        public DateTime? ProvidedDate { get; private set; }
 
-        public DateTime ProvidedTimeOfDay { get; private set; }
+        public DateTime? ProvidedTimeOfDay { get; private set; }
 
         public double CurrentValue { get; private set; }
 
@@ -19,6 +20,10 @@ namespace HumanTimeParser
 
         public Tokenizer(string input)
         {
+            ProvidedDate = null;
+            ProvidedTimeOfDay = null;
+
+
             UnparsedTokens = input.Split(' ');
 
             index = -1;
@@ -36,17 +41,23 @@ namespace HumanTimeParser
 
         public TimeToken NextToken()
         {
+
             while (true)
             {
                 string unparsed = NextUnparsedToken();
 
                 if (unparsed is null)
-                    return TimeToken.END;
+                {
+                    TimeToken = TimeToken.END;
+                    return TimeToken;
+                }
+
 
                 if (double.TryParse(unparsed, out var doubleResult))
                 {
                     CurrentValue = doubleResult;
-                    return TimeToken.Value;
+                    TimeToken = TimeToken.Value;
+                    return TimeToken;
                 }
 
                 if (DateTime.TryParse(unparsed, out var dtResult))
@@ -54,12 +65,14 @@ namespace HumanTimeParser
                     if (DateTime.Now.Date == dtResult.Date)
                     {
                         ProvidedTimeOfDay = dtResult;
-                        return TimeToken.TimeOfDay;
+                        TimeToken = TimeToken.TimeOfDay;
+                        return TimeToken;
                     }
                     else
                     {
                         ProvidedDate = dtResult;
-                        return TimeToken.Date;
+                        TimeToken = TimeToken.Date;
+                        return TimeToken;
                     }
 
                 }

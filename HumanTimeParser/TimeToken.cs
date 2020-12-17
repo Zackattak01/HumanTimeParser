@@ -4,6 +4,7 @@ namespace HumanTimeParser
 {
     internal enum TimeToken
     {
+        None,
         END,
         Value,
         Second,
