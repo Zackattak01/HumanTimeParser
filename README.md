@@ -10,6 +10,8 @@ Parsing `30 minutes after 6:55am on 5/20/2021` will result in a DateTime object 
 
 The lib cannot read `30 minutes before 6:55am on 5/20/2021`.  Parsing this string will result in the same DateTime as the previous example.
 
+The lib can also parse times without a given time or given date. `30 minutes` will parse into a DateTime that represent DateTime.Now + 30 minutes
+
 # Parsing
 
 The lib can parse the following formats:
