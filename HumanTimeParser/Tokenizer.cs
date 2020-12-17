@@ -1,6 +1,10 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
+using Name;
 
 namespace HumanTimeParser
 {
@@ -24,9 +28,46 @@ namespace HumanTimeParser
             ProvidedTimeOfDay = null;
 
 
-            UnparsedTokens = input.Split(' ');
+            UnparsedTokens = GetUnparsedTokens(input).ToArray();
+
+            foreach (var item in UnparsedTokens)
+            {
+                System.Console.WriteLine(item);
+            }
 
             index = -1;
+        }
+
+        private IEnumerable<string> GetUnparsedTokens(string input)
+        {
+
+            string[] baseTokens = input.Split(' ');
+            List<string> tokens = new List<string>();
+
+            foreach (var baseToken in baseTokens)
+            {
+                if (baseToken.IsNumber() || DateTime.TryParse(baseToken, out var dateTime))
+                {
+                    tokens.Add(baseToken);
+                    continue;
+                }
+                else
+                {
+                    int pos = baseToken.FirstNonNumberPos();
+
+                    //theoretically impossible
+                    if (pos == -1)
+                        throw new Exception("baseToken is a number?");
+
+                    tokens.Add(baseToken.Substring(0, pos));
+                    tokens.Add(baseToken.Substring(pos));
+
+
+
+                }
+            }
+
+            return tokens;
         }
 
         private string NextUnparsedToken()

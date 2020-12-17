@@ -31,7 +31,7 @@ namespace HumanTimeParser
             }
 
             DateTime startingTime = DateTime.Now;
-            System.Console.WriteLine("test");
+
             if (tokenValues.TryGetValue(TimeToken.Date, out var date))
             {
                 startingTime = DateTime.Parse(date);
@@ -88,17 +88,11 @@ namespace HumanTimeParser
             while (tokenizer.TimeToken != TimeToken.END)
             {
                 tokenizer.NextToken();
-                System.Console.WriteLine("Before while loop");
-                System.Console.WriteLine(tokenizer.TimeToken);
-                System.Console.WriteLine(tokenizer.CurrentValue);
+
                 while (tokenizer.TimeToken == TimeToken.Value)
                 {
                     tokenizer.NextToken();
                 }
-
-                System.Console.WriteLine("after while loop");
-                System.Console.WriteLine(tokenizer.TimeToken);
-                System.Console.WriteLine(tokenizer.CurrentValue);
 
                 bool success;
                 if (tokenizer.TimeToken == TimeToken.TimeOfDay)
