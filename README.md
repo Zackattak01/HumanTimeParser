@@ -22,6 +22,12 @@ Days (double)
 Weeks (double)
 Months (int)
 Years (int)
+
+A Given Time (ex: 5:55pm)
+A Given Date (ex: 2/23/2015)
 ```
+Each format can only be parsed once.
+
+`30s after 30s on 5/21/5 at 3:32pm` or similar will not parse and will throw an exception.
 
 The keywords can be found in [Constants](https://github.com/Zackattak01/HumanTimeParser/blob/main/HumanTimeParser/Constants.cs)
