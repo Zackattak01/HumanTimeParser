@@ -30,11 +30,6 @@ namespace HumanTimeParser
 
             UnparsedTokens = GetUnparsedTokens(input).ToArray();
 
-            foreach (var item in UnparsedTokens)
-            {
-                System.Console.WriteLine(item);
-            }
-
             index = -1;
         }
 

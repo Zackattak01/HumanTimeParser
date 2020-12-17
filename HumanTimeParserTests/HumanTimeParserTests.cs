@@ -39,5 +39,25 @@ namespace HumanTimeParserTests
 
             Assert.AreEqual(expected, time);
         }
+
+        [TestMethod]
+        public void RelativeTimeTest()
+        {
+            var time = HumanReadableTimeParser.ParseTime("30m 33s");
+
+            var timeOfDaySetup = DateTime.Parse("4:56 am").TimeOfDay;
+            var expected = DateTime.Now.AddSeconds(33).AddMinutes(30);
+
+            //the following chunk of code checks to see if the two time values are "close enough"
+            //execution time effects the final parsed time.  It is usually around a difference of 100 ticks or 3000 nano seconds
+            bool closeEnough = false;
+
+            // 0.1ms accuracy.  Seeing as the lib can only parse seconds as its lowest value it should be fine
+            if (expected.Ticks - time.Ticks < 1000)
+                closeEnough = true;
+
+
+            Assert.IsTrue(closeEnough);
+        }
     }
 }
