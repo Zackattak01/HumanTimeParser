@@ -113,43 +113,43 @@ namespace HumanTimeParser
 
                 }
 
-                if (unparsed == "s" || unparsed.ToLower() == "second" || unparsed.ToLower() == "seconds")
+                if (unparsed == Constants.SecondAbbreviation || Constants.SecondAbbreviations.Any(x => x == unparsed.ToLower()))
                 {
                     TimeToken = TimeToken.Second;
                     return TimeToken;
                 }
 
-                if (unparsed == "m" || unparsed.ToLower() == "minute" || unparsed.ToLower() == "minutes")
+                if (unparsed == Constants.MinuteAbbreviation || Constants.MinuteAbbreviations.Any(x => x == unparsed.ToLower()))
                 {
                     TimeToken = TimeToken.Minute;
                     return TimeToken;
                 }
 
-                if (unparsed == "h" || unparsed.ToLower() == "hour" || unparsed.ToLower() == "hours")
+                if (unparsed == Constants.HourAbbreviation || Constants.HourAbbreviations.Any(x => x == unparsed.ToLower()))
                 {
                     TimeToken = TimeToken.Hour;
                     return TimeToken;
                 }
 
-                if (unparsed == "d" || unparsed.ToLower() == "day" || unparsed.ToLower() == "days")
+                if (unparsed == Constants.DayAbbreviation || Constants.DayAbbreviations.Any(x => x == unparsed.ToLower()))
                 {
                     TimeToken = TimeToken.Day;
                     return TimeToken;
                 }
 
-                if (unparsed == "w" || unparsed.ToLower() == "week" || unparsed.ToLower() == "weeks")
+                if (unparsed == Constants.WeekAbbreviation || Constants.WeekAbbreviations.Any(x => x == unparsed.ToLower()))
                 {
                     TimeToken = TimeToken.Week;
                     return TimeToken;
                 }
 
-                if (unparsed == "M" || unparsed.ToLower() == "month" || unparsed.ToLower() == "months")
+                if (unparsed == Constants.MonthAbbreviation || Constants.MonthAbbreviations.Any(x => x == unparsed.ToLower()))
                 {
                     TimeToken = TimeToken.Month;
                     return TimeToken;
                 }
 
-                if (unparsed == "y" || unparsed.ToLower() == "year" || unparsed.ToLower() == "years")
+                if (unparsed == Constants.YearAbbreviation || Constants.YearAbbreviations.Any(x => x == unparsed.ToLower()))
                 {
                     TimeToken = TimeToken.Year;
                     return TimeToken;

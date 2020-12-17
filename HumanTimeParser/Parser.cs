@@ -24,12 +24,6 @@ namespace HumanTimeParser
         {
             ReadTokens();
 
-            foreach (var item in tokenValues)
-            {
-                System.Console.WriteLine(item.Key);
-                System.Console.WriteLine(item.Value);
-            }
-
             DateTime startingTime = DateTime.Now;
 
             if (tokenValues.TryGetValue(TimeToken.Date, out var date))
