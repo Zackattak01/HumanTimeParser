@@ -15,13 +15,13 @@ The lib cannot read `30 minutes before 6:55am on 5/20/2021`.  Parsing this strin
 The lib can parse the following formats:
 
 ```
-Seconds (double)
-Minutes (double)
-Hours (double)
-Days (double)
-Weeks (double)
-Months (int)
-Years (int)
+Seconds (double) (ex: 5s, 5 seconds)
+Minutes (double) (ex: 2.3min, 4 minute)
+Hours (double) (ex: 9h, 5hrs)
+Days (double) (ex: 6d, 5 day)
+Weeks (double) (ex: 10w, 10 weeks)
+Months (int) (ex: 5M, 5 months)
+Years (int) (ex: 10y, 10 yrs)
 
 A Given Time (ex: 5:55pm)
 A Given Date (ex: 2/23/2015)
