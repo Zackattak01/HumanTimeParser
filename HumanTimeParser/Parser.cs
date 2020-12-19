@@ -80,6 +80,9 @@ namespace HumanTimeParser
             return newTime;
         }
 
+        public int GetLastTokenPosition()
+            => tokenizer.LastTokenPosition;
+
         private void ReadTokens()
         {
             //System.Console.WriteLine(tokenizer.NextToken());

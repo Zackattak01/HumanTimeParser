@@ -12,7 +12,7 @@ namespace HumanTimeParser
 
 
 
-            return TimeParsingResult.FromNullableDateTime(parser.Parse()); ;
+            return TimeParsingResult.FromNullableDateTime(parser.Parse(), parser.GetLastTokenPosition()); ;
         }
 
 

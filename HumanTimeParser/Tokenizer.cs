@@ -18,6 +18,8 @@ namespace HumanTimeParser
 
         public double CurrentValue { get; private set; }
 
+        public int LastTokenPosition { get; private set; }
+
         public TimeToken TimeToken { get; private set; }
 
         private int index;
@@ -84,6 +86,7 @@ namespace HumanTimeParser
 
                 if (unparsed is null)
                 {
+                    LastTokenPosition = index;
                     TimeToken = TimeToken.END;
                     return TimeToken;
                 }
