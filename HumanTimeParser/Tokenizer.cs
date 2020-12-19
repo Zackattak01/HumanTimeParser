@@ -50,13 +50,20 @@ namespace HumanTimeParser
                 }
                 else
                 {
+                    if (string.IsNullOrWhiteSpace(baseToken) || string.IsNullOrEmpty(baseToken))
+                        continue;
+
                     int pos = baseToken.FirstNonNumberPos();
 
                     //theoretically impossible
                     if (pos == -1)
                         throw new Exception("baseToken is a number?");
 
-                    tokens.Add(baseToken.Substring(0, pos));
+
+                    if (pos != 0)
+                    {
+                        tokens.Add(baseToken.Substring(0, pos));
+                    }
                     tokens.Add(baseToken.Substring(pos));
 
 
@@ -74,6 +81,7 @@ namespace HumanTimeParser
             if (index >= UnparsedTokens.Length)
                 return null;
 
+            //System.Console.WriteLine(UnparsedTokens[index]);
             return UnparsedTokens[index];
         }
 
@@ -86,7 +94,6 @@ namespace HumanTimeParser
 
                 if (unparsed is null)
                 {
-                    LastTokenPosition = index;
                     TimeToken = TimeToken.END;
                     return TimeToken;
                 }
@@ -94,6 +101,7 @@ namespace HumanTimeParser
 
                 if (double.TryParse(unparsed, out var doubleResult))
                 {
+                    LastTokenPosition = index;
                     CurrentValue = doubleResult;
                     TimeToken = TimeToken.Value;
                     return TimeToken;
@@ -103,12 +111,14 @@ namespace HumanTimeParser
                 {
                     if (DateTime.Now.Date == dtResult.Date)
                     {
+                        LastTokenPosition = index;
                         ProvidedTimeOfDay = dtResult;
                         TimeToken = TimeToken.TimeOfDay;
                         return TimeToken;
                     }
                     else
                     {
+                        LastTokenPosition = index;
                         ProvidedDate = dtResult;
                         TimeToken = TimeToken.Date;
                         return TimeToken;
@@ -118,42 +128,49 @@ namespace HumanTimeParser
 
                 if (unparsed == Constants.SecondAbbreviation || Constants.SecondAbbreviations.Any(x => x == unparsed.ToLower()))
                 {
+                    LastTokenPosition = index;
                     TimeToken = TimeToken.Second;
                     return TimeToken;
                 }
 
                 if (unparsed == Constants.MinuteAbbreviation || Constants.MinuteAbbreviations.Any(x => x == unparsed.ToLower()))
                 {
+                    LastTokenPosition = index;
                     TimeToken = TimeToken.Minute;
                     return TimeToken;
                 }
 
                 if (unparsed == Constants.HourAbbreviation || Constants.HourAbbreviations.Any(x => x == unparsed.ToLower()))
                 {
+                    LastTokenPosition = index;
                     TimeToken = TimeToken.Hour;
                     return TimeToken;
                 }
 
                 if (unparsed == Constants.DayAbbreviation || Constants.DayAbbreviations.Any(x => x == unparsed.ToLower()))
                 {
+                    LastTokenPosition = index;
                     TimeToken = TimeToken.Day;
                     return TimeToken;
                 }
 
                 if (unparsed == Constants.WeekAbbreviation || Constants.WeekAbbreviations.Any(x => x == unparsed.ToLower()))
                 {
+                    LastTokenPosition = index;
                     TimeToken = TimeToken.Week;
                     return TimeToken;
                 }
 
                 if (unparsed == Constants.MonthAbbreviation || Constants.MonthAbbreviations.Any(x => x == unparsed.ToLower()))
                 {
+                    LastTokenPosition = index;
                     TimeToken = TimeToken.Month;
                     return TimeToken;
                 }
 
                 if (unparsed == Constants.YearAbbreviation || Constants.YearAbbreviations.Any(x => x == unparsed.ToLower()))
                 {
+                    LastTokenPosition = index;
                     TimeToken = TimeToken.Year;
                     return TimeToken;
                 }

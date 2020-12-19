@@ -1,6 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using HumanTimeParser;
 using System;
+using System.Reflection;
 
 namespace HumanTimeParserTests
 {
@@ -88,6 +89,14 @@ namespace HumanTimeParserTests
             var expected = DateTime.Now.Date.Add(timeOfDaySetup);
 
             Assert.AreEqual(expected, result.DateTime);
+        }
+
+        [TestMethod]
+        public void LastTokenPositionTest()
+        {
+            var result = HumanReadableTimeParser.ParseTime("in 5 s do things cool stuff");
+
+            Assert.AreEqual(2, result.LastTokenPosition);
         }
     }
 }
