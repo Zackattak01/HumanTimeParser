@@ -96,7 +96,7 @@ namespace HumanTimeParserTests
         {
             var result = HumanReadableTimeParser.ParseTime("in 5 s do things cool stuff");
 
-            Assert.AreEqual(2, result.LastTokenPosition);
+            Assert.AreEqual(3, result.LastTokenPosition);
         }
     }
 }
