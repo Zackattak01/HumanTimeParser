@@ -20,60 +20,64 @@ namespace HumanTimeParser
             tokenizer = new Tokenizer(input);
         }
 
-        public DateTime Parse()
+        public DateTime? Parse()
         {
             ReadTokens();
 
             DateTime startingTime = DateTime.Now;
+            DateTime newTime = startingTime;
 
             if (tokenValues.TryGetValue(TimeToken.Date, out var date))
             {
-                startingTime = DateTime.Parse(date);
+                newTime = DateTime.Parse(date);
             }
 
             if (tokenValues.TryGetValue(TimeToken.TimeOfDay, out var timeOfDay))
             {
-                startingTime = startingTime.Add(DateTime.Parse(timeOfDay).TimeOfDay);
+                newTime = newTime.Add(DateTime.Parse(timeOfDay).TimeOfDay);
             }
 
             if (tokenValues.TryGetValue(TimeToken.Second, out var seconds))
             {
-                startingTime = startingTime.AddSeconds(double.Parse(seconds));
+                newTime = newTime.AddSeconds(double.Parse(seconds));
             }
 
             if (tokenValues.TryGetValue(TimeToken.Minute, out var minutes))
             {
-                startingTime = startingTime.AddMinutes(double.Parse(minutes));
+                newTime = newTime.AddMinutes(double.Parse(minutes));
             }
 
             if (tokenValues.TryGetValue(TimeToken.Hour, out var hours))
             {
-                startingTime = startingTime.AddHours(double.Parse(hours));
+                newTime = newTime.AddHours(double.Parse(hours));
             }
 
             if (tokenValues.TryGetValue(TimeToken.Day, out var days))
             {
-                startingTime = startingTime.AddDays(double.Parse(days));
+                newTime = newTime.AddDays(double.Parse(days));
             }
 
             if (tokenValues.TryGetValue(TimeToken.Week, out var weeks))
             {
-                startingTime = startingTime.AddDays(double.Parse(weeks) * 7);
+                newTime = newTime.AddDays(double.Parse(weeks) * 7);
             }
 
             if (tokenValues.TryGetValue(TimeToken.Month, out var months))
             {
-                startingTime = startingTime.AddMonths(int.Parse(months));
+                newTime = newTime.AddMonths(int.Parse(months));
             }
 
             if (tokenValues.TryGetValue(TimeToken.Year, out var years))
             {
-                startingTime = startingTime.AddYears(int.Parse(years));
+                newTime = newTime.AddYears(int.Parse(years));
             }
 
+            if (startingTime.Equals(newTime))
+                return null;
 
 
-            return startingTime;
+
+            return newTime;
         }
 
         private void ReadTokens()
