@@ -34,7 +34,7 @@ namespace HumanTimeParser
 
             if (tokenValues.TryGetValue(TimeToken.TimeOfDay, out var timeOfDay))
             {
-                newTime = newTime.Add(DateTime.Parse(timeOfDay).TimeOfDay);
+                newTime = newTime.Date.Add(DateTime.Parse(timeOfDay).TimeOfDay);
             }
 
             if (tokenValues.TryGetValue(TimeToken.Second, out var seconds))
