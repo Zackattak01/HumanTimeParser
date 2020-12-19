@@ -81,7 +81,7 @@ namespace HumanTimeParser
         }
 
         public int GetLastTokenPosition()
-            => tokenizer.LastTokenPosition + 1;
+            => (tokenizer.LastTokenPosition - tokenizer.IndexOffsetFromTrue) + 1;
 
         private void ReadTokens()
         {

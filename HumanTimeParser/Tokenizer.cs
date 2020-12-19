@@ -19,20 +19,26 @@ namespace HumanTimeParser
         public double CurrentValue { get; private set; }
 
         public int LastTokenPosition { get; private set; }
+        public int IndexOffsetFromTrue { get; private set; }
 
         public TimeToken TimeToken { get; private set; }
 
         private int index;
+
+
 
         public Tokenizer(string input)
         {
             ProvidedDate = null;
             ProvidedTimeOfDay = null;
 
+            IndexOffsetFromTrue = 0;
+            index = -1;
 
             UnparsedTokens = GetUnparsedTokens(input).ToArray();
 
-            index = -1;
+
+
         }
 
         private IEnumerable<string> GetUnparsedTokens(string input)
@@ -63,6 +69,7 @@ namespace HumanTimeParser
                     if (pos != 0)
                     {
                         tokens.Add(baseToken.Substring(0, pos));
+                        IndexOffsetFromTrue++;
                     }
                     tokens.Add(baseToken.Substring(pos));
 
