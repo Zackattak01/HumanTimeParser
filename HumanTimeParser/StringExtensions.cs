@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.Serialization;
 using System.Security;
 
 namespace Name
@@ -41,6 +42,15 @@ namespace Name
                     return true;
             }
             return false;
+        }
+
+        public static bool IsAmPmSpecifier(this string str)
+        {
+            string lowerCase = str.ToLower();
+            if (lowerCase == "am" || lowerCase == "pm")
+                return true;
+            else
+                return false;
         }
     }
 }

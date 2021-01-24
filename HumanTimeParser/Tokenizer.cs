@@ -49,7 +49,18 @@ namespace HumanTimeParser
 
             foreach (var baseToken in baseTokens)
             {
-                if (baseToken.IsNumber() || DateTime.TryParse(baseToken, out var dateTime))
+                if (baseToken.IsAmPmSpecifier() && tokens.Count > 1)
+                {
+                    string lastToken = tokens.Last();
+
+                    tokens.RemoveAt(tokens.Count - 1);
+
+                    //combine the spaced AM/PM specifier to the supposed date in the previous token
+                    //this is definetly a blind approach and will certainly lead to a bug or two in the future.
+                    tokens.Add(lastToken + baseToken);
+                    continue;
+                }
+                else if (baseToken.IsNumber() || DateTime.TryParse(baseToken, out var dateTime))
                 {
                     tokens.Add(baseToken);
                     continue;

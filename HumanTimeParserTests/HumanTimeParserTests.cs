@@ -138,5 +138,27 @@ namespace HumanTimeParserTests
 
             Assert.AreEqual(1, result.LastTokenPosition);
         }
+
+        [TestMethod]
+        public void Parse_With_Spaced_AM_PM()
+        {
+            var result = HumanReadableTimeParser.ParseTime("5:30 PM");
+
+            var expected = DateTime.Parse("5:30 PM");
+
+            Assert.AreEqual(expected, result.DateTime);
+        }
+
+        [TestMethod]
+        public void Fail_Quietly_With_Incorrect_Spaced_AM_PM()
+        {
+            var result = HumanReadableTimeParser.ParseTime("pm 5:30");
+
+            var timeOfDaySetup = DateTime.Parse("5:30 AM").TimeOfDay;
+            var expected = DateTime.Now.Date.Add(timeOfDaySetup);
+
+            Assert.AreEqual(true, result.Success);
+            Assert.AreEqual(expected.TimeOfDay, result.DateTime?.TimeOfDay);
+        }
     }
 }
