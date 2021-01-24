@@ -59,17 +59,23 @@ namespace HumanTimeParser
                     if (string.IsNullOrWhiteSpace(baseToken) || string.IsNullOrEmpty(baseToken))
                         continue;
 
-                    int pos = baseToken.FirstNonNumberPos();
 
-                    //theoretically impossible
-                    if (pos == -1)
-                        throw new Exception("baseToken is a number?");
+                    int pos = 0;
 
-
-                    if (pos != 0)
+                    if (baseToken.ContainsNumber())
                     {
-                        tokens.Add(baseToken.Substring(0, pos));
-                        IndexOffsetFromTrue++;
+                        pos = baseToken.FirstNonNumberPos();
+                        //theoretically impossible
+                        if (pos == -1)
+                            throw new Exception("baseToken is a number?");
+
+
+                        if (pos != 0)
+                        {
+                            tokens.Add(baseToken.Substring(0, pos));
+                            IndexOffsetFromTrue++;
+                        }
+
                     }
                     tokens.Add(baseToken.Substring(pos));
 

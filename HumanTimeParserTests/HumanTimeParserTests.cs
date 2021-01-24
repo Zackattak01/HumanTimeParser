@@ -112,5 +112,31 @@ namespace HumanTimeParserTests
 
             Assert.AreEqual(1, result.LastTokenPosition);
         }
+
+        [TestMethod]
+        public void LastTokenPositionTest_Alt2()
+        {
+            var result = HumanReadableTimeParser.ParseTime("5:30pm files");
+
+            var splitReason = "5:30pm files".Split(' ').Skip((int)result.LastTokenPosition);
+            var reminderValue = string.Join(' ', splitReason);
+
+            System.Console.WriteLine(reminderValue);
+
+            Assert.AreEqual(1, result.LastTokenPosition);
+        }
+
+        [TestMethod]
+        public void LastTokenPositionTest_Alt3()
+        {
+            var result = HumanReadableTimeParser.ParseTime("5:30pm .files");
+
+            var splitReason = "5:30pm .files".Split(' ').Skip((int)result.LastTokenPosition);
+            var reminderValue = string.Join(' ', splitReason);
+
+            System.Console.WriteLine(reminderValue);
+
+            Assert.AreEqual(1, result.LastTokenPosition);
+        }
     }
 }

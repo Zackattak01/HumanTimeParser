@@ -1,4 +1,5 @@
 using System;
+using System.Security;
 
 namespace Name
 {
@@ -30,6 +31,16 @@ namespace Name
             }
 
             return -1;
+        }
+
+        public static bool ContainsNumber(this string str)
+        {
+            foreach (var c in str)
+            {
+                if (char.IsDigit(c))
+                    return true;
+            }
+            return false;
         }
     }
 }
