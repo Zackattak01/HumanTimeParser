@@ -154,11 +154,10 @@ namespace HumanTimeParserTests
         {
             var result = HumanReadableTimeParser.ParseTime("pm 5:30");
 
-            var timeOfDaySetup = DateTime.Parse("5:30 AM").TimeOfDay;
-            var expected = DateTime.Now.Date.Add(timeOfDaySetup);
+            var expected = DateTime.Parse("5:30 AM");
 
             Assert.AreEqual(true, result.Success);
-            Assert.AreEqual(expected.TimeOfDay, result.DateTime?.TimeOfDay);
+            Assert.AreEqual(expected, result.DateTime);
         }
     }
 }

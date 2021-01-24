@@ -49,7 +49,7 @@ namespace HumanTimeParser
 
             foreach (var baseToken in baseTokens)
             {
-                if (baseToken.IsAmPmSpecifier() && tokens.Count > 1)
+                if (baseToken.IsAmPmSpecifier() && tokens.Count > 0)
                 {
                     string lastToken = tokens.Last();
 
