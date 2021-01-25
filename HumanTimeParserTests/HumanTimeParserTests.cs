@@ -160,6 +160,9 @@ namespace HumanTimeParserTests
             Assert.AreEqual(2, result.LastTokenPosition);
         }
 
+        //fails test becuase of implied am/pm parsing
+        //should am/pm parsing apply here
+        //probably
         [TestMethod]
         public void Fail_Quietly_With_Incorrect_Spaced_AM_PM()
         {
