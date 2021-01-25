@@ -38,12 +38,12 @@ namespace HumanTimeParser
                 newTime = newTime.Date.Add(DateTime.Parse(timeOfDay).TimeOfDay);
 
                 //try to parse implied am/pm
-                if (newTime < DateTime.Now && !timeOfDay.ContainsAmPmSpecifier())
-                {
-                    var impliedTime = newTime.AddHours(12);
-                    if (impliedTime > DateTime.Now)
-                        newTime = impliedTime;
-                }
+                // if (newTime < DateTime.Now && !timeOfDay.ContainsAmPmSpecifier())
+                // {
+                //     var impliedTime = newTime.AddHours(12);
+                //     if (impliedTime > DateTime.Now)
+                //         newTime = impliedTime;
+                // }
 
             }
 

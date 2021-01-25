@@ -138,9 +138,17 @@ namespace HumanTimeParser
                 {
                     if (DateTime.Now.Date == dtResult.Date)
                     {
+                        if (dtResult < DateTime.Now && !unparsed.ContainsAmPmSpecifier())
+                        {
+                            var impliedTime = dtResult.AddHours(12);
+                            if (impliedTime > DateTime.Now)
+                                dtResult = impliedTime;
+                        }
+
                         LastTokenPosition = index;
                         ProvidedTimeOfDay = dtResult;
                         TimeToken = TimeToken.TimeOfDay;
+
                         return TimeToken;
                     }
                     else

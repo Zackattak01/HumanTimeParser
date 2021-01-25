@@ -3,6 +3,7 @@ using HumanTimeParser;
 using System;
 using System.Reflection;
 using System.Linq;
+using Name;
 
 namespace HumanTimeParserTests
 {
@@ -168,6 +169,35 @@ namespace HumanTimeParserTests
 
             Assert.AreEqual(true, result.Success);
             Assert.AreEqual(expected, result.DateTime);
+        }
+
+        [TestMethod]
+        public void Contains_AM_PM_Specifier_Test()
+        {
+            var result = "5:30".ContainsAmPmSpecifier();
+            var result2 = "5:30pm".ContainsAmPmSpecifier();
+            var result3 = "5:30 am".ContainsAmPmSpecifier();
+
+            var expected = false;
+            var expected2 = true;
+            var expected3 = true;
+
+            Assert.AreEqual(expected, result);
+            Assert.AreEqual(expected2, result2);
+            Assert.AreEqual(expected3, result3);
+        }
+
+        //change this test to an appropriate time on every run
+        //could work on a solution by too lazy
+        [TestMethod]
+        public void Test()
+        {
+            var result = HumanReadableTimeParser.ParseTime("7:00");
+
+            var expected = DateTime.Parse("7:00 PM");
+
+            Assert.AreEqual(expected, result.DateTime);
+
         }
     }
 }
