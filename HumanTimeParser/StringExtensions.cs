@@ -52,5 +52,14 @@ namespace Name
             else
                 return false;
         }
+
+        public static bool ContainsAmPmSpecifier(this string str)
+        {
+            string lowerCase = str.ToLower();
+            if (lowerCase.Contains("am") || lowerCase.Contains("pm"))
+                return true;
+            else
+                return false;
+        }
     }
 }
