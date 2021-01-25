@@ -150,6 +150,16 @@ namespace HumanTimeParserTests
         }
 
         [TestMethod]
+        public void Spaced_AM_PM_Last_Token_Pos()
+        {
+            var result = HumanReadableTimeParser.ParseTime("5:30 PM");
+
+            var expected = DateTime.Parse("5:30 PM");
+
+            Assert.AreEqual(2, result.LastTokenPosition);
+        }
+
+        [TestMethod]
         public void Fail_Quietly_With_Incorrect_Spaced_AM_PM()
         {
             var result = HumanReadableTimeParser.ParseTime("pm 5:30");

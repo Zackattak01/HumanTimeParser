@@ -58,6 +58,9 @@ namespace HumanTimeParser
                     //combine the spaced AM/PM specifier to the supposed date in the previous token
                     //this is definetly a blind approach and will certainly lead to a bug or two in the future.
                     tokens.Add(lastToken + baseToken);
+
+                    //decrease IndexOffsetFromTrue because were shortening the amount of tokens for parsing
+                    IndexOffsetFromTrue--;
                     continue;
                 }
                 else if (baseToken.IsNumber() || DateTime.TryParse(baseToken, out var dateTime))
