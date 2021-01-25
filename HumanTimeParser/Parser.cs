@@ -35,6 +35,15 @@ namespace HumanTimeParser
             if (tokenValues.TryGetValue(TimeToken.TimeOfDay, out var timeOfDay))
             {
                 newTime = newTime.Date.Add(DateTime.Parse(timeOfDay).TimeOfDay);
+
+                //try to parse implied am/pm
+                if (newTime < DateTime.Now)
+                {
+                    var impliedTime = newTime.AddHours(12);
+                    if (impliedTime > DateTime.Now)
+                        newTime = impliedTime;
+                }
+
             }
 
             if (tokenValues.TryGetValue(TimeToken.Second, out var seconds))
