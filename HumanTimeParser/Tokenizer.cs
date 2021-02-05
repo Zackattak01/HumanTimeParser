@@ -161,6 +161,14 @@ namespace HumanTimeParser
 
                 }
 
+                if (Constants.TomorrowAbbreviations.Any(x => x == unparsed.ToLower()))
+                {
+                    LastTokenPosition = index;
+                    ProvidedDate = DateTime.Now.AddDays(1);
+                    TimeToken = TimeToken.Date;
+                    return TimeToken;
+                }
+
                 if (unparsed == Constants.SecondAbbreviation || Constants.SecondAbbreviations.Any(x => x == unparsed.ToLower()))
                 {
                     LastTokenPosition = index;

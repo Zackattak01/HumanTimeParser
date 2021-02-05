@@ -4,6 +4,7 @@ using System;
 using System.Reflection;
 using System.Linq;
 using Name;
+using System.Diagnostics;
 
 namespace HumanTimeParserTests
 {
@@ -201,6 +202,34 @@ namespace HumanTimeParserTests
 
             Assert.AreEqual(expected, result.DateTime);
 
+        }
+        [TestMethod]
+        public void TomorrowTest()
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var result = HumanReadableTimeParser.ParseTime("Tomorrow");
+
+
+            var expected = DateTime.Now.AddDays(1);
+            stopwatch.Stop();
+
+            System.Console.WriteLine(stopwatch.Elapsed);
+
+            //the following chunk of code checks to see if the two time values are "close enough"
+            //execution time effects the final parsed time.  It is usually around a difference of 100 ticks or 10000 nano seconds
+            bool closeEnough = false;
+
+            // 1s accuracy.  Seeing as the lib can only parse seconds as its lowest value it should be fine
+            if (expected.Ticks - result.DateTime?.Ticks < 10000000)
+                closeEnough = true;
+
+            System.Console.WriteLine(result.DateTime);
+            System.Console.WriteLine(expected);
+
+            System.Console.WriteLine(expected.Ticks - result.DateTime?.Ticks);
+
+            Assert.IsTrue(closeEnough);
         }
     }
 }

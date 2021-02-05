@@ -6,6 +6,8 @@ namespace HumanTimeParser
 {
     public class Constants
     {
+        public static readonly IReadOnlyCollection<string> TomorrowAbbreviations = new List<string> { "tmr", "tomorrow" };
+
         public const string SecondAbbreviation = "s";
         public static readonly IReadOnlyList<string> SecondAbbreviations = new List<string> { "sec", "secs", "second", "seconds" };
 
