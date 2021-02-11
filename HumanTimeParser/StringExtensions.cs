@@ -53,10 +53,10 @@ namespace Name
                 return false;
         }
 
-        public static bool ContainsAmPmSpecifier(this string str)
+        public static bool EndsWithAmPmSpecifier(this string str)
         {
             string lowerCase = str.ToLower();
-            if (lowerCase.Contains("am") || lowerCase.Contains("pm"))
+            if (lowerCase.EndsWith("am") || lowerCase.EndsWith("pm"))
                 return true;
             else
                 return false;

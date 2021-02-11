@@ -8,7 +8,7 @@ namespace HumanTimeParser
     {
         //we can use a dictionary here because the user can only supply one of each type of token
         //if they supply multiple of each token it would not read like english, thus not Human Readable
-        Dictionary<TimeToken, string> tokenValues;
+        Dictionary<TokenType, string> tokenValues;
 
         string input;
 
@@ -16,7 +16,7 @@ namespace HumanTimeParser
 
         public Parser(string input)
         {
-            tokenValues = new Dictionary<TimeToken, string>();
+            tokenValues = new Dictionary<TokenType, string>();
             this.input = input;
             tokenizer = new Tokenizer(input);
         }
@@ -28,12 +28,12 @@ namespace HumanTimeParser
             DateTime startingTime = DateTime.Now;
             DateTime newTime = startingTime;
 
-            if (tokenValues.TryGetValue(TimeToken.Date, out var date))
+            if (tokenValues.TryGetValue(TokenType.Date, out var date))
             {
                 newTime = DateTime.Parse(date);
             }
 
-            if (tokenValues.TryGetValue(TimeToken.TimeOfDay, out var timeOfDay))
+            if (tokenValues.TryGetValue(TokenType.TimeOfDay, out var timeOfDay))
             {
                 newTime = newTime.Date.Add(DateTime.Parse(timeOfDay).TimeOfDay);
 
@@ -47,37 +47,37 @@ namespace HumanTimeParser
 
             }
 
-            if (tokenValues.TryGetValue(TimeToken.Second, out var seconds))
+            if (tokenValues.TryGetValue(TokenType.Second, out var seconds))
             {
                 newTime = newTime.AddSeconds(double.Parse(seconds));
             }
 
-            if (tokenValues.TryGetValue(TimeToken.Minute, out var minutes))
+            if (tokenValues.TryGetValue(TokenType.Minute, out var minutes))
             {
                 newTime = newTime.AddMinutes(double.Parse(minutes));
             }
 
-            if (tokenValues.TryGetValue(TimeToken.Hour, out var hours))
+            if (tokenValues.TryGetValue(TokenType.Hour, out var hours))
             {
                 newTime = newTime.AddHours(double.Parse(hours));
             }
 
-            if (tokenValues.TryGetValue(TimeToken.Day, out var days))
+            if (tokenValues.TryGetValue(TokenType.Day, out var days))
             {
                 newTime = newTime.AddDays(double.Parse(days));
             }
 
-            if (tokenValues.TryGetValue(TimeToken.Week, out var weeks))
+            if (tokenValues.TryGetValue(TokenType.Week, out var weeks))
             {
                 newTime = newTime.AddDays(double.Parse(weeks) * 7);
             }
 
-            if (tokenValues.TryGetValue(TimeToken.Month, out var months))
+            if (tokenValues.TryGetValue(TokenType.Month, out var months))
             {
                 newTime = newTime.AddMonths(int.Parse(months));
             }
 
-            if (tokenValues.TryGetValue(TimeToken.Year, out var years))
+            if (tokenValues.TryGetValue(TokenType.Year, out var years))
             {
                 newTime = newTime.AddYears(int.Parse(years));
             }
@@ -98,21 +98,21 @@ namespace HumanTimeParser
         private void ReadTokens()
         {
             //System.Console.WriteLine(tokenizer.NextToken());
-            while (tokenizer.TimeToken != TimeToken.END)
+            while (tokenizer.TimeToken != TokenType.END)
             {
                 tokenizer.NextToken();
 
-                while (tokenizer.TimeToken == TimeToken.Value)
+                while (tokenizer.TimeToken == TokenType.Value)
                 {
                     tokenizer.NextToken();
                 }
 
                 bool success;
-                if (tokenizer.TimeToken == TimeToken.TimeOfDay)
+                if (tokenizer.TimeToken == TokenType.TimeOfDay)
                 {
                     success = tokenValues.TryAdd(tokenizer.TimeToken, tokenizer.ProvidedTimeOfDay.ToString());
                 }
-                else if (tokenizer.TimeToken == TimeToken.Date)
+                else if (tokenizer.TimeToken == TokenType.Date)
                 {
                     success = tokenValues.TryAdd(tokenizer.TimeToken, tokenizer.ProvidedDate.ToString());
                 }
