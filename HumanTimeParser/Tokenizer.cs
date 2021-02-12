@@ -41,16 +41,25 @@ namespace HumanTimeParser
             if (unparsedToken == null)
                 return new Token(TokenType.END, -1, null);
 
+            if (int.TryParse(unparsedToken, out _))
+                return new Token(TokenType.Number, tokenIndex, unparsedToken);
+
+            if (TokenizeTimeAndTwelveHourSpecifer(unparsedToken) is { } givenTimeToken)
+                return givenTimeToken;
+
             //tokenize given date
             if (DateTime.TryParse(unparsedToken, out _))
                 return new Token(TokenType.Date, tokenIndex, unparsedToken);
 
-
             if (TokenizeNumberAndRelativeTimeFormat(unparsedToken) is { } relativeTimeToken)
                 return relativeTimeToken;
 
-            if (TokenizeTimeAndTwelveHourSpecifer(unparsedToken) is { } givenTimeToken)
-                return givenTimeToken;
+
+
+
+
+
+
 
             if (unparsedToken.IsAmPmSpecifier())
                 return new Token(TokenType.TwelveHourSpecifier, tokenIndex, unparsedToken);
@@ -59,13 +68,25 @@ namespace HumanTimeParser
             return NextToken();
         }
 
+        public Token PeekNextToken()
+        {
+            var token = NextToken();
+            tokenIndex--;
+            return token;
+        }
+
         private Token TokenizeNumberAndRelativeTimeFormat(string unparsedToken)
         {
             TokenType tokenType = TokenType.None;
+            int splitPos = unparsedToken.FirstNonNumberPos();
+            if (splitPos == -1)
+                return null;
+
+            var unparsedAbbreviation = unparsedToken.Substring(splitPos).ToLower();
 
             foreach (var abbreviation in Constants.Abbreviations)
             {
-                if (abbreviation.Value.Any(x => unparsedToken.EndsWith(x)))
+                if (abbreviation.Value.Any(x => unparsedAbbreviation == x))
                 {
                     tokenType = abbreviation.Key;
                     break;
@@ -78,7 +99,7 @@ namespace HumanTimeParser
             var containsNum = unparsedToken.ContainsNumber();
 
             if (tokenType == TokenType.Tomorrow)
-                tokenType = tokenType | TokenType.Day;
+                tokenType = tokenType | TokenType.Day | TokenType.Date;
             else if (containsNum)
                 tokenType = tokenType | TokenType.Number;
 
