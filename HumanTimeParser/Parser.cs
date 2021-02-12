@@ -35,7 +35,7 @@ namespace HumanTimeParser
                 if (currentToken.TokenType.HasFlag(TokenType.Number))
                 {
 
-                    var num = int.Parse(currentToken.Value);
+                    var num = double.Parse(currentToken.Value);
 
                     if (currentToken.TokenType == TokenType.Number)
                         currentToken = tokenizer.NextToken();
@@ -106,12 +106,17 @@ namespace HumanTimeParser
                         //specifier may still be null. fail quietely
                         if (specifier?.ToLower() == "pm")
                             ts = ts.Add(new TimeSpan(12, 0, 0));
+                        else if (ts < startingTime.TimeOfDay && specifier is null)
+                        {
+                            var newTs = ts.Add(new TimeSpan(12, 0, 0));
+
+                            if (newTs >= startingTime.TimeOfDay)
+                                ts = newTs;
+                        }
+
 
 
                         parsedTime = ts;
-
-
-
 
                         lastParsedTokenPos = currentToken.TokenPosition;
                         parsedTypes.Add(TokenType.TimeOfDay);

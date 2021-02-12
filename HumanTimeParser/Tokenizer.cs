@@ -41,7 +41,7 @@ namespace HumanTimeParser
             if (unparsedToken == null)
                 return new Token(TokenType.END, -1, null);
 
-            if (int.TryParse(unparsedToken, out _))
+            if (double.TryParse(unparsedToken, out _))
                 return new Token(TokenType.Number, tokenIndex, unparsedToken);
 
             if (TokenizeTimeAndTwelveHourSpecifer(unparsedToken) is { } givenTimeToken)

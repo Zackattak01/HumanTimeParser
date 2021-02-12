@@ -66,10 +66,10 @@ namespace HumanTimeParserTests
         [TestMethod]
         public void IgnoreEnglish()
         {
-            var result = HumanReadableTimeParser.ParseTime("33 minutes after 6:50am on 1/7/2021");
+            var result = HumanReadableTimeParser.ParseTime("33.5 minutes after 6:50am on 1/7/2021");
 
             var timeOfDaySetup = DateTime.Parse("6:50 am").TimeOfDay;
-            var expected = DateTime.Parse("1/7/2021").Add(timeOfDaySetup).AddMinutes(33);
+            var expected = DateTime.Parse("1/7/2021").Add(timeOfDaySetup).AddMinutes(33.5);
 
             Assert.AreEqual(expected, result.DateTime);
         }
@@ -193,16 +193,16 @@ namespace HumanTimeParserTests
 
         //change this test to an appropriate time on every run
         //could work on a solution by too lazy
-        // [TestMethod]
-        // public void Test()
-        // {
-        //     var result = HumanReadableTimeParser.ParseTime("7:00");
+        [TestMethod]
+        public void Test()
+        {
+            var result = HumanReadableTimeParser.ParseTime("7:00");
 
-        //     var expected = DateTime.Parse("7:00 PM");
+            var expected = DateTime.Parse("7:00 PM");
 
-        //     Assert.AreEqual(expected, result.DateTime);
+            Assert.AreEqual(expected, result.DateTime);
 
-        // }
+        }
         [TestMethod]
         public void TomorrowTest()
         {
