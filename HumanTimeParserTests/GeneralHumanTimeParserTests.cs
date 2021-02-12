@@ -9,7 +9,7 @@ using System.Diagnostics;
 namespace HumanTimeParserTests
 {
     [TestClass]
-    public class HumanTimeParserTests
+    public class GeneralHumanTimeParserTests
     {
         [TestMethod]
         public void StressTest()
@@ -94,52 +94,6 @@ namespace HumanTimeParserTests
             Assert.AreEqual(expected, result.DateTime);
         }
 
-        [TestMethod]
-        public void LastTokenPositionTest()
-        {
-            var result = HumanReadableTimeParser.ParseTime("in 5 s do things cool stuff");
-
-            Assert.AreEqual(3, result.LastTokenPosition);
-        }
-
-        [TestMethod]
-        public void LastTokenPositionTest_Alt()
-        {
-            var result = HumanReadableTimeParser.ParseTime("10s gamer time");
-
-            var splitReason = "10s gamer time".Split(' ').Skip((int)result.LastTokenPosition);
-            var reminderValue = string.Join(' ', splitReason);
-
-            System.Console.WriteLine(reminderValue);
-
-            Assert.AreEqual(1, result.LastTokenPosition);
-        }
-
-        [TestMethod]
-        public void LastTokenPositionTest_Alt2()
-        {
-            var result = HumanReadableTimeParser.ParseTime("5:30pm files");
-
-            var splitReason = "5:30pm files".Split(' ').Skip((int)result.LastTokenPosition);
-            var reminderValue = string.Join(' ', splitReason);
-
-            System.Console.WriteLine(reminderValue);
-
-            Assert.AreEqual(1, result.LastTokenPosition);
-        }
-
-        [TestMethod]
-        public void LastTokenPositionTest_Alt3()
-        {
-            var result = HumanReadableTimeParser.ParseTime("5:30pm .files");
-
-            var splitReason = "5:30pm .files".Split(' ').Skip((int)result.LastTokenPosition);
-            var reminderValue = string.Join(' ', splitReason);
-
-            System.Console.WriteLine(reminderValue);
-
-            Assert.AreEqual(1, result.LastTokenPosition);
-        }
 
         [TestMethod]
         public void Parse_With_Spaced_AM_PM()
@@ -149,16 +103,6 @@ namespace HumanTimeParserTests
             var expected = DateTime.Parse("5:30 PM");
 
             Assert.AreEqual(expected, result.DateTime);
-        }
-
-        [TestMethod]
-        public void Spaced_AM_PM_Last_Token_Pos()
-        {
-            var result = HumanReadableTimeParser.ParseTime("5:30 PM");
-
-            var expected = DateTime.Parse("5:30 PM");
-
-            Assert.AreEqual(2, result.LastTokenPosition);
         }
 
         //fails test becuase of implied am/pm parsing
@@ -194,7 +138,7 @@ namespace HumanTimeParserTests
         //change this test to an appropriate time on every run
         //could work on a solution by too lazy
         [TestMethod]
-        public void Test()
+        public void ImpliedAmPmTesting()
         {
             var result = HumanReadableTimeParser.ParseTime("7:00");
 
@@ -206,15 +150,10 @@ namespace HumanTimeParserTests
         [TestMethod]
         public void TomorrowTest()
         {
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
             var result = HumanReadableTimeParser.ParseTime("Tomorrow");
 
 
             var expected = DateTime.Now.AddDays(1);
-            stopwatch.Stop();
-
-            System.Console.WriteLine(stopwatch.Elapsed);
 
             //the following chunk of code checks to see if the two time values are "close enough"
             //execution time effects the final parsed time.  It is usually around a difference of 100 ticks or 10000 nano seconds
