@@ -31,7 +31,7 @@ namespace HumanTimeParser
             {
                 currentToken = tokenizer.NextToken();
 
-                //greedy parse
+                //potential greedy parse
                 if (currentToken.TokenType.HasFlag(TokenType.Number))
                 {
 
@@ -77,13 +77,14 @@ namespace HumanTimeParser
                         lastParsedTokenPos = currentToken.TokenPosition;
                     }
                 }
+                //potential greedy parse
                 else if (currentToken.TokenType.HasFlag(TokenType.TimeOfDay))
                 {
                     if (!parsedTypes.Contains(TokenType.TimeOfDay))
                     {
                         var parseStr = currentToken.Value;
                         string specifier = null;
-                        if (currentToken.Value.EndsWithAmPmSpecifier())
+                        if (currentToken.TokenType.HasFlag(TokenType.TwelveHourSpecifier))
                         {
                             specifier = parseStr.Substring(parseStr.Length - 2);
                             parseStr = parseStr.Substring(0, parseStr.Length - 2);
@@ -113,8 +114,6 @@ namespace HumanTimeParser
                             if (newTs >= startingTime.TimeOfDay)
                                 ts = newTs;
                         }
-
-
 
                         parsedTime = ts;
 
