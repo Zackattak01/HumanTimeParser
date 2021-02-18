@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
@@ -10,215 +11,120 @@ namespace HumanTimeParser
 {
     internal class Tokenizer
     {
-        private readonly string[] UnparsedTokens;
+        public const string DefaultSeparator = " ";
 
-        public DateTime? ProvidedDate { get; private set; }
+        private string[] unparsedTokens;
+        private int tokenIndex;
 
-        public DateTime? ProvidedTimeOfDay { get; private set; }
-
-        public double CurrentValue { get; private set; }
-
-        public int LastTokenPosition { get; private set; }
-        public int IndexOffsetFromTrue { get; private set; }
-
-        public TimeToken TimeToken { get; private set; }
-
-        private int index;
-
-
-
-        public Tokenizer(string input)
+        public Tokenizer(string input, string separator = null)
         {
-            ProvidedDate = null;
-            ProvidedTimeOfDay = null;
-
-            IndexOffsetFromTrue = 0;
-            index = -1;
-
-            UnparsedTokens = GetUnparsedTokens(input).ToArray();
-
-
-
+            unparsedTokens = SplitInput(input, separator ?? DefaultSeparator);
+            tokenIndex = -1;
         }
 
-        private IEnumerable<string> GetUnparsedTokens(string input)
+        private string[] SplitInput(string input, string separator)
+            => input.Split(separator);
+
+        private string GetNextUnparsedToken()
         {
-
-            string[] baseTokens = input.Split(' ');
-            List<string> tokens = new List<string>();
-
-            foreach (var baseToken in baseTokens)
-            {
-                if (baseToken.IsAmPmSpecifier() && tokens.Count > 0)
-                {
-                    string lastToken = tokens.Last();
-
-                    tokens.RemoveAt(tokens.Count - 1);
-
-                    //combine the spaced AM/PM specifier to the supposed date in the previous token
-                    //this is definetly a blind approach and will certainly lead to a bug or two in the future.
-                    tokens.Add(lastToken + baseToken);
-
-                    //decrease IndexOffsetFromTrue because were shortening the amount of tokens for parsing
-                    IndexOffsetFromTrue--;
-                    continue;
-                }
-                else if (baseToken.IsNumber() || DateTime.TryParse(baseToken, out var dateTime))
-                {
-                    tokens.Add(baseToken);
-                    continue;
-                }
-                else
-                {
-                    if (string.IsNullOrWhiteSpace(baseToken) || string.IsNullOrEmpty(baseToken))
-                        continue;
-
-
-                    int pos = 0;
-
-                    if (baseToken.ContainsNumber())
-                    {
-                        pos = baseToken.FirstNonNumberPos();
-                        //theoretically impossible
-                        if (pos == -1)
-                            throw new Exception("baseToken is a number?");
-
-
-                        if (pos != 0)
-                        {
-                            tokens.Add(baseToken.Substring(0, pos));
-                            IndexOffsetFromTrue++;
-                        }
-
-                    }
-                    tokens.Add(baseToken.Substring(pos));
-
-
-
-                }
-            }
-
-            return tokens;
-        }
-
-        private string NextUnparsedToken()
-        {
-            index++;
-
-            if (index >= UnparsedTokens.Length)
+            tokenIndex++;
+            if (tokenIndex >= unparsedTokens.Length)
                 return null;
 
-            //System.Console.WriteLine(UnparsedTokens[index]);
-            return UnparsedTokens[index];
+            return unparsedTokens[tokenIndex];
         }
 
-        public TimeToken NextToken()
+        public Token NextToken()
         {
+            string unparsedToken = GetNextUnparsedToken();
 
-            while (true)
+            if (unparsedToken == null)
+                return new Token(TokenType.END, -1, null);
+
+            if (double.TryParse(unparsedToken, out _))
+                return new Token(TokenType.Number, tokenIndex, unparsedToken);
+
+            if (TokenizeTimeAndTwelveHourSpecifer(unparsedToken) is { } givenTimeToken)
+                return givenTimeToken;
+
+            //tokenize given date
+            if (DateTime.TryParse(unparsedToken, out _))
+                return new Token(TokenType.Date, tokenIndex, unparsedToken);
+
+            if (TokenizeNumberAndRelativeTimeFormat(unparsedToken) is { } relativeTimeToken)
+                return relativeTimeToken;
+
+
+
+
+
+
+
+
+            if (unparsedToken.IsAmPmSpecifier())
+                return new Token(TokenType.TwelveHourSpecifier, tokenIndex, unparsedToken);
+
+            //if a token cant be parsed recurse until one is found
+            return NextToken();
+        }
+
+        public Token PeekNextToken()
+        {
+            var token = NextToken();
+            tokenIndex--;
+            return token;
+        }
+
+        private Token TokenizeNumberAndRelativeTimeFormat(string unparsedToken)
+        {
+            TokenType tokenType = TokenType.None;
+            int splitPos = unparsedToken.FirstNonNumberPos();
+            if (splitPos == -1)
+                return null;
+
+            var unparsedAbbreviation = unparsedToken.Substring(splitPos).ToLower();
+
+            foreach (var abbreviation in Constants.Abbreviations)
             {
-                string unparsed = NextUnparsedToken();
-
-                if (unparsed is null)
+                if (abbreviation.Value.Any(x => unparsedAbbreviation == x))
                 {
-                    TimeToken = TimeToken.END;
-                    return TimeToken;
-                }
-
-
-                if (double.TryParse(unparsed, out var doubleResult))
-                {
-                    LastTokenPosition = index;
-                    CurrentValue = doubleResult;
-                    TimeToken = TimeToken.Value;
-                    return TimeToken;
-                }
-
-                if (DateTime.TryParse(unparsed, out var dtResult))
-                {
-                    if (DateTime.Now.Date == dtResult.Date)
-                    {
-                        if (dtResult < DateTime.Now && !unparsed.ContainsAmPmSpecifier())
-                        {
-                            var impliedTime = dtResult.AddHours(12);
-                            if (impliedTime > DateTime.Now)
-                                dtResult = impliedTime;
-                        }
-
-                        LastTokenPosition = index;
-                        ProvidedTimeOfDay = dtResult;
-                        TimeToken = TimeToken.TimeOfDay;
-
-                        return TimeToken;
-                    }
-                    else
-                    {
-                        LastTokenPosition = index;
-                        ProvidedDate = dtResult;
-                        TimeToken = TimeToken.Date;
-                        return TimeToken;
-                    }
-
-                }
-
-                if (Constants.TomorrowAbbreviations.Any(x => x == unparsed.ToLower()))
-                {
-                    LastTokenPosition = index;
-                    ProvidedDate = DateTime.Now.AddDays(1);
-                    TimeToken = TimeToken.Date;
-                    return TimeToken;
-                }
-
-                if (unparsed == Constants.SecondAbbreviation || Constants.SecondAbbreviations.Any(x => x == unparsed.ToLower()))
-                {
-                    LastTokenPosition = index;
-                    TimeToken = TimeToken.Second;
-                    return TimeToken;
-                }
-
-                if (unparsed == Constants.MinuteAbbreviation || Constants.MinuteAbbreviations.Any(x => x == unparsed.ToLower()))
-                {
-                    LastTokenPosition = index;
-                    TimeToken = TimeToken.Minute;
-                    return TimeToken;
-                }
-
-                if (unparsed == Constants.HourAbbreviation || Constants.HourAbbreviations.Any(x => x == unparsed.ToLower()))
-                {
-                    LastTokenPosition = index;
-                    TimeToken = TimeToken.Hour;
-                    return TimeToken;
-                }
-
-                if (unparsed == Constants.DayAbbreviation || Constants.DayAbbreviations.Any(x => x == unparsed.ToLower()))
-                {
-                    LastTokenPosition = index;
-                    TimeToken = TimeToken.Day;
-                    return TimeToken;
-                }
-
-                if (unparsed == Constants.WeekAbbreviation || Constants.WeekAbbreviations.Any(x => x == unparsed.ToLower()))
-                {
-                    LastTokenPosition = index;
-                    TimeToken = TimeToken.Week;
-                    return TimeToken;
-                }
-
-                if (unparsed == Constants.MonthAbbreviation || Constants.MonthAbbreviations.Any(x => x == unparsed.ToLower()))
-                {
-                    LastTokenPosition = index;
-                    TimeToken = TimeToken.Month;
-                    return TimeToken;
-                }
-
-                if (unparsed == Constants.YearAbbreviation || Constants.YearAbbreviations.Any(x => x == unparsed.ToLower()))
-                {
-                    LastTokenPosition = index;
-                    TimeToken = TimeToken.Year;
-                    return TimeToken;
+                    tokenType = abbreviation.Key;
+                    break;
                 }
             }
 
+            if (tokenType == TokenType.None)
+                return null;
+
+            var containsNum = unparsedToken.ContainsNumber();
+
+            if (tokenType == TokenType.Tomorrow)
+                tokenType = tokenType | TokenType.Day | TokenType.Date;
+            else if (containsNum)
+                tokenType = tokenType | TokenType.Number;
+
+
+
+            return new Token(tokenType, tokenIndex, containsNum ? unparsedToken.Substring(0, unparsedToken.FirstNonNumberPos()) : null);
+        }
+
+        private Token TokenizeTimeAndTwelveHourSpecifer(string unparsedToken)
+        {
+            string parseStr = unparsedToken;
+            TokenType tokenType = TokenType.TimeOfDay;
+            if (unparsedToken.EndsWithAmPmSpecifier())
+            {
+                //subtract 2 because am and pm are only two chars long
+                parseStr = unparsedToken.Substring(0, unparsedToken.Length - 2);
+                tokenType = tokenType | TokenType.TwelveHourSpecifier;
+            }
+
+            if (TimeSpan.TryParse(parseStr, out _))
+            {
+                return new Token(tokenType, tokenIndex, unparsedToken);
+            }
+            else
+                return null;
         }
     }
 }
