@@ -128,6 +128,7 @@ namespace HumanTimeParser
                         var func = ParseDayOfWeek(currentToken.Value);
                         relativeTimeFunctions.Add(func);
 
+                        lastParsedTokenPos = currentToken.TokenPosition;
                         parsedTypes.Add(TokenType.DayOfWeek);
                         parsedTypes.Add(TokenType.Date);
                         parsedTypes.Add(TokenType.Day);
