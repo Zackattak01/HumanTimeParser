@@ -54,12 +54,8 @@ namespace HumanTimeParser
             if (TokenizeNumberAndRelativeTimeFormat(unparsedToken) is { } relativeTimeToken)
                 return relativeTimeToken;
 
-
-
-
-
-
-
+            if (TokenizeDayOfWeek(unparsedToken) is { } dayOfWeekToken)
+                return dayOfWeekToken;
 
             if (unparsedToken.IsAmPmSpecifier())
                 return new Token(TokenType.TwelveHourSpecifier, tokenIndex, unparsedToken);
@@ -84,7 +80,7 @@ namespace HumanTimeParser
 
             var unparsedAbbreviation = unparsedToken.Substring(splitPos).ToLower();
 
-            foreach (var abbreviation in Constants.Abbreviations)
+            foreach (var abbreviation in Constants.RelativeTimeAbbreviations)
             {
                 if (abbreviation.Value.Any(x => unparsedAbbreviation == x))
                 {
@@ -125,6 +121,19 @@ namespace HumanTimeParser
             }
             else
                 return null;
+        }
+
+        private Token TokenizeDayOfWeek(string unparsedToken)
+        {
+            foreach (var abbreviation in Constants.WeekdayAbbreviations)
+            {
+                if (abbreviation.Value.Any(x => unparsedToken.ToLower() == x))
+                {
+                    return new Token(TokenType.DayOfWeek, tokenIndex, unparsedToken);
+                }
+            }
+
+            return null;
         }
     }
 }

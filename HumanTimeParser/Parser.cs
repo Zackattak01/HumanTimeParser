@@ -121,13 +121,21 @@ namespace HumanTimeParser
                         parsedTypes.Add(TokenType.TimeOfDay);
                     }
                 }
+                else if (currentToken.TokenType.HasFlag(TokenType.DayOfWeek))
+                {
+                    if (!parsedTypes.Contains(TokenType.DayOfWeek) && !parsedTypes.Contains(TokenType.Date) && !parsedTypes.Contains(TokenType.Day))
+                    {
+                        var func = ParseDayOfWeek(currentToken.Value);
+                        relativeTimeFunctions.Add(func);
 
+                        parsedTypes.Add(TokenType.DayOfWeek);
+                        parsedTypes.Add(TokenType.Date);
+                        parsedTypes.Add(TokenType.Day);
+                    }
+                }
             } while (currentToken.TokenType != TokenType.END);
 
             LastTokenPosition = lastParsedTokenPos + 1;
-
-
-
 
             //parsedDate = parsedDate.Add(parsedTime);
 
@@ -158,6 +166,28 @@ namespace HumanTimeParser
                 return (x) => x.AddYears((int)number);
             else
                 return null;
+        }
+
+        private Func<DateTime, DateTime> ParseDayOfWeek(string unparsedDay)
+        {
+            foreach (var abbreviation in Constants.WeekdayAbbreviations)
+            {
+                if (abbreviation.Value.Any(x => unparsedDay.ToLower() == x))
+                {
+                    DayOfWeek specifiedDay = abbreviation.Key;
+                    DayOfWeek today = DateTime.Now.DayOfWeek;
+
+                    int difference = specifiedDay - today;
+
+                    //assume "next monday" is implied
+                    if (difference <= 0)
+                        difference += 7;
+
+                    return (x) => x.AddDays(difference);
+                }
+            }
+
+            throw new ArgumentException("Did not match any known day", nameof(unparsedDay));
         }
 
         private DateTime ConstructDateTime(DateTime startingDate,
