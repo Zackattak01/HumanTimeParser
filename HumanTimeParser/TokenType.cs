@@ -18,6 +18,7 @@ namespace HumanTimeParser
         TimeOfDay = 1 << 9,
         Date = 1 << 10,
         Tomorrow = 1 << 11,
-        TwelveHourSpecifier = 1 << 12
+        TwelveHourSpecifier = 1 << 12,
+        DayOfWeek = 1 << 13
     }
 }
