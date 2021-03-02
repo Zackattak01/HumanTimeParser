@@ -168,9 +168,10 @@ namespace HumanTimeParser
 
         private Func<DateTime, DateTime> ParseDayOfWeek(string unparsedDay)
         {
+            var lowerCase = unparsedDay.ToLower();
             foreach (var abbreviation in Constants.WeekdayAbbreviations)
             {
-                if (abbreviation.Value.Any(x => unparsedDay.ToLower() == x))
+                if (abbreviation.Value.Contains(lowerCase))
                 {
                     DayOfWeek specifiedDay = abbreviation.Key;
                     DayOfWeek today = DateTime.Now.DayOfWeek;
