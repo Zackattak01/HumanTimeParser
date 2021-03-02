@@ -1,8 +1,6 @@
 using System;
-using System.Runtime.Serialization;
-using System.Security;
 
-namespace Name
+namespace HumanTimeParser
 {
     public static class StringExtensions
     {
