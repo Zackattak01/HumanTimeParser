@@ -1,10 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using HumanTimeParser;
-using System;
-using System.Reflection;
-using System.Linq;
-using Name;
-using System.Diagnostics;
 
 namespace HumanTimeParserTests
 {
