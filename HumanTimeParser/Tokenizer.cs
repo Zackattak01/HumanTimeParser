@@ -125,9 +125,14 @@ namespace HumanTimeParser
 
         private Token TokenizeDayOfWeek(string unparsedToken)
         {
+            var lowerCase = unparsedToken.ToLower();
             foreach (var abbreviation in Constants.WeekdayAbbreviations)
             {
-                if (abbreviation.Value.Any(x => unparsedToken.ToLower() == x))
+                // if (abbreviation.Value.Any(x => unparsedToken.ToLower() == x))
+                // {
+                //     return new Token(TokenType.DayOfWeek, tokenIndex, unparsedToken);
+                // }
+                if (abbreviation.Value.Contains(lowerCase))
                 {
                     return new Token(TokenType.DayOfWeek, tokenIndex, unparsedToken);
                 }
