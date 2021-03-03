@@ -5,23 +5,23 @@ namespace HumanTimeParser
 {
     internal class Constants
     {
-        public static readonly IReadOnlyList<string> TomorrowAbbreviations = new List<string> { "tmr", "tomorrow" };
-        public static readonly IReadOnlyList<string> SecondAbbreviations = new List<string> { "s", "sec", "secs", "second", "seconds" };
-        public static readonly IReadOnlyList<string> MinuteAbbreviations = new List<string> { "m", "min", "mins", "minute", "minutes" };
-        public static readonly IReadOnlyList<string> HourAbbreviations = new List<string> { "h", "hr", "hrs", "hour", "hours" };
-        public static readonly IReadOnlyList<string> DayAbbreviations = new List<string> { "d", "ds", "day", "days" };
-        public static readonly IReadOnlyList<string> WeekAbbreviations = new List<string> { "w", "ws", "week", "weeks" };
-        public static readonly IReadOnlyList<string> MonthAbbreviations = new List<string> { "mth", "month", "months" };
-        public static readonly IReadOnlyList<string> YearAbbreviations = new List<string> { "y", "ys", "yr", "yrs", "year", "years" };
-        public static readonly IReadOnlyList<string> MondayAbbreviations = new List<string> { "mon", "monday" };
-        public static readonly IReadOnlyList<string> TuesdayAbbreviations = new List<string> { "tue", "tuesday" };
-        public static readonly IReadOnlyList<string> WednesdayAbbreviations = new List<string> { "wed", "wednesday" };
-        public static readonly IReadOnlyList<string> ThursdayAbbreviations = new List<string> { "thu", "thursday" };
-        public static readonly IReadOnlyList<string> FridayAbbreviations = new List<string> { "fri", "friday" };
-        public static readonly IReadOnlyList<string> SaturdayAbbreviations = new List<string> { "sat", "saturday" };
-        public static readonly IReadOnlyList<string> SundayAbbreviations = new List<string> { "sun", "sunday" };
+        public static readonly IReadOnlySet<string> TomorrowAbbreviations = new HashSet<string> { "tmr", "tomorrow" };
+        public static readonly IReadOnlySet<string> SecondAbbreviations = new HashSet<string> { "s", "sec", "secs", "second", "seconds" };
+        public static readonly IReadOnlySet<string> MinuteAbbreviations = new HashSet<string> { "m", "min", "mins", "minute", "minutes" };
+        public static readonly IReadOnlySet<string> HourAbbreviations = new HashSet<string> { "h", "hr", "hrs", "hour", "hours" };
+        public static readonly IReadOnlySet<string> DayAbbreviations = new HashSet<string> { "d", "ds", "day", "days" };
+        public static readonly IReadOnlySet<string> WeekAbbreviations = new HashSet<string> { "w", "ws", "week", "weeks" };
+        public static readonly IReadOnlySet<string> MonthAbbreviations = new HashSet<string> { "mth", "month", "months" };
+        public static readonly IReadOnlySet<string> YearAbbreviations = new HashSet<string> { "y", "ys", "yr", "yrs", "year", "years" };
+        public static readonly IReadOnlySet<string> MondayAbbreviations = new HashSet<string> { "mon", "monday" };
+        public static readonly IReadOnlySet<string> TuesdayAbbreviations = new HashSet<string> { "tue", "tuesday" };
+        public static readonly IReadOnlySet<string> WednesdayAbbreviations = new HashSet<string> { "wed", "wednesday" };
+        public static readonly IReadOnlySet<string> ThursdayAbbreviations = new HashSet<string> { "thu", "thursday" };
+        public static readonly IReadOnlySet<string> FridayAbbreviations = new HashSet<string> { "fri", "friday" };
+        public static readonly IReadOnlySet<string> SaturdayAbbreviations = new HashSet<string> { "sat", "saturday" };
+        public static readonly IReadOnlySet<string> SundayAbbreviations = new HashSet<string> { "sun", "sunday" };
 
-        public static readonly IReadOnlyDictionary<TokenType, IReadOnlyList<string>> RelativeTimeAbbreviations = new Dictionary<TokenType, IReadOnlyList<string>>{
+        public static readonly IReadOnlyDictionary<TokenType, IReadOnlySet<string>> RelativeTimeAbbreviations = new Dictionary<TokenType, IReadOnlySet<string>>{
         {TokenType.Tomorrow, TomorrowAbbreviations},
         {TokenType.Second, SecondAbbreviations},
         {TokenType.Minute, MinuteAbbreviations},
@@ -31,7 +31,7 @@ namespace HumanTimeParser
         {TokenType.Month, MonthAbbreviations},
         {TokenType.Year, YearAbbreviations} };
 
-        public static readonly IReadOnlyDictionary<DayOfWeek, IReadOnlyList<string>> WeekdayAbbreviations = new Dictionary<DayOfWeek, IReadOnlyList<string>>{
+        public static readonly IReadOnlyDictionary<DayOfWeek, IReadOnlySet<string>> WeekdayAbbreviations = new Dictionary<DayOfWeek, IReadOnlySet<string>>{
         {DayOfWeek.Monday, MondayAbbreviations},
         {DayOfWeek.Tuesday, TuesdayAbbreviations},
         {DayOfWeek.Wednesday, WednesdayAbbreviations},

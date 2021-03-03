@@ -76,7 +76,13 @@ namespace HumanTimeParser
 
             foreach (var abbreviation in Constants.RelativeTimeAbbreviations)
             {
-                if (abbreviation.Value.Any(x => unparsedAbbreviation == x))
+                // if (abbreviation.Value.Any(x => unparsedAbbreviation == x))
+                // {
+                //     tokenType = abbreviation.Key;
+                //     break;
+                // }
+
+                if (abbreviation.Value.Contains(unparsedAbbreviation))
                 {
                     tokenType = abbreviation.Key;
                     break;
@@ -119,9 +125,14 @@ namespace HumanTimeParser
 
         private Token TokenizeDayOfWeek(string unparsedToken)
         {
+            var lowerCase = unparsedToken.ToLower();
             foreach (var abbreviation in Constants.WeekdayAbbreviations)
             {
-                if (abbreviation.Value.Any(x => unparsedToken.ToLower() == x))
+                // if (abbreviation.Value.Any(x => unparsedToken.ToLower() == x))
+                // {
+                //     return new Token(TokenType.DayOfWeek, tokenIndex, unparsedToken);
+                // }
+                if (abbreviation.Value.Contains(lowerCase))
                 {
                     return new Token(TokenType.DayOfWeek, tokenIndex, unparsedToken);
                 }
