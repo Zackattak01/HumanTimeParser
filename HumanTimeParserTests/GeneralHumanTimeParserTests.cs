@@ -118,16 +118,16 @@ namespace HumanTimeParserTests
 
         //change this test to an appropriate time on every run
         //could work on a solution but too lazy
-        [TestMethod]
-        public void ImpliedAmPmTesting()
-        {
-            var result = HumanReadableTimeParser.ParseTime("7:00");
+        // [TestMethod]
+        // public void ImpliedAmPmTesting()
+        // {
+        //     var result = HumanReadableTimeParser.ParseTime("7:00");
 
-            var expected = DateTime.Parse("7:00 PM");
+        //     var expected = DateTime.Parse("7:00 PM");
 
-            Assert.AreEqual(expected, result.DateTime);
+        //     Assert.AreEqual(expected, result.DateTime);
 
-        }
+        // }
         [TestMethod]
         public void TomorrowTest()
         {
