@@ -1,5 +1,8 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection.Metadata.Ecma335;
 
 namespace HumanTimeParser
 {
@@ -28,13 +31,32 @@ namespace HumanTimeParser
 
         public static bool EndsWithAmPmSpecifier(this ReadOnlySpan<char> input)
         {
-            Span<char> lowerCaseSpan = new char[input.Length].AsSpan();
-            input.ToLower(lowerCaseSpan, CultureInfo.CurrentCulture);
+            if (!(input.Length >= 2))
+                return false;
+
+            var abbreviation = input.Slice(input.Length - 2);
             //TODO: performace impact of hardcoding the specifiers as strings?
-            if (lowerCaseSpan.EndsWith("am".AsSpan()) || lowerCaseSpan.EndsWith("pm".AsSpan()))
+            if (abbreviation.Equals("am", StringComparison.OrdinalIgnoreCase) || abbreviation.Equals("pm", StringComparison.OrdinalIgnoreCase))
                 return true;
             else
                 return false;
         }
+
+        public static bool Contains(this IEnumerable<string> input, ReadOnlySpan<char> item, StringComparison comparison)
+        {
+            var enumerator = input.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                if (enumerator.Current.Length != item.Length)
+                    continue;
+
+
+                if (MemoryExtensions.Equals(enumerator.Current, item, comparison))
+                    return true;
+
+            }
+            return false;
+        }
+
     }
 }

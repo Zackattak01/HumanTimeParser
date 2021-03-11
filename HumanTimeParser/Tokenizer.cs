@@ -74,13 +74,13 @@ namespace HumanTimeParser
             if (splitPos == -1)
                 return null;
 
-            Span<char> unparsedAbbreviation = new char[unparsedToken.Length - splitPos].AsSpan();
-            unparsedToken.Slice(splitPos).ToLower(unparsedAbbreviation, CultureInfo.CurrentCulture);
+            //Span<char> unparsedAbbreviation = new char[unparsedToken.Length - splitPos].AsSpan();
+            var unparsedAbbreviation = unparsedToken.Slice(splitPos);//.ToLower(unparsedAbbreviation, CultureInfo.CurrentCulture);
 
             foreach (var abbreviation in Constants.RelativeTimeAbbreviations)
             {
                 //TODO: see if there is a way to avoid allocating a string here
-                if (abbreviation.Value.Contains(unparsedAbbreviation.ToString()))
+                if (abbreviation.Value.Contains(unparsedAbbreviation, StringComparison.OrdinalIgnoreCase))
                 {
                     tokenType = abbreviation.Key;
                     break;
@@ -124,15 +124,16 @@ namespace HumanTimeParser
         private Token TokenizeDayOfWeek(ReadOnlySpan<char> unparsedToken)
         {
             // var lowerCase = unparsedToken.ToLower();
-            Span<char> lowerCaseToken = new char[unparsedToken.Length].AsSpan();
-            unparsedToken.ToLower(lowerCaseToken, CultureInfo.CurrentCulture);
+            //Span<char> lowerCaseToken = new char[unparsedToken.Length].AsSpan();
+            //unparsedToken.ToLower(lowerCaseToken, CultureInfo.CurrentCulture);
+            var comparer = StringComparer.OrdinalIgnoreCase;
             foreach (var abbreviation in Constants.WeekdayAbbreviations)
             {
                 //TODO: Find a way to avoid string allocation here
-                var token = lowerCaseToken.ToString();
-                if (abbreviation.Value.Contains(token))
+                if (abbreviation.Value.Contains(unparsedToken, StringComparison.OrdinalIgnoreCase))
+                //if (abbreviation.Value.Contains(unparsedToken.ToString(), comparer))
                 {
-                    return new Token(TokenType.DayOfWeek, tokenIndex, token);
+                    return new Token(TokenType.DayOfWeek, tokenIndex, unparsedToken.ToString());
                 }
             }
 
