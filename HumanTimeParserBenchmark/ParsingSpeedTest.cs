@@ -4,6 +4,7 @@ using HumanTimeParser;
 
 namespace HumanTimeParserBenchmark
 {
+    [MemoryDiagnoser]
     public class ParsingSpeedTest
     {
         //toddler
