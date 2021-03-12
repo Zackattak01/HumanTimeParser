@@ -79,7 +79,7 @@ namespace HumanTimeParser
 
             foreach (var abbreviation in Constants.RelativeTimeAbbreviations)
             {
-                if (abbreviation.Value.Contains(comparisonString))
+                if (abbreviation.Value.Contains(unparsedAbbreviation.ToString()))
                 {
                     tokenType = abbreviation.Key;
                     break;

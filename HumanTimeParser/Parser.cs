@@ -172,7 +172,7 @@ namespace HumanTimeParser
             DayOfWeek today = DateTime.Now.DayOfWeek;
             foreach (var abbreviation in Constants.WeekdayAbbreviations)
             {
-                if (abbreviation.Value.Contains(unparsedDay, StringComparer.OrdinalIgnoreCase))
+                if (abbreviation.Value.Contains(unparsedDay))
                 {
                     DayOfWeek specifiedDay = abbreviation.Key;
 
