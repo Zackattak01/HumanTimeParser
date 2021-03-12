@@ -1,13 +1,9 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Reflection.Metadata.Ecma335;
 using BenchmarkDotNet.Attributes;
 using HumanTimeParser;
 
 namespace HumanTimeParserBenchmark
 {
-    [MemoryDiagnoser]
     public class ParsingSpeedTest
     {
         //toddler
