@@ -50,7 +50,7 @@ namespace HumanTimeParser
             if (TokenizeNumberAndRelativeTimeFormat(unparsedSpan, unparsedToken) is { } relativeTimeToken)
                 return relativeTimeToken;
 
-            if (TokenizeDayOfWeek(unparsedSpan, unparsedToken) is { } dayOfWeekToken)
+            if (TokenizeDayOfWeek(unparsedToken) is { } dayOfWeekToken)
                 return dayOfWeekToken;
 
             if (unparsedToken.IsAmPmSpecifier())
@@ -71,16 +71,14 @@ namespace HumanTimeParser
         private Token TokenizeNumberAndRelativeTimeFormat(ReadOnlySpan<char> unparsedToken, string comparisonString)
         {
             TokenType tokenType = TokenType.None;
-            int splitPos = unparsedToken.FirstNonNumberPos();
+            int splitPos = comparisonString.FirstNonNumberPos();
             if (splitPos == -1)
                 return null;
 
-            //Span<char> unparsedAbbreviation = new char[unparsedToken.Length - splitPos].AsSpan();
-            var unparsedAbbreviation = unparsedToken.Slice(splitPos);//.ToLower(unparsedAbbreviation, CultureInfo.CurrentCulture);
+            var unparsedAbbreviation = unparsedToken.Slice(splitPos);
 
             foreach (var abbreviation in Constants.RelativeTimeAbbreviations)
             {
-                //TODO: see if there is a way to avoid allocating a string here
                 if (abbreviation.Value.Contains(comparisonString))
                 {
                     tokenType = abbreviation.Key;
@@ -91,7 +89,7 @@ namespace HumanTimeParser
             if (tokenType == TokenType.None)
                 return null;
 
-            var containsNum = unparsedToken.ContainsNumber();
+            var containsNum = comparisonString.ContainsNumber();
 
             if (tokenType == TokenType.Tomorrow)
                 tokenType = tokenType | TokenType.Day | TokenType.Date;
@@ -123,16 +121,11 @@ namespace HumanTimeParser
         }
 
         //include a str obj to avoid allocing a new one.  We already have one so might as well use it.
-        private Token TokenizeDayOfWeek(ReadOnlySpan<char> unparsedToken, string comparisonString)
+        private Token TokenizeDayOfWeek(string comparisonString)
         {
-            // var lowerCase = unparsedToken.ToLower();
-            //Span<char> lowerCaseToken = new char[unparsedToken.Length].AsSpan();
-            //unparsedToken.ToLower(lowerCaseToken, CultureInfo.CurrentCulture);
             foreach (var abbreviation in Constants.WeekdayAbbreviations)
             {
-                //TODO: Find a way to avoid string allocation here
                 if (abbreviation.Value.Contains(comparisonString))
-                //if (abbreviation.Value.Contains(unparsedToken.ToString(), comparer))
                 {
                     return new Token(TokenType.DayOfWeek, tokenIndex, comparisonString);
                 }
