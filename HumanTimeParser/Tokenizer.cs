@@ -99,7 +99,7 @@ namespace HumanTimeParser
 
 
 
-            return new Token(tokenType, tokenIndex, containsNum ? unparsedToken.Slice(0, unparsedToken.FirstNonNumberPos()).ToString() : null);
+            return new Token(tokenType, tokenIndex, containsNum ? unparsedToken.Slice(0, splitPos).ToString() : null);
         }
 
         private Token TokenizeTimeAndTwelveHourSpecifer(ReadOnlySpan<char> unparsedToken)
