@@ -4,20 +4,6 @@ namespace HumanTimeParser
 {
     public static class StringExtensions
     {
-        // public static bool IsNumber(this string str)
-        // {
-        //     char[] chars = str.ToCharArray();
-
-        //     foreach (var c in chars)
-        //     {
-        //         if (!char.IsDigit(c) && !char.IsPunctuation(c))
-        //             return false;
-
-
-        //     }
-
-        //     return true;
-        // }
 
         public static int FirstNonNumberPos(this string str)
         {
