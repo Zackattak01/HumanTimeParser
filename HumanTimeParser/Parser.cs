@@ -79,18 +79,18 @@ namespace HumanTimeParser
                 {
                     if (!parsedTypes.Contains(TokenType.TimeOfDay))
                     {
-                        var parseStr = currentToken.Value;
-                        string specifier = null;
+                        var parseSpan = currentToken.Value.AsSpan();
+                        ReadOnlySpan<char> specifier = ReadOnlySpan<char>.Empty;
                         if (currentToken.TokenType.HasFlag(TokenType.TwelveHourSpecifier))
                         {
-                            specifier = parseStr.Substring(parseStr.Length - 2);
-                            parseStr = parseStr.Substring(0, parseStr.Length - 2);
+                            specifier = parseSpan.Slice(parseSpan.Length - 2);
+                            parseSpan = parseSpan.Slice(0, parseSpan.Length - 2);
                         }
 
-                        var ts = TimeSpan.Parse(parseStr);
+                        var ts = TimeSpan.Parse(parseSpan);
 
                         //attempt to fill specifier
-                        if (specifier is null)
+                        if (specifier == ReadOnlySpan<char>.Empty)
                         {
                             var token = tokenizer.PeekNextToken();
 
@@ -102,9 +102,9 @@ namespace HumanTimeParser
                         }
 
                         //specifier may still be null. fail quietely
-                        if (specifier?.ToLower() == "pm")
+                        if (specifier.Equals("pm", StringComparison.OrdinalIgnoreCase))
                             ts = ts.Add(new TimeSpan(12, 0, 0));
-                        else if (ts < startingTime.TimeOfDay && specifier is null)
+                        else if (ts < startingTime.TimeOfDay && specifier == ReadOnlySpan<char>.Empty)
                         {
                             var newTs = ts.Add(new TimeSpan(12, 0, 0));
 
@@ -168,13 +168,13 @@ namespace HumanTimeParser
 
         private Func<DateTime, DateTime> ParseDayOfWeek(string unparsedDay)
         {
-            var lowerCase = unparsedDay.ToLower();
+            //var lowerCase = unparsedDay.ToLower();
+            DayOfWeek today = DateTime.Now.DayOfWeek;
             foreach (var abbreviation in Constants.WeekdayAbbreviations)
             {
-                if (abbreviation.Value.Contains(lowerCase))
+                if (abbreviation.Value.Contains(unparsedDay, StringComparer.OrdinalIgnoreCase))
                 {
                     DayOfWeek specifiedDay = abbreviation.Key;
-                    DayOfWeek today = DateTime.Now.DayOfWeek;
 
                     int difference = specifiedDay - today;
 
