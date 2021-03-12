@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 
 namespace HumanTimeParser
@@ -41,22 +42,5 @@ namespace HumanTimeParser
             else
                 return false;
         }
-
-        public static bool Contains(this IEnumerable<string> input, ReadOnlySpan<char> item, StringComparison comparison)
-        {
-            var enumerator = input.GetEnumerator();
-            while (enumerator.MoveNext())
-            {
-                if (enumerator.Current.Length != item.Length)
-                    continue;
-
-
-                if (MemoryExtensions.Equals(enumerator.Current, item, comparison))
-                    return true;
-
-            }
-            return false;
-        }
-
     }
 }

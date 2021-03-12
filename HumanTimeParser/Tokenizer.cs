@@ -40,17 +40,17 @@ namespace HumanTimeParser
             if (double.TryParse(unparsedSpan, out _))
                 return new Token(TokenType.Number, tokenIndex, unparsedToken);
 
-            if (TokenizeTimeAndTwelveHourSpecifer(unparsedSpan) is { } givenTimeToken)
+            if (TokenizeTimeAndTwelveHourSpecifer(unparsedSpan, unparsedToken) is { } givenTimeToken)
                 return givenTimeToken;
 
             //tokenize given date
             if (DateTime.TryParse(unparsedSpan, out _))
                 return new Token(TokenType.Date, tokenIndex, unparsedToken);
 
-            if (TokenizeNumberAndRelativeTimeFormat(unparsedSpan) is { } relativeTimeToken)
+            if (TokenizeNumberAndRelativeTimeFormat(unparsedSpan, unparsedToken) is { } relativeTimeToken)
                 return relativeTimeToken;
 
-            if (TokenizeDayOfWeek(unparsedSpan) is { } dayOfWeekToken)
+            if (TokenizeDayOfWeek(unparsedSpan, unparsedToken) is { } dayOfWeekToken)
                 return dayOfWeekToken;
 
             if (unparsedToken.IsAmPmSpecifier())
@@ -67,7 +67,8 @@ namespace HumanTimeParser
             return token;
         }
 
-        private Token TokenizeNumberAndRelativeTimeFormat(ReadOnlySpan<char> unparsedToken)
+        //include a str obj to avoid allocing a new one.  We already have one so might as well use it.
+        private Token TokenizeNumberAndRelativeTimeFormat(ReadOnlySpan<char> unparsedToken, string comparisonString)
         {
             TokenType tokenType = TokenType.None;
             int splitPos = unparsedToken.FirstNonNumberPos();
@@ -80,7 +81,7 @@ namespace HumanTimeParser
             foreach (var abbreviation in Constants.RelativeTimeAbbreviations)
             {
                 //TODO: see if there is a way to avoid allocating a string here
-                if (abbreviation.Value.Contains(unparsedAbbreviation, StringComparison.OrdinalIgnoreCase))
+                if (abbreviation.Value.Contains(comparisonString))
                 {
                     tokenType = abbreviation.Key;
                     break;
@@ -102,7 +103,7 @@ namespace HumanTimeParser
             return new Token(tokenType, tokenIndex, containsNum ? unparsedToken.Slice(0, splitPos).ToString() : null);
         }
 
-        private Token TokenizeTimeAndTwelveHourSpecifer(ReadOnlySpan<char> unparsedToken)
+        private Token TokenizeTimeAndTwelveHourSpecifer(ReadOnlySpan<char> unparsedToken, string returnString)
         {
             ReadOnlySpan<char> parseSpan = unparsedToken;
             TokenType tokenType = TokenType.TimeOfDay;
@@ -115,25 +116,25 @@ namespace HumanTimeParser
 
             if (TimeSpan.TryParse(parseSpan, out _))
             {
-                return new Token(tokenType, tokenIndex, unparsedToken.ToString());
+                return new Token(tokenType, tokenIndex, returnString);
             }
             else
                 return null;
         }
 
-        private Token TokenizeDayOfWeek(ReadOnlySpan<char> unparsedToken)
+        //include a str obj to avoid allocing a new one.  We already have one so might as well use it.
+        private Token TokenizeDayOfWeek(ReadOnlySpan<char> unparsedToken, string comparisonString)
         {
             // var lowerCase = unparsedToken.ToLower();
             //Span<char> lowerCaseToken = new char[unparsedToken.Length].AsSpan();
             //unparsedToken.ToLower(lowerCaseToken, CultureInfo.CurrentCulture);
-            var comparer = StringComparer.OrdinalIgnoreCase;
             foreach (var abbreviation in Constants.WeekdayAbbreviations)
             {
                 //TODO: Find a way to avoid string allocation here
-                if (abbreviation.Value.Contains(unparsedToken, StringComparison.OrdinalIgnoreCase))
+                if (abbreviation.Value.Contains(comparisonString))
                 //if (abbreviation.Value.Contains(unparsedToken.ToString(), comparer))
                 {
-                    return new Token(TokenType.DayOfWeek, tokenIndex, unparsedToken.ToString());
+                    return new Token(TokenType.DayOfWeek, tokenIndex, comparisonString);
                 }
             }
 
