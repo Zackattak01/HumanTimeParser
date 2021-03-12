@@ -35,14 +35,5 @@ namespace HumanTimeParser
             else
                 return false;
         }
-
-        public static bool EndsWithAmPmSpecifier(this string str)
-        {
-            string lowerCase = str.ToLower();
-            if (lowerCase.EndsWith("am") || lowerCase.EndsWith("pm"))
-                return true;
-            else
-                return false;
-        }
     }
 }

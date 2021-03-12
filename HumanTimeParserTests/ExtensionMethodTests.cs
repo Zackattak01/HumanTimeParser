@@ -27,9 +27,9 @@ namespace HumanTimeParserTests
         [TestMethod]
         public void First_Non_Number_Pos_Test()
         {
-            var result = "5:f30".AsSpan().FirstNonNumberPos();
-            var result2 = "a5:30pm".AsSpan().FirstNonNumberPos();
-            var result3 = "5:30 a".AsSpan().FirstNonNumberPos();
+            var result = "5:f30".FirstNonNumberPos();
+            var result2 = "a5:30pm".FirstNonNumberPos();
+            var result3 = "5:30 a".FirstNonNumberPos();
 
             var expected = 2;
             var expected2 = 0;
@@ -43,9 +43,9 @@ namespace HumanTimeParserTests
         [TestMethod]
         public void Contains_Number_Test()
         {
-            var result = "gdfs2dasa".AsSpan().ContainsNumber();
-            var result2 = "".AsSpan().ContainsNumber();
-            var result3 = "wiodsfk".AsSpan().ContainsNumber();
+            var result = "gdfs2dasa".ContainsNumber();
+            var result2 = "".ContainsNumber();
+            var result3 = "wiodsfk".ContainsNumber();
 
             var expected = true;
             var expected2 = false;
