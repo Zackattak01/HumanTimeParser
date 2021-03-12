@@ -4,20 +4,20 @@ namespace HumanTimeParser
 {
     public static class StringExtensions
     {
-        public static bool IsNumber(this string str)
-        {
-            char[] chars = str.ToCharArray();
+        // public static bool IsNumber(this string str)
+        // {
+        //     char[] chars = str.ToCharArray();
 
-            foreach (var c in chars)
-            {
-                if (!char.IsDigit(c) && !char.IsPunctuation(c))
-                    return false;
+        //     foreach (var c in chars)
+        //     {
+        //         if (!char.IsDigit(c) && !char.IsPunctuation(c))
+        //             return false;
 
 
-            }
+        //     }
 
-            return true;
-        }
+        //     return true;
+        // }
 
         public static int FirstNonNumberPos(this string str)
         {
@@ -44,8 +44,7 @@ namespace HumanTimeParser
 
         public static bool IsAmPmSpecifier(this string str)
         {
-            string lowerCase = str.ToLower();
-            if (lowerCase == "am" || lowerCase == "pm")
+            if (str.Equals("am", StringComparison.OrdinalIgnoreCase) || str.Equals("pm", StringComparison.OrdinalIgnoreCase))
                 return true;
             else
                 return false;
