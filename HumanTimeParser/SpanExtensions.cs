@@ -42,5 +42,13 @@ namespace HumanTimeParser
             else
                 return false;
         }
+
+        // public static bool IsAmPmSpecifier(this ReadOnlySpan<char> str)
+        // {
+        //     if (str.Equals("am", StringComparison.OrdinalIgnoreCase) || str.Equals("pm", StringComparison.OrdinalIgnoreCase))
+        //         return true;
+        //     else
+        //         return false;
+        // }
     }
 }
