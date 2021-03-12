@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Linq;
 
 namespace HumanTimeParser
@@ -31,21 +32,22 @@ namespace HumanTimeParser
         public Token NextToken()
         {
             string unparsedToken = GetNextUnparsedToken();
+            ReadOnlySpan<char> unparsedSpan = unparsedToken.AsSpan();
 
             if (unparsedToken == null)
                 return new Token(TokenType.END, -1, null);
 
-            if (double.TryParse(unparsedToken, out _))
+            if (double.TryParse(unparsedSpan, out _))
                 return new Token(TokenType.Number, tokenIndex, unparsedToken);
 
-            if (TokenizeTimeAndTwelveHourSpecifer(unparsedToken) is { } givenTimeToken)
+            if (TokenizeTimeAndTwelveHourSpecifer(unparsedSpan, unparsedToken) is { } givenTimeToken)
                 return givenTimeToken;
 
             //tokenize given date
-            if (DateTime.TryParse(unparsedToken, out _))
+            if (DateTime.TryParse(unparsedSpan, out _))
                 return new Token(TokenType.Date, tokenIndex, unparsedToken);
 
-            if (TokenizeNumberAndRelativeTimeFormat(unparsedToken) is { } relativeTimeToken)
+            if (TokenizeNumberAndRelativeTimeFormat(unparsedSpan, unparsedToken) is { } relativeTimeToken)
                 return relativeTimeToken;
 
             if (TokenizeDayOfWeek(unparsedToken) is { } dayOfWeekToken)
@@ -65,24 +67,19 @@ namespace HumanTimeParser
             return token;
         }
 
-        private Token TokenizeNumberAndRelativeTimeFormat(string unparsedToken)
+        //include a str obj to avoid allocing a new one.  We already have one so might as well use it.
+        private Token TokenizeNumberAndRelativeTimeFormat(ReadOnlySpan<char> unparsedToken, string comparisonString)
         {
             TokenType tokenType = TokenType.None;
-            int splitPos = unparsedToken.FirstNonNumberPos();
+            int splitPos = comparisonString.FirstNonNumberPos();
             if (splitPos == -1)
                 return null;
 
-            var unparsedAbbreviation = unparsedToken.Substring(splitPos).ToLower();
+            var unparsedAbbreviation = unparsedToken.Slice(splitPos);
 
             foreach (var abbreviation in Constants.RelativeTimeAbbreviations)
             {
-                // if (abbreviation.Value.Any(x => unparsedAbbreviation == x))
-                // {
-                //     tokenType = abbreviation.Key;
-                //     break;
-                // }
-
-                if (abbreviation.Value.Contains(unparsedAbbreviation))
+                if (abbreviation.Value.Contains(comparisonString))
                 {
                     tokenType = abbreviation.Key;
                     break;
@@ -92,7 +89,7 @@ namespace HumanTimeParser
             if (tokenType == TokenType.None)
                 return null;
 
-            var containsNum = unparsedToken.ContainsNumber();
+            var containsNum = comparisonString.ContainsNumber();
 
             if (tokenType == TokenType.Tomorrow)
                 tokenType = tokenType | TokenType.Day | TokenType.Date;
@@ -101,40 +98,36 @@ namespace HumanTimeParser
 
 
 
-            return new Token(tokenType, tokenIndex, containsNum ? unparsedToken.Substring(0, unparsedToken.FirstNonNumberPos()) : null);
+            return new Token(tokenType, tokenIndex, containsNum ? unparsedToken.Slice(0, splitPos).ToString() : null);
         }
 
-        private Token TokenizeTimeAndTwelveHourSpecifer(string unparsedToken)
+        private Token TokenizeTimeAndTwelveHourSpecifer(ReadOnlySpan<char> unparsedToken, string returnString)
         {
-            string parseStr = unparsedToken;
+            ReadOnlySpan<char> parseSpan = unparsedToken;
             TokenType tokenType = TokenType.TimeOfDay;
             if (unparsedToken.EndsWithAmPmSpecifier())
             {
                 //subtract 2 because am and pm are only two chars long
-                parseStr = unparsedToken.Substring(0, unparsedToken.Length - 2);
+                parseSpan = unparsedToken.Slice(0, unparsedToken.Length - 2);
                 tokenType = tokenType | TokenType.TwelveHourSpecifier;
             }
 
-            if (TimeSpan.TryParse(parseStr, out _))
+            if (TimeSpan.TryParse(parseSpan, out _))
             {
-                return new Token(tokenType, tokenIndex, unparsedToken);
+                return new Token(tokenType, tokenIndex, returnString);
             }
             else
                 return null;
         }
 
-        private Token TokenizeDayOfWeek(string unparsedToken)
+        //include a str obj to avoid allocing a new one.  We already have one so might as well use it.
+        private Token TokenizeDayOfWeek(string comparisonString)
         {
-            var lowerCase = unparsedToken.ToLower();
             foreach (var abbreviation in Constants.WeekdayAbbreviations)
             {
-                // if (abbreviation.Value.Any(x => unparsedToken.ToLower() == x))
-                // {
-                //     return new Token(TokenType.DayOfWeek, tokenIndex, unparsedToken);
-                // }
-                if (abbreviation.Value.Contains(lowerCase))
+                if (abbreviation.Value.Contains(comparisonString))
                 {
-                    return new Token(TokenType.DayOfWeek, tokenIndex, unparsedToken);
+                    return new Token(TokenType.DayOfWeek, tokenIndex, comparisonString);
                 }
             }
 
