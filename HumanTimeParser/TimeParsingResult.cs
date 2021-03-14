@@ -2,17 +2,17 @@ using System;
 
 namespace HumanTimeParser
 {
-    public struct TimeParsingResult
+    public class TimeParsingResult
     {
         public DateTime? DateTime { get; }
-
+        
         public bool Success { get; }
 
         public string ErrorReason { get; }
 
         public int? LastTokenPosition { get; }
 
-        internal TimeParsingResult(bool success, DateTime? dt, string errorReason, int? tokenPos)
+        private TimeParsingResult(bool success, DateTime? dt, string errorReason, int? tokenPos)
         {
             DateTime = dt;
             Success = success;
@@ -22,6 +22,7 @@ namespace HumanTimeParser
 
         internal static TimeParsingResult FromNullableDateTime(DateTime? dt, int tokenPos, string errorReason = null)
         {
+            // ReSharper disable once ConvertIfStatementToReturnStatement
             if (dt is null)
             {
                 return new TimeParsingResult(false, null, errorReason ?? "No parseable time was found", null);

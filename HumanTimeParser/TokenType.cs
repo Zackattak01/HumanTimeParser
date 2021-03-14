@@ -6,7 +6,7 @@ namespace HumanTimeParser
     internal enum TokenType
     {
         None = 0,
-        END = 1 << 0,
+        End = 1 << 0,
         Number = 1 << 1,
         Second = 1 << 2,
         Minute = 1 << 3,

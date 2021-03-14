@@ -7,9 +7,7 @@ namespace HumanTimeParser
         /// <summary>Parses the time relative to DateTime.Now</summary>
         public static TimeParsingResult ParseTime(string time)
         {
-            Parser parser = new Parser(time, null);
-
-
+            var parser = new Parser(time, null);
 
             return TimeParsingResult.FromNullableDateTime(parser.Parse(), parser.LastTokenPosition);
         }

@@ -15,11 +15,8 @@ namespace HumanTimeParser
                 return false;
 
             var abbreviation = input.Slice(input.Length - 2);
-            //TODO: performace impact of hardcoding the specifiers as strings?
-            if (abbreviation.Equals("am", StringComparison.OrdinalIgnoreCase) || abbreviation.Equals("pm", StringComparison.OrdinalIgnoreCase))
-                return true;
-            else
-                return false;
+
+            return abbreviation.Equals(Constants.Am, StringComparison.OrdinalIgnoreCase) || abbreviation.Equals(Constants.Pm, StringComparison.OrdinalIgnoreCase);
         }
     }
 }
