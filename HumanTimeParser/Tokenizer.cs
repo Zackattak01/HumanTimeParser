@@ -6,46 +6,46 @@ namespace HumanTimeParser
 {
     internal class Tokenizer
     {
-        public const string DefaultSeparator = " ";
+        private const string DefaultSeparator = " ";
 
-        private string[] unparsedTokens;
-        private int tokenIndex;
+        private readonly string[] _unparsedTokens;
+        private int _tokenIndex;
 
         public Tokenizer(string input, string separator = null)
         {
-            unparsedTokens = SplitInput(input, separator ?? DefaultSeparator);
-            tokenIndex = -1;
+            _unparsedTokens = SplitInput(input, separator ?? DefaultSeparator);
+            _tokenIndex = -1;
         }
 
-        private string[] SplitInput(string input, string separator)
+        private static string[] SplitInput(string input, string separator)
             => input.Split(separator);
 
         private string GetNextUnparsedToken()
         {
-            tokenIndex++;
-            if (tokenIndex >= unparsedTokens.Length)
+            _tokenIndex++;
+            if (_tokenIndex >= _unparsedTokens.Length)
                 return null;
 
-            return unparsedTokens[tokenIndex];
+            return _unparsedTokens[_tokenIndex];
         }
 
         public Token NextToken()
         {
-            string unparsedToken = GetNextUnparsedToken();
-            ReadOnlySpan<char> unparsedSpan = unparsedToken.AsSpan();
+            var unparsedToken = GetNextUnparsedToken();
+            var unparsedSpan = unparsedToken.AsSpan();
 
             if (unparsedToken == null)
-                return new Token(TokenType.END, -1, null);
+                return new Token(TokenType.End, -1, null);
 
             if (double.TryParse(unparsedSpan, out _))
-                return new Token(TokenType.Number, tokenIndex, unparsedToken);
+                return new Token(TokenType.Number, _tokenIndex, unparsedToken);
 
-            if (TokenizeTimeAndTwelveHourSpecifer(unparsedSpan, unparsedToken) is { } givenTimeToken)
+            if (TokenizeTimeAndTwelveHourSpecifier(unparsedSpan, unparsedToken) is { } givenTimeToken)
                 return givenTimeToken;
 
             //tokenize given date
             if (DateTime.TryParse(unparsedSpan, out _))
-                return new Token(TokenType.Date, tokenIndex, unparsedToken);
+                return new Token(TokenType.Date, _tokenIndex, unparsedToken);
 
             if (TokenizeNumberAndRelativeTimeFormat(unparsedSpan, unparsedToken) is { } relativeTimeToken)
                 return relativeTimeToken;
@@ -54,7 +54,7 @@ namespace HumanTimeParser
                 return dayOfWeekToken;
 
             if (unparsedToken.IsAmPmSpecifier())
-                return new Token(TokenType.TwelveHourSpecifier, tokenIndex, unparsedToken);
+                return new Token(TokenType.TwelveHourSpecifier, _tokenIndex, unparsedToken);
 
             //if a token cant be parsed recurse until one is found
             return NextToken();
@@ -63,15 +63,15 @@ namespace HumanTimeParser
         public Token PeekNextToken()
         {
             var token = NextToken();
-            tokenIndex--;
+            _tokenIndex--;
             return token;
         }
 
-        //include a str obj to avoid allocing a new one.  We already have one so might as well use it.
+        //include a str obj to avoid allocating a new one.  We already have one so might as well use it.
         private Token TokenizeNumberAndRelativeTimeFormat(ReadOnlySpan<char> unparsedToken, string comparisonString)
         {
-            TokenType tokenType = TokenType.None;
-            int splitPos = comparisonString.FirstNonNumberPos();
+            var tokenType = TokenType.None;
+            var splitPos = comparisonString.FirstNonNumberPos();
             if (splitPos == -1)
                 return null;
 
@@ -94,40 +94,40 @@ namespace HumanTimeParser
             if (tokenType == TokenType.Tomorrow)
                 tokenType = tokenType | TokenType.Day | TokenType.Date;
             else if (containsNum)
-                tokenType = tokenType | TokenType.Number;
+                tokenType |= TokenType.Number;
 
 
 
-            return new Token(tokenType, tokenIndex, containsNum ? unparsedToken.Slice(0, splitPos).ToString() : null);
+            return new Token(tokenType, _tokenIndex, containsNum ? unparsedToken.Slice(0, splitPos).ToString() : null);
         }
 
-        private Token TokenizeTimeAndTwelveHourSpecifer(ReadOnlySpan<char> unparsedToken, string returnString)
+        private Token TokenizeTimeAndTwelveHourSpecifier(ReadOnlySpan<char> unparsedToken, string returnString)
         {
-            ReadOnlySpan<char> parseSpan = unparsedToken;
-            TokenType tokenType = TokenType.TimeOfDay;
+            var parseSpan = unparsedToken;
+            var tokenType = TokenType.TimeOfDay;
             if (unparsedToken.EndsWithAmPmSpecifier())
             {
                 //subtract 2 because am and pm are only two chars long
                 parseSpan = unparsedToken.Slice(0, unparsedToken.Length - 2);
-                tokenType = tokenType | TokenType.TwelveHourSpecifier;
+                tokenType |= TokenType.TwelveHourSpecifier;
             }
 
             if (TimeSpan.TryParse(parseSpan, out _))
             {
-                return new Token(tokenType, tokenIndex, returnString);
+                return new Token(tokenType, _tokenIndex, returnString);
             }
             else
                 return null;
         }
 
-        //include a str obj to avoid allocing a new one.  We already have one so might as well use it.
+        //include a str obj to avoid allocating a new one.  We already have one so might as well use it.
         private Token TokenizeDayOfWeek(string comparisonString)
         {
             foreach (var abbreviation in Constants.WeekdayAbbreviations)
             {
                 if (abbreviation.Value.Contains(comparisonString))
                 {
-                    return new Token(TokenType.DayOfWeek, tokenIndex, comparisonString);
+                    return new Token(TokenType.DayOfWeek, _tokenIndex, comparisonString);
                 }
             }
 

@@ -7,10 +7,10 @@ namespace HumanTimeParser
     internal class Parser
     {
         public int LastTokenPosition { get; private set; }
-        private Tokenizer tokenizer;
+        private readonly Tokenizer _tokenizer;
         public Parser(string input, string separator = null)
         {
-            tokenizer = new Tokenizer(input, separator);
+            _tokenizer = new Tokenizer(input, separator);
         }
 
         public DateTime? Parse()
@@ -26,7 +26,7 @@ namespace HumanTimeParser
             Token currentToken;
             do
             {
-                currentToken = tokenizer.NextToken();
+                currentToken = _tokenizer.NextToken();
 
                 //potential greedy parse
                 if (currentToken.TokenType.HasFlag(TokenType.Number))
@@ -35,7 +35,7 @@ namespace HumanTimeParser
                     var num = double.Parse(currentToken.Value);
 
                     if (currentToken.TokenType == TokenType.Number)
-                        currentToken = tokenizer.NextToken();
+                        currentToken = _tokenizer.NextToken();
 
                     var function = ParseRelativeTime(currentToken.TokenType, num);
 
@@ -92,16 +92,16 @@ namespace HumanTimeParser
                         //attempt to fill specifier
                         if (specifier == ReadOnlySpan<char>.Empty)
                         {
-                            var token = tokenizer.PeekNextToken();
+                            var token = _tokenizer.PeekNextToken();
 
                             if (token.TokenType.HasFlag(TokenType.TwelveHourSpecifier))
                             {
                                 specifier = token.Value;
-                                currentToken = tokenizer.NextToken();
+                                currentToken = _tokenizer.NextToken();
                             }
                         }
 
-                        //specifier may still be null. fail quietely
+                        //specifier may still be null. fail quietly
                         if (specifier.Equals("pm", StringComparison.OrdinalIgnoreCase))
                             ts = ts.Add(new TimeSpan(12, 0, 0));
                         else if (ts < startingTime.TimeOfDay && specifier == ReadOnlySpan<char>.Empty)
@@ -131,7 +131,7 @@ namespace HumanTimeParser
                         parsedTypes.Add(TokenType.Day);
                     }
                 }
-            } while (currentToken.TokenType != TokenType.END);
+            } while (currentToken.TokenType != TokenType.End);
 
             LastTokenPosition = lastParsedTokenPos + 1;
 
@@ -146,7 +146,7 @@ namespace HumanTimeParser
 
         //returns a function that will carry out the correct task
         //it returns a function because all relative times need to be added AFTER the date has been confirmed
-        private Func<DateTime, DateTime> ParseRelativeTime(TokenType type, double number)
+        private static Func<DateTime, DateTime> ParseRelativeTime(TokenType type, double number)
         {
             if (type.HasFlag(TokenType.Second))
                 return (x) => x.AddSeconds(number);
@@ -166,17 +166,17 @@ namespace HumanTimeParser
                 return null;
         }
 
-        private Func<DateTime, DateTime> ParseDayOfWeek(string unparsedDay)
+        private static Func<DateTime, DateTime> ParseDayOfWeek(string unparsedDay)
         {
             //var lowerCase = unparsedDay.ToLower();
-            DayOfWeek today = DateTime.Now.DayOfWeek;
+            var today = DateTime.Now.DayOfWeek;
             foreach (var abbreviation in Constants.WeekdayAbbreviations)
             {
                 if (abbreviation.Value.Contains(unparsedDay))
                 {
-                    DayOfWeek specifiedDay = abbreviation.Key;
+                    var specifiedDay = abbreviation.Key;
 
-                    int difference = specifiedDay - today;
+                    var difference = specifiedDay - today;
 
                     //assume "next monday" is implied
                     if (difference <= 0)
@@ -189,7 +189,7 @@ namespace HumanTimeParser
             throw new ArgumentException("Did not match any known day", nameof(unparsedDay));
         }
 
-        private DateTime ConstructDateTime(DateTime startingDate,
+        private static DateTime ConstructDateTime(DateTime startingDate,
                                            TimeSpan timeOfDay,
                                            IEnumerable<Func<DateTime, DateTime>> relativeTimeFuncs)
         {

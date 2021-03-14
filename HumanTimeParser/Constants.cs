@@ -3,8 +3,11 @@ using System.Collections.Generic;
 
 namespace HumanTimeParser
 {
-    internal class Constants
+    internal static class Constants
     {
+        public const string Am = "am";
+        public const string Pm = "pm";
+        
         public static readonly IReadOnlySet<string> TomorrowAbbreviations = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "tmr", "tomorrow" };
         public static readonly IReadOnlySet<string> SecondAbbreviations = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "s", "sec", "secs", "second", "seconds" };
         public static readonly IReadOnlySet<string> MinuteAbbreviations = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "m", "min", "mins", "minute", "minutes" };

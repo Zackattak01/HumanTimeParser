@@ -7,9 +7,9 @@ namespace HumanTimeParser
 
         public static int FirstNonNumberPos(this string str)
         {
-            char[] chars = str.ToCharArray();
+            var chars = str.ToCharArray();
 
-            for (int i = 0; i < chars.Length; i++)
+            for (var i = 0; i < chars.Length; i++)
             {
                 if (!char.IsDigit(chars[i]) && !char.IsPunctuation(chars[i]))
                     return i;
@@ -29,11 +29,6 @@ namespace HumanTimeParser
         }
 
         public static bool IsAmPmSpecifier(this string str)
-        {
-            if (str.Equals("am", StringComparison.OrdinalIgnoreCase) || str.Equals("pm", StringComparison.OrdinalIgnoreCase))
-                return true;
-            else
-                return false;
+            => str.Equals(Constants.Am, StringComparison.OrdinalIgnoreCase) || str.Equals(Constants.Pm, StringComparison.OrdinalIgnoreCase);
         }
-    }
 }
