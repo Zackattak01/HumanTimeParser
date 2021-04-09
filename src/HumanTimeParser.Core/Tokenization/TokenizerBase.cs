@@ -12,8 +12,22 @@ namespace HumanTimeParser.Core.Tokenization
             Sectionizer = sectionizer;
         }
 
-        public virtual IToken NextToken() => TokenizeSection(Sectionizer.NextSection());
-        public virtual IToken PeekNextToken() => TokenizeSection(Sectionizer.PeekNextSection());
+        public virtual IToken NextToken()
+        {
+            var token = TokenizeSection(Sectionizer.NextSection());
+            if (token is null)
+                return NextToken();
+
+            return token;
+        }
+        public virtual IToken PeekNextToken()
+        {
+            var token = TokenizeSection(Sectionizer.PeekNextSection());
+            if (token is null)
+                return NextToken();
+
+            return token;
+        }
         public void SkipToken() => Sectionizer.SkipSection();
 
         protected abstract IToken TokenizeSection(Section section);
