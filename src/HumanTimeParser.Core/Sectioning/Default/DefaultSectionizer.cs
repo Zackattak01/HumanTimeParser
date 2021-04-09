@@ -19,7 +19,7 @@ namespace HumanTimeParser.Core.Sectioning
             _currentIndex = -1;
         }
         
-        public string NextSection()
+        public Section NextSection()
         {
             if (_sections is null)
                 throw new Exception("No input has been provided.");
@@ -27,10 +27,10 @@ namespace HumanTimeParser.Core.Sectioning
             if (_currentIndex++ >= _sections.Length)
                 return null;
 
-            return _sections[_currentIndex];
+            return new Section(_currentIndex, _sections[_currentIndex]);
         }
 
-        public string PeekNextSection()
+        public Section PeekNextSection()
         {
             var nextSection = NextSection();
             _currentIndex--;
@@ -39,7 +39,7 @@ namespace HumanTimeParser.Core.Sectioning
         }
 
         public void SkipSection()
-         => _currentIndex++;
+            => _currentIndex++;
         
     }
 }

@@ -2,9 +2,9 @@ namespace HumanTimeParser.Core.Sectioning
 {
     public interface ISectionizer
     {
-        public string NextSection();
+        public Section NextSection();
 
-        public string PeekNextSection();
+        public Section PeekNextSection();
 
         public void SkipSection();
     }
