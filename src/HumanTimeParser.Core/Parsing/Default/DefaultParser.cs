@@ -9,6 +9,8 @@ namespace HumanTimeParser.Core.Parsing.Default
 
     public class DefaultParser : ParserBase
     {
+        public ClockType ClockType { get; }
+        
         protected static readonly TimeSpan TwelveHourTimeSpan = TimeSpan.FromHours(12);
         
         protected HashSet<RelativeTimeFormat> ParsedRelativeTimeFormats { get; }
@@ -32,6 +34,19 @@ namespace HumanTimeParser.Core.Parsing.Default
 
             FirstParsedTokenPosition = -1;
             LastParsedTokenPosition = -1;
+
+            ClockType = ClockType.TwelveHour;
+        }
+        
+        public DefaultParser(ClockType clockType, ITokenizer tokenizer) : base(tokenizer)
+        {
+            ParsedRelativeTimeFormats = new HashSet<RelativeTimeFormat>();
+            RelativeTimeFunctions = new List<Func<DateTime, DateTime>>();
+
+            FirstParsedTokenPosition = -1;
+            LastParsedTokenPosition = -1;
+
+            clockType = clockType;
         }
 
         public override ITimeParsingResult Parse()
@@ -52,6 +67,9 @@ namespace HumanTimeParser.Core.Parsing.Default
                         break;
                     case QualifiedRelativeTimeToken qualifiedRelativeTimeToken:
                         parsedCurrentToken = ParseFullyQualifiedRelativeTimeToken(qualifiedRelativeTimeToken);
+                        break;
+                    case TimeOfDayToken timeOfDayToken:
+                        parsedCurrentToken = ParseTimeOfDayToken(timeOfDayToken);
                         break;
                     case QualifiedTimeOfDayToken qualifiedTimeOfDayToken:
                         parsedCurrentToken = ParseQualifiedTimeOfDayToken(qualifiedTimeOfDayToken);
@@ -93,7 +111,7 @@ namespace HumanTimeParser.Core.Parsing.Default
                 ParsedRelativeTimeFormats.Add(relativeTimeFormatToken.Value);
 
                 //make sure to advance token
-                Tokenizer.NextToken();
+                Tokenizer.SkipToken();
                 return true;
             }
 
@@ -111,6 +129,50 @@ namespace HumanTimeParser.Core.Parsing.Default
             return true;
         }
 
+        protected virtual bool ParseTimeOfDayToken(TimeOfDayToken timeOfDayToken)
+        {
+            if (!timeOfDayToken.Value.IsValid(ClockType) || ParsedTime is not null)
+                return false;
+            
+            var nextToken = Tokenizer.PeekNextToken();
+
+            if (nextToken is PeriodSpecifierToken periodSpecifierToken && ClockType != ClockType.TwentyFourHour)
+            {
+                var time = timeOfDayToken.Value.Time;
+                if (periodSpecifierToken.Value == TimePeriod.Pm)
+                    ParsedTime = time.Add(TwelveHourTimeSpan);
+
+                
+                ParsedTime = time;
+                Tokenizer.SkipToken();  // make sure to actually advance the token
+                return true;
+                
+            }
+            else 
+            {
+                if (timeOfDayToken.Value.Time < StartingDate.TimeOfDay) // implied am/pm parsing
+                {
+                    var impliedTime = timeOfDayToken.Value.Time.Add(TwelveHourTimeSpan);
+                    if (impliedTime >= StartingDate.TimeOfDay)
+                    {
+                        ParsedTime = impliedTime;
+                        return true;
+                    }
+                    else
+                    {
+                        ParsedTime = timeOfDayToken.Value.Time; // implied parsing was not successful... fallback to original value
+                        return true;
+                    }
+                }
+                else // no need for implied parsing
+                {
+                    ParsedTime = timeOfDayToken.Value.Time;
+                    return true;
+                }
+                    
+            }
+        }
+        
         protected virtual bool ParseQualifiedTimeOfDayToken(QualifiedTimeOfDayToken token)
         {
             if (ParsedTime is not null)

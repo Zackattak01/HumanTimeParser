@@ -16,6 +16,7 @@ namespace HumanTimeParser.Core.Sectioning
         {
             _sections = input.Split(splitOn);
             SplitString = splitOn;
+            _currentIndex = -1;
         }
         
         public string NextSection()
@@ -36,5 +37,9 @@ namespace HumanTimeParser.Core.Sectioning
 
             return nextSection;
         }
+
+        public void SkipSection()
+         => _currentIndex++;
+        
     }
 }

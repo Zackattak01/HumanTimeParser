@@ -7,5 +7,6 @@ namespace HumanTimeParser.Core.Tokenization
         public IToken NextToken();
 
         public IToken PeekNextToken();
+        public void SkipToken();
     }
 }

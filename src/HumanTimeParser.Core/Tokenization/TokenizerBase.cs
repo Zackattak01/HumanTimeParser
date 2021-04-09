@@ -12,9 +12,10 @@ namespace HumanTimeParser.Core.Tokenization
             Sectionizer = sectionizer;
         }
 
-        public virtual IToken NextToken() => Tokenize(Sectionizer.NextSection());
-        public virtual IToken PeekNextToken() => Tokenize(Sectionizer.PeekNextSection());
-        
-        protected abstract IToken Tokenize(string input);
+        public virtual IToken NextToken() => TokenizeSection(Sectionizer.NextSection());
+        public virtual IToken PeekNextToken() => TokenizeSection(Sectionizer.PeekNextSection());
+        public void SkipToken() => Sectionizer.SkipSection();
+
+        protected abstract IToken TokenizeSection(string section);
     }
 }

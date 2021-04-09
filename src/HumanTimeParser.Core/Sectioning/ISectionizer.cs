@@ -5,5 +5,7 @@ namespace HumanTimeParser.Core.Sectioning
         public string NextSection();
 
         public string PeekNextSection();
+
+        public void SkipSection();
     }
 }
