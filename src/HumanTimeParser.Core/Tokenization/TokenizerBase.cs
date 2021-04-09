@@ -12,11 +12,6 @@ namespace HumanTimeParser.Core.Tokenization
             Sectionizer = sectionizer;
         }
 
-        public virtual void SetInput(string input)
-        {
-            Sectionizer.Sectionize(input);
-        }
-
         public virtual IToken NextToken() => Tokenize(Sectionizer.NextSection());
         public virtual IToken PeekNextToken() => Tokenize(Sectionizer.PeekNextSection());
         

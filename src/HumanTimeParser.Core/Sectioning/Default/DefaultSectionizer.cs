@@ -8,22 +8,16 @@ namespace HumanTimeParser.Core.Sectioning
         
         public string SplitString { get; }
         
-        private string[] _sections;
+        private readonly string[] _sections;
 
         private int _currentIndex;
 
-        public DefaultSectionizer(string splitOn = DefaultSplitString)
+        public DefaultSectionizer(string input, string splitOn = DefaultSplitString)
         {
+            _sections = input.Split(splitOn);
             SplitString = splitOn;
         }
         
-        public string[] Sectionize(string input)
-        {
-            _sections = input.Split(SplitString);
-            _currentIndex = -1;
-            return _sections;
-        }
-
         public string NextSection()
         {
             if (_sections is null)

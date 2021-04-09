@@ -4,11 +4,11 @@ namespace HumanTimeParser.Core.TimeConstructs
 {
     public class TimeOfDay
     {
-        public TimeSpan Value { get; }
+        public TimeSpan Time { get; }
 
-        public TimeOfDay(TimeSpan value)
+        public TimeOfDay(TimeSpan time)
         {
-            Value = value;
+            Time = time;
         }
 
         public virtual bool IsValid(ClockType mode = ClockType.TwelveHour)
@@ -23,9 +23,9 @@ namespace HumanTimeParser.Core.TimeConstructs
 
         protected bool IsValid(int maxNumberOfHours)
         {
-            if (Value.TotalHours >= maxNumberOfHours)
+            if (Time.TotalHours >= maxNumberOfHours)
                 return false;
-            if (Value.TotalSeconds < 1)
+            if (Time.TotalSeconds < 1)
                 return false;
 
             return true;

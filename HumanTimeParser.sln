@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HumanTimeParser.Core", "src\HumanTimeParser.Core\HumanTimeParser.Core.csproj", "{32E53C70-8366-489D-A75A-10A5D812598A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HumanTimeParser.English", "HumanTimeParser.English\HumanTimeParser.English.csproj", "{52B94E23-DB42-4279-A75E-DEA7B6A6B804}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,17 @@ Global
 		{32E53C70-8366-489D-A75A-10A5D812598A}.Release|x64.Build.0 = Release|Any CPU
 		{32E53C70-8366-489D-A75A-10A5D812598A}.Release|x86.ActiveCfg = Release|Any CPU
 		{32E53C70-8366-489D-A75A-10A5D812598A}.Release|x86.Build.0 = Release|Any CPU
+		{52B94E23-DB42-4279-A75E-DEA7B6A6B804}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52B94E23-DB42-4279-A75E-DEA7B6A6B804}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52B94E23-DB42-4279-A75E-DEA7B6A6B804}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{52B94E23-DB42-4279-A75E-DEA7B6A6B804}.Debug|x64.Build.0 = Debug|Any CPU
+		{52B94E23-DB42-4279-A75E-DEA7B6A6B804}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{52B94E23-DB42-4279-A75E-DEA7B6A6B804}.Debug|x86.Build.0 = Debug|Any CPU
+		{52B94E23-DB42-4279-A75E-DEA7B6A6B804}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52B94E23-DB42-4279-A75E-DEA7B6A6B804}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52B94E23-DB42-4279-A75E-DEA7B6A6B804}.Release|x64.ActiveCfg = Release|Any CPU
+		{52B94E23-DB42-4279-A75E-DEA7B6A6B804}.Release|x64.Build.0 = Release|Any CPU
+		{52B94E23-DB42-4279-A75E-DEA7B6A6B804}.Release|x86.ActiveCfg = Release|Any CPU
+		{52B94E23-DB42-4279-A75E-DEA7B6A6B804}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

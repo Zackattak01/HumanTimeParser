@@ -4,11 +4,11 @@ namespace HumanTimeParser.Core.TimeConstructs
     {
         public RelativeTimeFormat Format { get; }
 
-        public double Value { get; }
+        public double Amount { get; }
 
-        public RelativeTime(double value, RelativeTimeFormat format)
+        public RelativeTime(double amount, RelativeTimeFormat format)
         {
-            Value = value;
+            Amount = amount;
             Format = format;
         }
     }

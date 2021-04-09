@@ -6,7 +6,7 @@ namespace HumanTimeParser.Core.TimeConstructs
     {
         public TimePeriod Period { get; }
         
-        public QualifiedTimeOfDay(TimePeriod period, TimeSpan value) : base(value)
+        public QualifiedTimeOfDay(TimePeriod period, TimeSpan time) : base(time)
         {
             Period = period;
         }

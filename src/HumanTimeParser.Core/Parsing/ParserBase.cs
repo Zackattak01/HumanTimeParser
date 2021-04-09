@@ -1,12 +1,16 @@
+using HumanTimeParser.Core.Tokenization;
+
 namespace HumanTimeParser.Core.Parsing
 {
     public abstract class ParserBase : ITimeParser
     {
-        public ParserBase()
+        protected ITokenizer Tokenizer { get; }
+        
+        public ParserBase(ITokenizer tokenizer)
         {
-            
+            Tokenizer = tokenizer;
         }
         
-        public abstract ITimeParsingResult Parse(string input);
+        public abstract ITimeParsingResult Parse();
     }
 }
