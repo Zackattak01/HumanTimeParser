@@ -23,5 +23,8 @@ namespace HumanTimeParser.Core.Parsing
             ErrorReason = reason;
             Exception = ex;
         }
+
+        public override string ToString()
+            => ErrorReason;
     }
 }
