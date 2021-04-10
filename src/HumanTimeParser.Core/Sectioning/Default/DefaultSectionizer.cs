@@ -24,7 +24,7 @@ namespace HumanTimeParser.Core.Sectioning
             if (_sections is null)
                 throw new Exception("No input has been provided.");
 
-            if (_currentIndex++ >= _sections.Length)
+            if (++_currentIndex >= _sections.Length)
                 return null;
 
             return new Section(_currentIndex, _sections[_currentIndex]);

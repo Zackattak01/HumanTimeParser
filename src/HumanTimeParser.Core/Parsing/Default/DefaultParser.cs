@@ -140,7 +140,7 @@ namespace HumanTimeParser.Core.Parsing.Default
             {
                 var time = timeOfDayToken.Value.Time;
                 if (periodSpecifierToken.Value == TimePeriod.Pm)
-                    ParsedTime = time.Add(TwelveHourTimeSpan);
+                    time = time.Add(TwelveHourTimeSpan);
 
                 
                 ParsedTime = time;

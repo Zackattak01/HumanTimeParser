@@ -15,7 +15,7 @@ namespace HumanTimeParser.English
         {
             if (section is null)
                 return new EOFToken();
-            
+
             var span = section.Value.AsSpan();
 
             if (double.TryParse(span, out var number))
@@ -72,7 +72,12 @@ namespace HumanTimeParser.English
 
             if (EnglishTimeKeywordConstants.RelativeTimeKeywordDictionary.TryGetValue(unparsedAbbreviation, out var relativeTimeFormat))
             {
-                if (splitPos == 0)
+                if (relativeTimeFormat == RelativeTimeFormat.Tomorrow)// special case with the "tomorrow" keyword
+                {
+                    result = new QualifiedRelativeTimeToken(section.Position, new RelativeTime(1, relativeTimeFormat));
+                    return true;
+                }
+                else if (splitPos == 0) 
                 {
                     result = new RelativeTimeFormatToken(section.Position, relativeTimeFormat);
                     return true;
