@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using HumanTimeParser.Core.TimeConstructs;
+using HumanTimeParser.Core.Tokenization.Tokens;
+using HumanTimeParser.English.Extensions;
 
 namespace HumanTimeParser.English
 {
@@ -23,6 +26,37 @@ namespace HumanTimeParser.English
         public static readonly IReadOnlySet<string> FridayAbbreviations = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "fri", "friday" };
         public static readonly IReadOnlySet<string> SaturdayAbbreviations = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "sat", "saturday" };
         public static readonly IReadOnlySet<string> SundayAbbreviations = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "sun", "sunday" };
+
+        public static readonly IReadOnlyDictionary<string, DayOfWeek> DayOfWeekKeywordDictionary;
+        public static readonly IReadOnlyDictionary<string, RelativeTimeFormat> RelativeTimeKeywordDictionary;
+        static EnglishTimeKeywordConstants()
+        {
+            var tempDayOfWeekDict = new Dictionary<string, DayOfWeek>(StringComparer.OrdinalIgnoreCase);
+
+            tempDayOfWeekDict.AddKeyRange(MondayAbbreviations, DayOfWeek.Monday);
+            tempDayOfWeekDict.AddKeyRange(TuesdayAbbreviations, DayOfWeek.Tuesday);
+            tempDayOfWeekDict.AddKeyRange(WednesdayAbbreviations, DayOfWeek.Wednesday);
+            tempDayOfWeekDict.AddKeyRange(ThursdayAbbreviations, DayOfWeek.Thursday);
+            tempDayOfWeekDict.AddKeyRange(FridayAbbreviations, DayOfWeek.Friday);
+            tempDayOfWeekDict.AddKeyRange(SaturdayAbbreviations, DayOfWeek.Saturday);
+            tempDayOfWeekDict.AddKeyRange(SundayAbbreviations, DayOfWeek.Sunday);
+
+            DayOfWeekKeywordDictionary = tempDayOfWeekDict;
+            
+            var tempRelativeTimeAbbreviationsDict = new Dictionary<string, RelativeTimeFormat>(StringComparer.OrdinalIgnoreCase);
+            
+            tempRelativeTimeAbbreviationsDict.AddKeyRange(TomorrowAbbreviations, RelativeTimeFormat.Tomorrow);
+            tempRelativeTimeAbbreviationsDict.AddKeyRange(SecondAbbreviations, RelativeTimeFormat.Seconds);
+            tempRelativeTimeAbbreviationsDict.AddKeyRange(MinuteAbbreviations, RelativeTimeFormat.Minutes);
+            tempRelativeTimeAbbreviationsDict.AddKeyRange(HourAbbreviations, RelativeTimeFormat.Hours);
+            tempRelativeTimeAbbreviationsDict.AddKeyRange(DayAbbreviations, RelativeTimeFormat.Days);
+            tempRelativeTimeAbbreviationsDict.AddKeyRange(WeekAbbreviations, RelativeTimeFormat.Weeks);
+            tempRelativeTimeAbbreviationsDict.AddKeyRange(MonthAbbreviations, RelativeTimeFormat.Months);
+            tempRelativeTimeAbbreviationsDict.AddKeyRange(YearAbbreviations, RelativeTimeFormat.Years);
+
+            RelativeTimeKeywordDictionary = tempRelativeTimeAbbreviationsDict;
+
+        }
 
         // public static readonly IReadOnlyDictionary<TokenType, IReadOnlySet<string>> RelativeTimeAbbreviations = new Dictionary<TokenType, IReadOnlySet<string>>{
         // {.Tomorrow, TomorrowAbbreviations},
