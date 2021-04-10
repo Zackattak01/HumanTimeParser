@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\HumanTimeParser.English\HumanTimeParser.English.csproj" />
+    <ProjectReference Include="..\..\src\HumanTimeParser.English\HumanTimeParser.English.csproj" />
   </ItemGroup>
 
 </Project>
