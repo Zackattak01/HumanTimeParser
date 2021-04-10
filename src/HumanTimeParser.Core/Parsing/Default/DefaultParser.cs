@@ -98,7 +98,7 @@ namespace HumanTimeParser.Core.Parsing.Default
             if (LastParsedTokenPosition == -1)
                 return NoParseableTokensFound();
 
-            return new DefaultSuccessfulTimeParsingResult(ConstructDateTime());
+            return new DefaultSuccessfulTimeParsingResult(ConstructDateTime(), FirstParsedTokenPosition, LastParsedTokenPosition);
         }
 
         protected virtual bool ParseNumberToken(NumberToken token)
