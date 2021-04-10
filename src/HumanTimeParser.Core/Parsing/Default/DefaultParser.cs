@@ -46,7 +46,7 @@ namespace HumanTimeParser.Core.Parsing.Default
             FirstParsedTokenPosition = -1;
             LastParsedTokenPosition = -1;
 
-            clockType = clockType;
+            ClockType = clockType;
         }
 
         public override ITimeParsingResult Parse()
