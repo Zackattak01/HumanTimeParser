@@ -128,6 +128,7 @@ namespace HumanTimeParser.English.Tests
             var result = (ISuccessfulTimeParsingResult<DateTime>)EnglishTimeParser.Parse("monday at 5:00");
 
             var today = DateTime.Now;
+            Console.WriteLine(today);
             var dayOfWeek = today.DayOfWeek;
             var daysToAdd = DayOfWeek.Monday - dayOfWeek;
             if (daysToAdd < 0)
