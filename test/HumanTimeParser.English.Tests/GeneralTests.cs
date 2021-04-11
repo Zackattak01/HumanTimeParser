@@ -133,7 +133,19 @@ namespace HumanTimeParser.English.Tests
             var daysToAdd = DayOfWeek.Monday - dayOfWeek;
             if (daysToAdd < 0)
                 daysToAdd += 7;
-            var expected = DateTime.Now.AddDays(daysToAdd).Date.Add(today.TimeOfDay.TotalHours > 5 ? new TimeSpan(FivePmHourCount,0,0) : new TimeSpan(5, 0, 0));
+
+            TimeSpan spanToAdd;
+            if (today.TimeOfDay.TotalHours > 5)
+            {
+                var pmSpan = new TimeSpan(FivePmHourCount, 0, 0);
+                spanToAdd = pmSpan > today.TimeOfDay ? pmSpan : new TimeSpan(5, 0, 0);
+            }
+            else
+            {
+                spanToAdd = new TimeSpan(5, 0, 0);
+            }
+            
+            var expected = DateTime.Now.AddDays(daysToAdd).Date.Add(spanToAdd);
 
             Assert.AreEqual(expected, result.Value);
         }
