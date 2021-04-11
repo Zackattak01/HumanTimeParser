@@ -87,7 +87,8 @@ namespace HumanTimeParser.Core.Parsing.Default
 
                 if (parsedCurrentToken)
                 {
-                    LastParsedTokenPosition = token.Position;
+                    //Use 'CurrentToken' instead of the 'token' var because some of the parse funcs advance the token
+                    LastParsedTokenPosition = Tokenizer.CurrentToken.Position; 
 
                     if (FirstParsedTokenPosition == -1)
                         FirstParsedTokenPosition = token.Position;
