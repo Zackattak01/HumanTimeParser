@@ -2,8 +2,8 @@ namespace HumanTimeParser.Core.Parsing
 {
     public interface ISuccessfulTimeParsingResult : ITimeParsingResult
     {
-        public int FirstParsedTokenPosition { get; }
-        public int LastParsedTokenPosition { get; }
+        public int FirstParsedTokenIndex { get; }
+        public int LastParsedTokenIndex { get; }
     }
     
     public interface ISuccessfulTimeParsingResult<out T> : ISuccessfulTimeParsingResult

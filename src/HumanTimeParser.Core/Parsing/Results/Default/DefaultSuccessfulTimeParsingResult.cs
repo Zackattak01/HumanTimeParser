@@ -6,15 +6,15 @@ namespace HumanTimeParser.Core.Parsing
     {
         public DateTime Value { get; }
 
-        public int FirstParsedTokenPosition { get; }
-        public int LastParsedTokenPosition { get; }
+        public int FirstParsedTokenIndex { get; }
+        public int LastParsedTokenIndex { get; }
 
 
         public DefaultSuccessfulTimeParsingResult(DateTime value, int firstParsedTokenPosition, int lastParsedTokenPosition)
         {
             Value = value;
-            FirstParsedTokenPosition = firstParsedTokenPosition;
-            LastParsedTokenPosition = lastParsedTokenPosition;
+            FirstParsedTokenIndex = firstParsedTokenPosition;
+            LastParsedTokenIndex = lastParsedTokenPosition;
         }
     }
 }

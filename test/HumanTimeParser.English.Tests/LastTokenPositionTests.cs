@@ -12,8 +12,7 @@ namespace HumanTimeParser.English.Tests
         public void LastTokenPositionTest()
         {
             var result = (ISuccessfulTimeParsingResult<DateTime>)EnglishTimeParser.Parse("in 5 s do things cool stuff");
-
-            Assert.AreEqual(2, result.LastParsedTokenPosition);
+            Assert.AreEqual(2, result.LastParsedTokenIndex);
         }
 
         [TestMethod]
@@ -21,7 +20,7 @@ namespace HumanTimeParser.English.Tests
         {
             var result = (ISuccessfulTimeParsingResult<DateTime>)EnglishTimeParser.Parse("10s gamer time");
 
-            Assert.AreEqual(0, result.LastParsedTokenPosition);
+            Assert.AreEqual(0, result.LastParsedTokenIndex);
         }
 
         [TestMethod]
@@ -29,7 +28,7 @@ namespace HumanTimeParser.English.Tests
         {
             var result = (ISuccessfulTimeParsingResult<DateTime>)EnglishTimeParser.Parse("5:30pm files");
 
-            Assert.AreEqual(0, result.LastParsedTokenPosition);
+            Assert.AreEqual(0, result.LastParsedTokenIndex);
         }
 
         [TestMethod]
@@ -37,7 +36,7 @@ namespace HumanTimeParser.English.Tests
         {
             var result = (ISuccessfulTimeParsingResult<DateTime>)EnglishTimeParser.Parse("5:30pm .files");
 
-            Assert.AreEqual(0, result.LastParsedTokenPosition);
+            Assert.AreEqual(0, result.LastParsedTokenIndex);
         }
 
         [TestMethod]
@@ -45,7 +44,7 @@ namespace HumanTimeParser.English.Tests
         {
             var result = (ISuccessfulTimeParsingResult<DateTime>)EnglishTimeParser.Parse("5:30 PM");
 
-            Assert.AreEqual(1, result.LastParsedTokenPosition);
+            Assert.AreEqual(1, result.LastParsedTokenIndex);
         }
     }
 }
