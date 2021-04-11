@@ -135,9 +135,16 @@ namespace HumanTimeParser.Core.Parsing.Default
             if (!timeOfDayToken.Value.IsValid(ClockType) || ParsedTime is not null)
                 return false;
             
+            // no additional parsing is required for 24 hour clocks
+            if(ClockType == ClockType.TwentyFourHour)
+            {
+                ParsedTime = timeOfDayToken.Value.Time;
+                return true;
+            }
+            
             var nextToken = Tokenizer.PeekNextToken();
-
-            if (nextToken is PeriodSpecifierToken periodSpecifierToken && ClockType != ClockType.TwentyFourHour)
+            
+            if (nextToken is PeriodSpecifierToken periodSpecifierToken)
             {
                 var time = timeOfDayToken.Value.Time;
                 if (periodSpecifierToken.Value == TimePeriod.Pm)
