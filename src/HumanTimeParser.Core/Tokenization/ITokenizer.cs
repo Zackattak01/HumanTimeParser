@@ -4,6 +4,8 @@ namespace HumanTimeParser.Core.Tokenization
 {
     public interface ITokenizer
     {
+        public IToken CurrentToken { get; }
+        
         public IToken NextToken();
 
         public IToken PeekNextToken();

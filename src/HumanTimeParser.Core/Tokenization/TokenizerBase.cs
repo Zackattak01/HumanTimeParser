@@ -5,8 +5,10 @@ namespace HumanTimeParser.Core.Tokenization
 {
     public abstract class TokenizerBase : ITokenizer
     {
+        public IToken CurrentToken { get; private set; }
         protected ISectionizer Sectionizer { get; }
-        
+
+
         public TokenizerBase(ISectionizer sectionizer)
         {
             Sectionizer = sectionizer;
@@ -18,6 +20,7 @@ namespace HumanTimeParser.Core.Tokenization
             if (token is null)
                 return NextToken();
 
+            CurrentToken = token;
             return token;
         }
         public virtual IToken PeekNextToken()
@@ -26,6 +29,7 @@ namespace HumanTimeParser.Core.Tokenization
             if (token is null)
                 return NextToken();
 
+            CurrentToken = token;
             return token;
         }
         public void SkipToken() => Sectionizer.SkipSection();
