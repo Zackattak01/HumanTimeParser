@@ -119,5 +119,36 @@ namespace HumanTimeParser.English.Tests
 
             Assert.IsTrue(closeEnough);
         }
+        
+        [TestMethod]
+        public void Weekday_Test()
+        {
+            var result = (ISuccessfulTimeParsingResult<DateTime>)EnglishTimeParser.Parse("monday at 5:00");
+
+            var today = DateTime.Now;
+            var dayOfWeek = today.DayOfWeek;
+            var daysToAdd = DayOfWeek.Monday - dayOfWeek;
+            if (daysToAdd < 0)
+                daysToAdd += 7;
+            var expected = DateTime.Now.AddDays(daysToAdd).Date.Add(new TimeSpan(5,0,0));
+
+            Assert.AreEqual(expected, result.Value);
+        }
+        
+        [TestMethod]
+        public void Weekday_With_Time_Period_Test()
+        {
+            const int fivePmHourCount = 17;
+            var result = (ISuccessfulTimeParsingResult<DateTime>)EnglishTimeParser.Parse("monday at 5:00 pm");
+
+            var today = DateTime.Now;
+            var dayOfWeek = today.DayOfWeek;
+            var daysToAdd = DayOfWeek.Monday - dayOfWeek;
+            if (daysToAdd < 0)
+                daysToAdd += 7;
+            var expected = DateTime.Now.AddDays(daysToAdd).Date.Add(new TimeSpan(fivePmHourCount,0,0));
+
+            Assert.AreEqual(expected, result.Value);
+        }
     }
 }
