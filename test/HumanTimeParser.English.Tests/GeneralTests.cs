@@ -12,7 +12,7 @@ namespace HumanTimeParser.English.Tests
         [TestMethod]
         public void StressTest()
         {
-            var result = (ISuccessfulTimeParsingResult<DateTime>)EnglishTimeParser.Parse("6 s 5 m 7 h 1 d 2 mth 3 y on 3/24/2021 at 4:56am");
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("6 s 5 m 7 h 1 d 2 mth 3 y on 3/24/2021 at 4:56am"));
 
             var timeOfDaySetup = DateTime.Parse("4:56 am").TimeOfDay;
             var expected = DateTime.Parse("3/24/2021").Add(timeOfDaySetup).AddSeconds(6).AddMinutes(5).AddHours(7).AddDays(1).AddMonths(2).AddYears(3);
@@ -23,7 +23,7 @@ namespace HumanTimeParser.English.Tests
         [TestMethod]
         public void StressTest_Alt_1()
         {
-            var result = (ISuccessfulTimeParsingResult<DateTime>)EnglishTimeParser.Parse("6 seconds 5 m 7 HOURS 1 d 2 mth 3 year on 3/24/2021 at 4:56am");
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("6 seconds 5 m 7 HOURS 1 d 2 mth 3 year on 3/24/2021 at 4:56am"));
 
             var timeOfDaySetup = DateTime.Parse("4:56 am").TimeOfDay;
             var expected = DateTime.Parse("3/24/2021").Add(timeOfDaySetup).AddSeconds(6).AddMinutes(5).AddHours(7).AddDays(1).AddMonths(2).AddYears(3);
@@ -34,7 +34,7 @@ namespace HumanTimeParser.English.Tests
         [TestMethod]
         public void StressTest_Alt_2()
         {
-            var result = (ISuccessfulTimeParsingResult<DateTime>)EnglishTimeParser.Parse("6s 5m 7h 1d 2MTH 3y on 3/24/2021 at 4:56am");
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("6s 5m 7h 1d 2MTH 3y on 3/24/2021 at 4:56am"));
 
             var timeOfDaySetup = DateTime.Parse("4:56 am").TimeOfDay;
             var expected = DateTime.Parse("3/24/2021").Add(timeOfDaySetup).AddSeconds(6).AddMinutes(5).AddHours(7).AddDays(1).AddMonths(2).AddYears(3);
@@ -45,7 +45,7 @@ namespace HumanTimeParser.English.Tests
         [TestMethod]
         public void RelativeTimeTest()
         {
-            var result = (ISuccessfulTimeParsingResult<DateTime>)EnglishTimeParser.Parse("30m 33s");
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("30m 33s"));
 
             var expected = DateTime.Now.AddSeconds(33).AddMinutes(30);
 
@@ -61,7 +61,7 @@ namespace HumanTimeParser.English.Tests
         [TestMethod]
         public void IgnoreEnglish()
         {
-            var result = (ISuccessfulTimeParsingResult<DateTime>)EnglishTimeParser.Parse("33.5 minutes after 6:50am on 1/7/2021");
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("33.5 minutes after 6:50am on 1/7/2021"));
 
             var timeOfDaySetup = DateTime.Parse("6:50 am").TimeOfDay;
             var expected = DateTime.Parse("1/7/2021").Add(timeOfDaySetup).AddMinutes(33.5);
@@ -81,7 +81,7 @@ namespace HumanTimeParser.English.Tests
         [TestMethod]
         public void TimeTest()
         {
-            var result = (ISuccessfulTimeParsingResult<DateTime>)EnglishTimeParser.Parse("4:56pm");
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("4:56pm"));
 
             var timeOfDaySetup = DateTime.Parse("4:56 pm").TimeOfDay;
             var expected = DateTime.Now.Date.Add(timeOfDaySetup);
@@ -93,7 +93,7 @@ namespace HumanTimeParser.English.Tests
         [TestMethod]
         public void Parse_With_Spaced_AM_PM()
         {
-            var result = (ISuccessfulTimeParsingResult<DateTime>)EnglishTimeParser.Parse("5:30 PM");
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("5:30 PM"));
 
             var expected = DateTime.Parse("5:30 PM");
 
@@ -103,7 +103,7 @@ namespace HumanTimeParser.English.Tests
         [TestMethod]
         public void TomorrowTest()
         {
-            var result = (ISuccessfulTimeParsingResult<DateTime>)EnglishTimeParser.Parse("Tomorrow");
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("Tomorrow"));
 
 
             var expected = DateTime.Now.AddDays(1);
@@ -125,7 +125,7 @@ namespace HumanTimeParser.English.Tests
         [TestMethod]
         public void Weekday_Test()
         {
-            var result = (ISuccessfulTimeParsingResult<DateTime>)EnglishTimeParser.Parse("monday at 5:00");
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("monday at 5:00"));
 
             var today = DateTime.Now;
             Console.WriteLine(today);
@@ -153,7 +153,7 @@ namespace HumanTimeParser.English.Tests
         [TestMethod]
         public void Weekday_With_Time_Period_Test()
         {
-            var result = (ISuccessfulTimeParsingResult<DateTime>)EnglishTimeParser.Parse("monday at 5:00 pm");
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("monday at 5:00 pm"));
 
             var today = DateTime.Now;
             var dayOfWeek = today.DayOfWeek;
