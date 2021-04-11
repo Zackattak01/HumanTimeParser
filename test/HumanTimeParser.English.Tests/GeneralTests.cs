@@ -7,6 +7,8 @@ namespace HumanTimeParser.English.Tests
     [TestClass]
     public class GeneralTests
     {
+        private const int FivePmHourCount = 17;
+        
         [TestMethod]
         public void StressTest()
         {
@@ -49,8 +51,8 @@ namespace HumanTimeParser.English.Tests
 
             //the following chunk of code checks to see if the two time values are "close enough"
             //execution time effects the final parsed time.  It is usually around a difference of 100 ticks or 10000 nano seconds
-            // 0.1ms accuracy.  Seeing as the lib can only parse seconds as its lowest value it should be fine
-            var closeEnough = expected.Ticks - result.Value.Ticks < 1000;
+            // 1s accuracy.  Seeing as the lib can only parse seconds as its lowest value it should be fine
+            var closeEnough = expected.Ticks - result.Value.Ticks < 10000000;
 
 
             Assert.IsTrue(closeEnough);
@@ -130,7 +132,7 @@ namespace HumanTimeParser.English.Tests
             var daysToAdd = DayOfWeek.Monday - dayOfWeek;
             if (daysToAdd < 0)
                 daysToAdd += 7;
-            var expected = DateTime.Now.AddDays(daysToAdd).Date.Add(new TimeSpan(5,0,0));
+            var expected = DateTime.Now.AddDays(daysToAdd).Date.Add(today.TimeOfDay.TotalHours > 5 ? new TimeSpan(FivePmHourCount,0,0) : new TimeSpan(5, 0, 0));
 
             Assert.AreEqual(expected, result.Value);
         }
@@ -138,7 +140,6 @@ namespace HumanTimeParser.English.Tests
         [TestMethod]
         public void Weekday_With_Time_Period_Test()
         {
-            const int fivePmHourCount = 17;
             var result = (ISuccessfulTimeParsingResult<DateTime>)EnglishTimeParser.Parse("monday at 5:00 pm");
 
             var today = DateTime.Now;
@@ -146,7 +147,7 @@ namespace HumanTimeParser.English.Tests
             var daysToAdd = DayOfWeek.Monday - dayOfWeek;
             if (daysToAdd < 0)
                 daysToAdd += 7;
-            var expected = DateTime.Now.AddDays(daysToAdd).Date.Add(new TimeSpan(fivePmHourCount,0,0));
+            var expected = DateTime.Now.AddDays(daysToAdd).Date.Add(new TimeSpan(FivePmHourCount,0,0));
 
             Assert.AreEqual(expected, result.Value);
         }
