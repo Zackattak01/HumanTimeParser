@@ -87,8 +87,8 @@ namespace HumanTimeParser.Core.Parsing.Default
 
                 if (parsedCurrentToken)
                 {
-                    //Use 'CurrentToken' instead of the 'token' var because some of the parse funcs advance the token
-                    LastParsedTokenPosition = Tokenizer.CurrentToken.Position; 
+                    //Prefer 'CurrentToken' instead of the 'token' var because some of the parse funcs advance the token
+                    LastParsedTokenPosition = Tokenizer.CurrentToken is not EOFToken ? Tokenizer.CurrentToken.Position : token.Position; 
 
                     if (FirstParsedTokenPosition == -1)
                         FirstParsedTokenPosition = token.Position;
