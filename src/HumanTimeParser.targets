@@ -1,0 +1,17 @@
+
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <TargetFramework>net5.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
+    <Authors>Zackattak01</Authors>
+    <Description>A tool for parsing human readable time formats into usable time structures.</Description>
+    <RepositoryUrl>https://github.com/Zackattak01/HumanTimeParser/blob/main/LICENSE</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Zackattak01/HumanTimeParser</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/Zackattak01/HumanTimeParser/blob/main/LICENSE</PackageLicenseUrl>
+    <RepositoryType>Git</RepositoryType>
+  </PropertyGroup>
+        <IncludeSymbols>true</IncludeSymbols>
+  </PropertyGroup>
+</Project>
