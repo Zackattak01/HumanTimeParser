@@ -131,7 +131,7 @@ namespace HumanTimeParser.English.Tests
             Console.WriteLine(today);
             var dayOfWeek = today.DayOfWeek;
             var daysToAdd = DayOfWeek.Monday - dayOfWeek;
-            if (daysToAdd < 0)
+            if (daysToAdd <= 0)
                 daysToAdd += 7;
 
             TimeSpan spanToAdd;
@@ -158,7 +158,7 @@ namespace HumanTimeParser.English.Tests
             var today = DateTime.Now;
             var dayOfWeek = today.DayOfWeek;
             var daysToAdd = DayOfWeek.Monday - dayOfWeek;
-            if (daysToAdd < 0)
+            if (daysToAdd <= 0)
                 daysToAdd += 7;
             var expected = DateTime.Now.AddDays(daysToAdd).Date.Add(new TimeSpan(FivePmHourCount,0,0));
 
