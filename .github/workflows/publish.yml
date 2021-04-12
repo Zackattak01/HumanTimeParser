@@ -22,6 +22,6 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Pack
-      run: dotnet pack -o artifacts -c Release --include-source --include-symbols --version-suffix $GITHUB_RUN_ID
+      run: dotnet pack -o artifacts -c Release --include-source --include-symbols --version-suffix dev-$GITHUB_RUN_ID
     - name: Publish
-      run: dotnet nuget push artifacts/* -s https://api.nuget.org/v3/index.json --api-key dev-${{ secrets.NUGET_API_KEY }}
+      run: dotnet nuget push artifacts/* -s https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
