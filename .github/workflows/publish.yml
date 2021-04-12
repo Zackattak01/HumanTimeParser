@@ -1,0 +1,27 @@
+name: publish
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build -c Release --no-restore
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+    - name: Pack
+      run: dotnet pack -o artifacts --no-build --include-source --include-symbols --version-suffix $GITHUB_RUN_ID
+    - name: Publish
+      run: dotnet nuget push artifacts/* -s https://api.nuget.org/v3/index.json --api-key $NUGET_API_KEY
