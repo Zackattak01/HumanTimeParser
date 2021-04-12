@@ -9,6 +9,7 @@
         <VersionPrefix>1.0.1</VersionPrefix>
         <RepositoryUrl>https://github.com/Zackattak01/HumanTimeParser</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
 
 </Project>
