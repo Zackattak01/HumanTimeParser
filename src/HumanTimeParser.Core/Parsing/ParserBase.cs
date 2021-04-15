@@ -1,3 +1,4 @@
+using System;
 using HumanTimeParser.Core.Tokenization;
 
 namespace HumanTimeParser.Core.Parsing
@@ -8,7 +9,7 @@ namespace HumanTimeParser.Core.Parsing
         
         public ParserBase(ITokenizer tokenizer)
         {
-            Tokenizer = tokenizer;
+            Tokenizer = tokenizer ?? throw new ArgumentNullException(nameof(tokenizer));
         }
         
         public abstract ITimeParsingResult Parse();

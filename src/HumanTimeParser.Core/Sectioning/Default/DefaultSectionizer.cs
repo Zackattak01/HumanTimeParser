@@ -14,6 +14,10 @@ namespace HumanTimeParser.Core.Sectioning
 
         public DefaultSectionizer(string input, string splitOn = DefaultSplitString)
         {
+            if (input is null) throw new ArgumentNullException(nameof(input));
+            if (splitOn is null) throw new ArgumentNullException(nameof(splitOn));
+
+
             _sections = input.Split(splitOn);
             SplitString = splitOn;
             _currentIndex = -1;
@@ -21,9 +25,6 @@ namespace HumanTimeParser.Core.Sectioning
         
         public Section NextSection()
         {
-            if (_sections is null)
-                throw new Exception("No input has been provided.");
-
             if (++_currentIndex >= _sections.Length)
                 return null;
 

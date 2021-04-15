@@ -1,3 +1,4 @@
+using System;
 using HumanTimeParser.Core.Sectioning;
 using HumanTimeParser.Core.Tokenization.Tokens;
 
@@ -11,7 +12,7 @@ namespace HumanTimeParser.Core.Tokenization
 
         public TokenizerBase(ISectionizer sectionizer)
         {
-            Sectionizer = sectionizer;
+            Sectionizer = sectionizer ?? throw new ArgumentNullException(nameof(sectionizer));
         }
 
         public virtual IToken NextToken()
