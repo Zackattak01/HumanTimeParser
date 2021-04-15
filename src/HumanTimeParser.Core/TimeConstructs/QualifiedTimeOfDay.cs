@@ -2,15 +2,27 @@ using System;
 
 namespace HumanTimeParser.Core.TimeConstructs
 {
+    /// <summary>
+    /// A data structure to represent a time of day with a specified <see cref="TimePeriod"/>.
+    /// </summary>
     public sealed class QualifiedTimeOfDay : TimeOfDay
     {
+        /// <summary>
+        /// Gets the specified period.
+        /// </summary>
         public TimePeriod Period { get; }
         
+        /// <summary>
+        /// Initializes a new instance of the <see cref="QualifiedTimeOfDay"/> class.
+        /// </summary>
+        /// <param name="period"></param>
+        /// <inheritdoc/>
         public QualifiedTimeOfDay(TimePeriod period, TimeSpan time) : base(time)
         {
             Period = period;
         }
 
+        /// <inheritdoc/>
         public override bool IsValid(ClockType mode = ClockType.TwelveHour)
         {
             return mode switch

@@ -2,6 +2,7 @@ using System;
 
 namespace HumanTimeParser.Core.Sectioning
 {
+    /// <inheritdoc/>
     public sealed class DefaultSectionizer : ISectionizer
     {
         private const string DefaultSplitString = " ";
@@ -12,6 +13,12 @@ namespace HumanTimeParser.Core.Sectioning
 
         private int _currentIndex;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultSectionizer"/> class.
+        /// </summary>
+        /// <param name="input">The raw input to sectionize.</param>
+        /// <param name="splitOn">The string to split the <see cref="input"/> on/</param>
+        /// <exception cref="ArgumentNullException"></exception>
         public DefaultSectionizer(string input, string splitOn = DefaultSplitString)
         {
             if (input is null) throw new ArgumentNullException(nameof(input));
@@ -22,7 +29,8 @@ namespace HumanTimeParser.Core.Sectioning
             SplitString = splitOn;
             _currentIndex = -1;
         }
-        
+
+        /// <inheritdoc/>
         public Section NextSection()
         {
             if (++_currentIndex >= _sections.Length)
@@ -31,6 +39,7 @@ namespace HumanTimeParser.Core.Sectioning
             return new Section(_currentIndex, _sections[_currentIndex]);
         }
 
+        /// <inheritdoc/>
         public Section PeekNextSection()
         {
             var nextSection = NextSection();
@@ -39,6 +48,7 @@ namespace HumanTimeParser.Core.Sectioning
             return nextSection;
         }
 
+        /// <inheritdoc/>
         public void SkipSection()
             => _currentIndex++;
         

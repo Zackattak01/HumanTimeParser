@@ -27,6 +27,7 @@ namespace HumanTimeParser.Core.Parsing.Default
         protected int LastParsedTokenPosition { get; set; }
 
 
+        /// <inheritdoc/>
         public DefaultParser(ITokenizer tokenizer) : base(tokenizer)
         {
             ParsedRelativeTimeFormats = new HashSet<RelativeTimeFormat>();
@@ -38,6 +39,11 @@ namespace HumanTimeParser.Core.Parsing.Default
             ClockType = ClockType.TwelveHour;
         }
         
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultParser"/> class.
+        /// </summary>
+        /// <param name="clockType">The type of clock to use for this operation.</param>
+        /// <inheritdoc/>
         public DefaultParser(ClockType clockType, ITokenizer tokenizer) : base(tokenizer)
         {
             ParsedRelativeTimeFormats = new HashSet<RelativeTimeFormat>();
@@ -49,6 +55,7 @@ namespace HumanTimeParser.Core.Parsing.Default
             ClockType = clockType;
         }
 
+        /// <inheritdoc/>
         public override ITimeParsingResult Parse()
         {
             StartingDate = DateTime.Now;
