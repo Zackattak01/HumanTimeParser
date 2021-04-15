@@ -3,6 +3,13 @@
   <p>A library for parsing human time formats into useable objects.</p>
 </div>
 
+## Installing
+You can download the HumanTimeParser packages from our NuGet feeds:
+* [HumanTimeParser.Core](https://www.nuget.org/packages/HumanTimeParser.Core/)
+* [HumanTimeParser.English](https://www.nuget.org/packages/HumanTimeParser.English
+
+Any prerelease packages are CI/CD builds.
+
 ## Example
 A small example to demonstrate how the [EnglishTimeParser](https://github.com/Zackattak01/HumanTimeParser/blob/main/src/HumanTimeParser.English/EnglishTimeParser.cs) works.
 ```csharp
