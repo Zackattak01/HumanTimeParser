@@ -6,7 +6,7 @@
 ## Installing
 You can download the HumanTimeParser packages from our NuGet feeds:
 * [HumanTimeParser.Core](https://www.nuget.org/packages/HumanTimeParser.Core/)
-* [HumanTimeParser.English](https://www.nuget.org/packages/HumanTimeParser.English
+* [HumanTimeParser.English](https://www.nuget.org/packages/HumanTimeParser.English)
 
 Any prerelease packages are CI/CD builds.
 
