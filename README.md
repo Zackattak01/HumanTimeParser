@@ -6,7 +6,7 @@
 ## Example
 A small example to demonstrate how the [EnglishTimeParser](https://github.com/Zackattak01/HumanTimeParser/blob/main/src/HumanTimeParser.English/EnglishTimeParser.cs) works.
 ```csharp
-var result = HumanTimeParser.Parse("6 minutes from now"); // returns a generic ITimeParsingResult
+var result = EnglishTimeParser.Parse("6 minutes from now"); // returns a generic ITimeParsingResult
 
 if (result is ISuccessfulTimeParsingResult<DateTime> successfulResult) // to determine if the result is successful or not we pattern match.  DefaultTimeParsingResult also works.
 {
