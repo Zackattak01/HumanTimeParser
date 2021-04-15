@@ -3,25 +3,15 @@
   <p>A library for parsing human time formats into useable objects.</p>
 </div>
 
+## Installing
+You can download the HumanTimeParser packages from our NuGet feeds:
+* [HumanTimeParser.Core](https://www.nuget.org/packages/HumanTimeParser.Core/)
+* [HumanTimeParser.English](https://www.nuget.org/packages/HumanTimeParser.English)
 
-<div align="center">
-  <h2>Installing</h2>
-  <p>You can download the HumanTimeParser packages from our NuGet feeds:</p>
-  <ul>
-    <li><a href="https://www.nuget.org/packages/HumanTimeParser.Core">HumanTimeParser.Core</a></li>
-    <li><a href="https://www.nuget.org/packages/HumanTimeParser.English">HumanTimeParser.English</a></li>
-  </ul>
-  Any prerelease packages are CI/CD builds.
-</div>
+Any prerelease packages are CI/CD builds.
 
-
-
-
-<div align="center">
-  <h2>Example</h2>
-  <p>A small example to demonstrate how the <a href="https://github.com/Zackattak01/HumanTimeParser/blob/main/src/HumanTimeParser.English/EnglishTimeParser.cs">EnglishTimeParser</a> works.
-<div/>
-  
+## Example
+A small example to demonstrate how the [EnglishTimeParser](https://github.com/Zackattak01/HumanTimeParser/blob/main/src/HumanTimeParser.English/EnglishTimeParser.cs) works.
 ```csharp
 var result = EnglishTimeParser.Parse("6 minutes from now"); // returns a generic ITimeParsingResult
 
@@ -35,42 +25,26 @@ else
 }
 ```
 
-<div align="center">
-  <h2>HumanTimeParser.Core</h2>
+## HumanTimeParser.Core
+This project contains all the tools required to build a time parser.
 
-  <p>This project contains all the tools required to build a time parser.</p>
+Notable features:
+* Default parser
+* Default sectionizer (text splitter)
+* Tokenizer abstractions
+* Default set of tokens
+* Time construct abstraction
 
-  <p>Notable features:</p>
-  <ul>
-    <li>Default parser</li>
-    <li>Default sectionizer (text splitter)</li>
-    <li>Tokenizer abstractions</li>
-    <li>Default set of tokens</li>
-    <li>Time construct abstraction</li>
-  </ul>
+This project can be used as a base tool for creating a time parser for other languages.
 
-  <p>This project can be used as a base tool for creating a time parser for other languages.</p>
+## HumanTimeParser.English
+This is the project that contains the implementation of HumanTimeParser.Core for the English language.
 
-</div>
+Notable features:
+* Relative time parsing
+* Date parsing
+* Time of day parsing
+* Day of week parsing
 
-<div align="center">
-  <h2>HumanTimeParser.English</h2>
-
-  <p>This is the project that contains the implementation of HumanTimeParser.Core for the English language.</>
-
-  <p>Notable features:</p>
-  
-  <ul>
-  <li>Relative time parsing</li>
-  <li>Date parsing</li>
-  <li>Time of day parsing</li>
-  <li>Day of week parsing</li>
-  </ul>
-  
-</div>
-
-<div align="center">
-  <h2>Other language implementations</h2>
-
-  <p>None ;)</p>
-</div>
+## Other language implementations
+None ;)
