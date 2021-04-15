@@ -8,8 +8,15 @@ using Microsoft.VisualBasic;
 
 namespace HumanTimeParser.English
 {
+    /// <summary>
+    /// The tokenizer used for parsing english.
+    /// </summary>
     public sealed class EnglishTimeTokenizer : TokenizerBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EnglishTimeTokenizer"/> class.
+        /// </summary>
+        /// <inheritdoc/>
         public EnglishTimeTokenizer(ISectionizer sectionizer) : base(sectionizer) { }
         protected override IToken TokenizeSection(Section section)
         {
