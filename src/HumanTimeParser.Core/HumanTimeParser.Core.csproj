@@ -6,7 +6,7 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <Authors>Zackattak01</Authors>
         <description>A framework for creating human readable time parsers.</description>
-        <VersionPrefix>1.0.1</VersionPrefix>
+        <VersionPrefix>1.0.2</VersionPrefix>
         <RepositoryUrl>https://github.com/Zackattak01/HumanTimeParser</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
