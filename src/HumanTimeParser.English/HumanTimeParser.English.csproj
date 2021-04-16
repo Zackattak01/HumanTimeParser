@@ -12,6 +12,10 @@
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+    
     <ItemGroup>
       <ProjectReference Include="..\HumanTimeParser.Core\HumanTimeParser.Core.csproj" />
     </ItemGroup>

@@ -28,16 +28,7 @@ namespace HumanTimeParser.Core.Parsing.Default
 
 
         /// <inheritdoc/>
-        public DefaultParser(ITokenizer tokenizer) : base(tokenizer)
-        {
-            ParsedRelativeTimeFormats = new HashSet<RelativeTimeFormat>();
-            RelativeTimeFunctions = new List<Func<DateTime, DateTime>>();
-
-            FirstParsedTokenPosition = -1;
-            LastParsedTokenPosition = -1;
-
-            ClockType = ClockType.TwelveHour;
-        }
+        public DefaultParser(ITokenizer tokenizer) : this(ClockType.TwelveHour, tokenizer) { }
         
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultParser"/> class.
