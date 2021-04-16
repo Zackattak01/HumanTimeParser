@@ -46,5 +46,18 @@ Notable features:
 * Time of day parsing
 * Day of week parsing
 
+### Performance
+The following benchmark was run on:
+* AMD Ryzen 3 1200 (4 core)
+* Dotnet 5.0.102
+* Linux
+
+|    Intensity |  # of Tokens |      Mean |     Error |    StdDev |  Gen 0 | Allocated |
+|------------- |--------------|-----------|-----------|-----------|--------|-----------|
+|      Toddler |            1 | 2.628 us  | 0.0118 us | 0.0111 us | 0.0114 | 1216 B    |
+|       Simple |            2 | 2.906 us  | 0.0174 us | 0.0146 us | 0.0076 | 928 B     |
+| Intermediate |            4 | 6.408 us  | 0.0272 us | 0.0227 us | 0.0153 | 1808 B    |
+|  Stress Test |           14 | 12.525 us | 0.0720 us | 0.0638 us | 0.0305 | 3688 B    |
+
 ## Other language implementations
 None ;)
