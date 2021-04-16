@@ -13,11 +13,14 @@ Any prerelease packages are CI/CD builds.
 ## Example
 A small example to demonstrate how the [EnglishTimeParser](https://github.com/Zackattak01/HumanTimeParser/blob/main/src/HumanTimeParser.English/EnglishTimeParser.cs) works.
 ```csharp
-var result = EnglishTimeParser.Parse("6 minutes from now"); // returns a generic ITimeParsingResult
+// returns a generic ITimeParsingResult
+var result = EnglishTimeParser.Parse("6 minutes from now"); 
 
-if (result is ISuccessfulTimeParsingResult<DateTime> successfulResult) // to determine if the result is successful or not we pattern match.  DefaultTimeParsingResult also works.
+// to determine if the result is successful or not we pattern match.  Pattern matching for DefaultTimeParsingResult also works.
+if (result is ISuccessfulTimeParsingResult<DateTime> successfulResult) 
 {
-  Console.WriteLine(successfulResult.Value); // sucessfulResult.Value will represent a time 6 minutes from DateTime.Now
+  // sucessfulResult.Value will represent a time 6 minutes from DateTime.Now
+  Console.WriteLine(successfulResult.Value); 
 }
 else
 {
