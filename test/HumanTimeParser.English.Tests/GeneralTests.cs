@@ -164,5 +164,14 @@ namespace HumanTimeParser.English.Tests
 
             Assert.AreEqual(expected, result.Value);
         }
+
+        [TestMethod]
+        public void Twelve_Oclock_Test()
+        {
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("12:34"));
+            var expected = DateTime.Parse("12:34pm");
+
+            Assert.AreEqual(expected, result.Value);
+        }
     }
 }

@@ -31,7 +31,7 @@ namespace HumanTimeParser.Core.TimeConstructs
         {
             return mode switch
             {
-                ClockType.TwelveHour => IsValid(12),
+                ClockType.TwelveHour => IsValid(13), //thirteen because 12:34 is a valid time
                 ClockType.TwentyFourHour => IsValid(24),
                 _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, null) //resharper on crack? dont know
             };
