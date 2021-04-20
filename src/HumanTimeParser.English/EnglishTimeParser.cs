@@ -15,7 +15,7 @@ namespace HumanTimeParser.English
         /// </summary>
         /// <param name="clockType">Sets the clock type to be used.</param>
         /// <param name="input">Sets the input to be parsed.</param>
-        public EnglishTimeParser(ClockType clockType, string input) : base(clockType, new EnglishTimeTokenizer(new DefaultSectionizer(input))) { }
+        public EnglishTimeParser(ClockType clockType, string input) : base(clockType, new EnglishTimeTokenizer(clockType, new DefaultSectionizer(input))) { }
 
         /// <summary>
         /// A parsing function that handles creating the underlying parser.

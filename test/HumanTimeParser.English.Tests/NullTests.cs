@@ -1,6 +1,7 @@
 using System;
 using HumanTimeParser.Core.Parsing.Default;
 using HumanTimeParser.Core.Sectioning;
+using HumanTimeParser.Core.TimeConstructs;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NuGet.Frameworks;
 
@@ -13,14 +14,14 @@ namespace HumanTimeParser.English.Tests
         public void Input_Null()
         {
             Assert.ThrowsException<ArgumentNullException>(() =>
-                new DefaultParser(new EnglishTimeTokenizer(new DefaultSectionizer(null))));
+                new DefaultParser(new EnglishTimeTokenizer(ClockType.TwelveHour, new DefaultSectionizer(null))));
         }
         
         [TestMethod]
         public void Sectionizer_Null()
         {
             Assert.ThrowsException<ArgumentNullException>(() =>
-                new DefaultParser(new EnglishTimeTokenizer(null)));
+                new DefaultParser(new EnglishTimeTokenizer(ClockType.TwelveHour, null)));
         }
         
         [TestMethod]

@@ -4,7 +4,6 @@ using HumanTimeParser.Core.TimeConstructs;
 using HumanTimeParser.Core.Tokenization;
 using HumanTimeParser.Core.Tokenization.Tokens;
 using HumanTimeParser.English.Extensions;
-using Microsoft.VisualBasic;
 
 namespace HumanTimeParser.English
 {
@@ -13,11 +12,17 @@ namespace HumanTimeParser.English
     /// </summary>
     public sealed class EnglishTimeTokenizer : TokenizerBase
     {
+        private readonly ClockType _clockType;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="EnglishTimeTokenizer"/> class.
         /// </summary>
         /// <inheritdoc/>
-        public EnglishTimeTokenizer(ISectionizer sectionizer) : base(sectionizer) { }
+        public EnglishTimeTokenizer(ClockType clockType, ISectionizer sectionizer) : base(sectionizer)
+        {
+            _clockType = clockType;
+        }
+        
         protected override IToken TokenizeSection(Section section)
         {
             if (section is null)
@@ -28,7 +33,7 @@ namespace HumanTimeParser.English
             if (double.TryParse(span, out var number))
                 return new NumberToken(section.Position, number);
 
-            if (TryTokenizeTimeAndTwelveHourSpecifier(section, out var timeToken))
+            if (TryTokenizeTimeAndTwelveHourSpecifier(section, _clockType, out var timeToken))
                 return timeToken;
 
             if (DateTime.TryParse(span, out var dateTime))
@@ -47,12 +52,20 @@ namespace HumanTimeParser.English
             return null; //no token was found. return null to let TokenizerBase recurse
         }
 
-        private static bool TryTokenizeTimeAndTwelveHourSpecifier(Section section, out IToken result)
+        private static bool TryTokenizeTimeAndTwelveHourSpecifier(Section section, ClockType clockType, out IToken result)
         {
             var span = section.Value.AsSpan();
             if (span.TryParseEndingTimePeriodSpecifier(out var timePeriod) && TimeSpan.TryParse(span[..^2], out var parsedQualifiedTimeSpan))
             {
-                result = new QualifiedTimeOfDayToken(section.Position, new QualifiedTimeOfDay(timePeriod, parsedQualifiedTimeSpan));
+                result = clockType switch
+                {
+                    ClockType.TwelveHour => new QualifiedTimeOfDayToken(section.Position,
+                        new QualifiedTimeOfDay(timePeriod, parsedQualifiedTimeSpan)),
+                    ClockType.TwentyFourHour => new TimeOfDayToken(section.Position,
+                        new TimeOfDay(parsedQualifiedTimeSpan)),
+                    _ => null
+                };
+
                 return true;
             }
             else if(TimeSpan.TryParse(span, out var parsedTimeSpanSpan))
