@@ -7,18 +7,16 @@ namespace HumanTimeParser.Core.Tokenization
     /// <inheritdoc/>
     public abstract class TokenizerBase : ITokenizer
     {
+        private ISectionizer _sectionizer;
+
         /// <inheritdoc/>
         public IToken CurrentToken { get; private set; }
-        protected ISectionizer Sectionizer { get; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TokenizerBase"/> class.
-        /// </summary>
-        /// <param name="sectionizer">The sectionizer to use.</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public TokenizerBase(ISectionizer sectionizer)
+        /// <inheritdoc/>
+        public ISectionizer Sectionizer
         {
-            Sectionizer = sectionizer ?? throw new ArgumentNullException(nameof(sectionizer));
+            get => _sectionizer;
+            set => _sectionizer = value ?? throw new ArgumentNullException(nameof(value));
         }
 
         /// <inheritdoc/>
@@ -46,6 +44,11 @@ namespace HumanTimeParser.Core.Tokenization
         /// <inheritdoc/>
         public void SkipToken() => Sectionizer.SkipSection();
         
+        /// <summary>
+        /// Tokenizes the given section.
+        /// </summary>
+        /// <param name="section">The section to be tokenized</param>
+        /// <returns>A token, null if no token was found</returns>
         protected abstract IToken TokenizeSection(Section section);
     }
 }

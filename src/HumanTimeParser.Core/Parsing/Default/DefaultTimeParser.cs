@@ -1,13 +1,16 @@
 using System;
 using System.Collections.Generic;
+using HumanTimeParser.Core.Sectioning;
 using HumanTimeParser.Core.TimeConstructs;
 using HumanTimeParser.Core.Tokenization;
 using HumanTimeParser.Core.Tokenization.Tokens;
 
 namespace HumanTimeParser.Core.Parsing.Default
 {
-
-    public class DefaultParser : ParserBase
+    /// <summary>
+    /// A default time parser
+    /// </summary>
+    public class DefaultTimeParser : TimeParserBase
     {
         public ClockType ClockType { get; }
         
@@ -28,14 +31,14 @@ namespace HumanTimeParser.Core.Parsing.Default
 
 
         /// <inheritdoc/>
-        public DefaultParser(ITokenizer tokenizer) : this(ClockType.TwelveHour, tokenizer) { }
+        public DefaultTimeParser(ITokenizer tokenizer) : this(ClockType.TwelveHour, tokenizer) { }
         
         /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultParser"/> class.
+        /// Initializes a new instance of the <see cref="DefaultTimeParser"/> class.
         /// </summary>
         /// <param name="clockType">The type of clock to use for this operation.</param>
         /// <inheritdoc/>
-        public DefaultParser(ClockType clockType, ITokenizer tokenizer) : base(tokenizer)
+        public DefaultTimeParser(ClockType clockType, ITokenizer tokenizer) : base(tokenizer)
         {
             ParsedRelativeTimeFormats = new HashSet<RelativeTimeFormat>();
             RelativeTimeFunctions = new List<Func<DateTime, DateTime>>();
@@ -47,8 +50,9 @@ namespace HumanTimeParser.Core.Parsing.Default
         }
 
         /// <inheritdoc/>
-        public override ITimeParsingResult Parse()
+        public override ITimeParsingResult Parse(string input)
         {
+            Tokenizer.Sectionizer = new DefaultSectionizer(input);
             StartingDate = DateTime.Now;
             IToken token;
 

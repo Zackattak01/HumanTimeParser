@@ -17,8 +17,7 @@ namespace HumanTimeParser.English
         /// <summary>
         /// Initializes a new instance of the <see cref="EnglishTimeTokenizer"/> class.
         /// </summary>
-        /// <inheritdoc/>
-        public EnglishTimeTokenizer(ClockType clockType, ISectionizer sectionizer) : base(sectionizer)
+        public EnglishTimeTokenizer(ClockType clockType)
         {
             _clockType = clockType;
         }

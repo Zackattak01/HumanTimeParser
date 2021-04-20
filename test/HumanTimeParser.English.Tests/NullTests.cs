@@ -11,31 +11,17 @@ namespace HumanTimeParser.English.Tests
     public class NullTests
     {
         [TestMethod]
-        public void Input_Null()
-        {
-            Assert.ThrowsException<ArgumentNullException>(() =>
-                new DefaultParser(new EnglishTimeTokenizer(ClockType.TwelveHour, new DefaultSectionizer(null))));
-        }
-        
-        [TestMethod]
-        public void Sectionizer_Null()
-        {
-            Assert.ThrowsException<ArgumentNullException>(() =>
-                new DefaultParser(new EnglishTimeTokenizer(ClockType.TwelveHour, null)));
-        }
-        
-        [TestMethod]
         public void Tokenizer_Null()
         {
             Assert.ThrowsException<ArgumentNullException>(() =>
-                new DefaultParser(null));
+                new DefaultTimeParser(null));
         }
         
         [TestMethod]
         public void Input_Null_English_Parser()
         {
             Assert.ThrowsException<ArgumentNullException>(() =>
-                EnglishTimeParser.Parse(null));
+                new EnglishTimeTimeParser().Parse(null));
         }
     }
 }
