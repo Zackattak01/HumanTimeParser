@@ -55,18 +55,30 @@ namespace HumanTimeParser.English
         private static bool TryTokenizeTimeAndTwelveHourSpecifier(Section section, ClockType clockType, out IToken result)
         {
             var span = section.Value.AsSpan();
-            if (span.TryParseEndingTimePeriodSpecifier(out var timePeriod) && TimeSpan.TryParse(span[..^2], out var parsedQualifiedTimeSpan))
+            if (span.TryParseEndingTimePeriodSpecifier(out var timePeriod))
             {
-                result = clockType switch
+                var truncatedSpan = span[..^2];
+                
+                if (double.TryParse(truncatedSpan, out var parsedNumber))
                 {
-                    ClockType.TwelveHour => new QualifiedTimeOfDayToken(section.Position,
-                        new QualifiedTimeOfDay(timePeriod, parsedQualifiedTimeSpan)),
-                    ClockType.TwentyFourHour => new TimeOfDayToken(section.Position,
-                        new TimeOfDay(parsedQualifiedTimeSpan)),
-                    _ => null
-                };
+                    result = new QualifiedTimeOfDayToken(section.Position,
+                        new QualifiedTimeOfDay(timePeriod, new TimeSpan((int) parsedNumber, 0, 0)));
+                    return true;
+                }
+                else if (TimeSpan.TryParse(truncatedSpan, out var parsedQualifiedTimeSpan))
+                {
+                    result = clockType switch
+                    {
+                        ClockType.TwelveHour => new QualifiedTimeOfDayToken(section.Position,
+                            new QualifiedTimeOfDay(timePeriod, parsedQualifiedTimeSpan)),
+                        ClockType.TwentyFourHour => new TimeOfDayToken(section.Position,
+                            new TimeOfDay(parsedQualifiedTimeSpan)),
+                        _ => null
+                    };
+                    return true;
+                }
 
-                return true;
+
             }
             else if(TimeSpan.TryParse(span, out var parsedTimeSpanSpan))
             {

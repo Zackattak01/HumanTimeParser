@@ -104,14 +104,29 @@ namespace HumanTimeParser.Core.Parsing.Default
         {
             var nextToken = Tokenizer.PeekNextToken();
 
-            if (nextToken is RelativeTimeFormatToken relativeTimeFormatToken && !ParsedRelativeTimeFormats.Contains(relativeTimeFormatToken.Value))
+            switch (nextToken)
             {
-                RelativeTimeFunctions.Add(ParseRelativeTime(token.Value, relativeTimeFormatToken.Value));
-                ParsedRelativeTimeFormats.Add(relativeTimeFormatToken.Value);
+                case RelativeTimeFormatToken relativeTimeFormatToken when !ParsedRelativeTimeFormats.Contains(relativeTimeFormatToken.Value):
+                    RelativeTimeFunctions.Add(ParseRelativeTime(token.Value, relativeTimeFormatToken.Value));
+                    ParsedRelativeTimeFormats.Add(relativeTimeFormatToken.Value);
 
-                //make sure to advance token
-                Tokenizer.SkipToken();
-                return true;
+                    //make sure to advance token
+                    Tokenizer.SkipToken();
+                    return true;
+                case PeriodSpecifierToken specifierToken when (ParsedTime is null && ClockType != ClockType.TwentyFourHour): 
+                {
+                    // This functionality is not supported for 24 clocks, since the TimePeriod marker would not exist
+                    // At that point the parser would be relying on the fact that a number would always be a time which obviously isn't the case
+                    var hours = (int) token.Value;
+
+                    if (specifierToken.Value == TimePeriod.Pm)
+                        hours += 12;
+
+                    ParsedTime = new TimeSpan(hours, 0, 0);
+                    //make sure to advance token
+                    Tokenizer.SkipToken();
+                    return true;
+                }
             }
 
             return false;

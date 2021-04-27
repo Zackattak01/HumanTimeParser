@@ -8,6 +8,7 @@ namespace HumanTimeParser.English.Tests
     public class GeneralTests
     {
         private const int FivePmHourCount = 17;
+        private const int SixPmHourCount = 18;
         
         [TestMethod]
         public void StressTest()
@@ -174,6 +175,27 @@ namespace HumanTimeParser.English.Tests
             var expected = DateTime.Parse("12:34");
             if (expected < DateTime.Now)
                 expected = expected.Add(new TimeSpan(12, 0, 0));
+
+            Assert.AreEqual(expected, result.Value);
+        }
+        
+        
+        [TestMethod]
+        public void Number_As_Time_Period_Specifier()
+        {
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("6pm"));
+
+            var expected = DateTime.Parse("6pm");
+
+            Assert.AreEqual(expected, result.Value);
+        }
+        
+        [TestMethod]
+        public void Number_As_Time_Period_Specifier_Spaced()
+        {
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("6 pm"));
+
+            var expected = DateTime.Parse("6pm");
 
             Assert.AreEqual(expected, result.Value);
         }
