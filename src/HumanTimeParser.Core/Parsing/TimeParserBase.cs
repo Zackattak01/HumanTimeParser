@@ -6,6 +6,9 @@ namespace HumanTimeParser.Core.Parsing
     /// <inheritdoc/>
     public abstract class TimeParserBase : ITimeParser
     {
+        /// <summary>
+        /// The tokenizer the parser will use
+        /// </summary>
         protected ITokenizer Tokenizer { get; }
         
         /// <summary>

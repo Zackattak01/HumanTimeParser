@@ -23,7 +23,8 @@ namespace HumanTimeParser.English
         {
             _timeParsingCulture = timeParsingCulture;
         }
-        
+
+        /// <inheritdoc/>
         protected override IToken TokenizeSection(Section section)
         {
             if (section is null)

@@ -5,7 +5,15 @@ namespace HumanTimeParser.Core.Parsing
     /// </summary>
     public interface ISuccessfulTimeParsingResult : ITimeParsingResult
     {
+        /// <summary>
+        /// The index of the first parsed token.
+        /// Index based on the length of the input <see cref="string"/>
+        /// </summary>
         public int FirstParsedTokenIndex { get; }
+        /// <summary>
+        /// The index of the last parsed token.
+        /// Index based on the length of the input <see cref="string"/>
+        /// </summary>
         public int LastParsedTokenIndex { get; }
     }
     

@@ -56,24 +56,5 @@ namespace HumanTimeParser.English
             RelativeTimeKeywordDictionary = tempRelativeTimeAbbreviationsDict;
 
         }
-
-        // public static readonly IReadOnlyDictionary<TokenType, IReadOnlySet<string>> RelativeTimeAbbreviations = new Dictionary<TokenType, IReadOnlySet<string>>{
-        // {.Tomorrow, TomorrowAbbreviations},
-        // {TokenType.Second, SecondAbbreviations},
-        // {TokenType.Minute, MinuteAbbreviations},
-        // {TokenType.Hour, HourAbbreviations},
-        // {TokenType.Day, DayAbbreviations},
-        // {TokenType.Week, WeekAbbreviations},
-        // {TokenType.Month, MonthAbbreviations},
-        // {TokenType.Year, YearAbbreviations} };
-
-        // public static readonly IReadOnlyDictionary<DayOfWeek, IReadOnlySet<string>> WeekdayAbbreviations = new Dictionary<DayOfWeek, IReadOnlySet<string>>{
-        // {DayOfWeek.Monday, MondayAbbreviations},
-        // {DayOfWeek.Tuesday, TuesdayAbbreviations},
-        // {DayOfWeek.Wednesday, WednesdayAbbreviations},
-        // {DayOfWeek.Thursday, ThursdayAbbreviations},
-        // {DayOfWeek.Friday, FridayAbbreviations},
-        // {DayOfWeek.Saturday, SaturdayAbbreviations},
-        // {DayOfWeek.Sunday, SundayAbbreviations} };
     }
 }

@@ -2,9 +2,11 @@ using System;
 
 namespace HumanTimeParser.Core.Parsing
 {
+    /// <summary>
+    /// Represents a default result for a failed time parse
+    /// </summary>
     public sealed class DefaultFailedTimeParsingResult : IFailedTimeParsingResult
     {
-        
         /// <inheritdoc/> 
         public string ErrorReason { get; }
         

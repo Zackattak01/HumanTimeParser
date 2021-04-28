@@ -11,8 +11,7 @@ namespace HumanTimeParser.English
         /// <summary>
         /// Initializes a new instance of the <see cref="EnglishTimeParser"/> class.
         /// </summary>
-        /// <param name="clockType">Sets the clock type to be used.</param>
-        /// <param name="input">Sets the input to be parsed.</param>
+        /// <param name="cultureInfo">Sets the clock type to be used.</param>
         public EnglishTimeParser(TimeParsingCulture cultureInfo = null)
             : base(cultureInfo ?? TimeParsingCulture.DefaultInstance,
                 new EnglishTimeTokenizer(cultureInfo ?? TimeParsingCulture.DefaultInstance)) { }

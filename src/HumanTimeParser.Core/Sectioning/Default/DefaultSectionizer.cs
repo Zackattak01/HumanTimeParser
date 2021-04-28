@@ -7,6 +7,9 @@ namespace HumanTimeParser.Core.Sectioning
     {
         private const string DefaultSplitString = " ";
         
+        /// <summary>
+        /// The <see cref="string"/> that is used for splitting the input
+        /// </summary>
         public string SplitString { get; }
         
         private readonly string[] _sections;
@@ -40,7 +43,7 @@ namespace HumanTimeParser.Core.Sectioning
 
             _currentInputLength += _currentIndex == 0 ? 
                 _sections[_currentIndex].Length :
-                _sections[_currentIndex].Length + 1; // add one for the separator char which isn't included here
+                _sections[_currentIndex].Length + SplitString.Length; // add one for the separator char which isn't included here
             
             return new Section(_currentInputLength, _sections[_currentIndex]);
         }
