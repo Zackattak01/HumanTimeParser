@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using HumanTimeParser.Core.Culture;
 using HumanTimeParser.Core.Parsing.State;
 using HumanTimeParser.Core.Sectioning;
 using HumanTimeParser.Core.TimeConstructs;
@@ -13,24 +14,19 @@ namespace HumanTimeParser.Core.Parsing.Default
     /// </summary>
     public class DefaultTimeParser : TimeParserBase
     {
-        public ClockType ClockType { get; }
-        
         protected static readonly TimeSpan TwelveHourTimeSpan = TimeSpan.FromHours(12);
         
+        public ITimeParsingCulture Culture { get; }
         protected DefaultTimeParserState State { get; private set; }
 
-
-        /// <inheritdoc/>
-        public DefaultTimeParser(ITokenizer tokenizer) : this(ClockType.TwelveHour, tokenizer) { }
-        
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultTimeParser"/> class.
         /// </summary>
         /// <param name="clockType">The type of clock to use for this operation.</param>
         /// <inheritdoc/>
-        public DefaultTimeParser(ClockType clockType, ITokenizer tokenizer) : base(tokenizer)
+        public DefaultTimeParser(ITimeParsingCulture culture, ITokenizer tokenizer) : base(tokenizer)
         {
-            ClockType = clockType;
+            Culture = culture;
         }
 
         /// <inheritdoc/>
@@ -118,11 +114,11 @@ namespace HumanTimeParser.Core.Parsing.Default
 
         protected virtual bool ParseTimeOfDayToken(TimeOfDayToken timeOfDayToken)
         {
-            if (!timeOfDayToken.Value.IsValid(ClockType) || State.ParsedTime is not null)
+            if (!timeOfDayToken.Value.IsValid(Culture.ClockType) || State.ParsedTime is not null)
                 return false;
             
             // no additional parsing is required for 24 hour clocks
-            if(ClockType == ClockType.TwentyFourHour)
+            if(Culture.ClockType == ClockType.TwentyFourHour)
             {
                 State.ParsedTime = timeOfDayToken.Value.Time;
                 return true;

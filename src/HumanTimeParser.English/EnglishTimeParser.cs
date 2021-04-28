@@ -1,3 +1,5 @@
+using System.Globalization;
+using HumanTimeParser.Core.Culture;
 using HumanTimeParser.Core.Parsing;
 using HumanTimeParser.Core.Parsing.Default;
 using HumanTimeParser.Core.Sectioning;
@@ -8,14 +10,16 @@ namespace HumanTimeParser.English
     /// <summary>
     /// An english time parser.
     /// </summary>
-    public class EnglishTimeTimeParser : DefaultTimeParser
+    public class EnglishTimeParser : DefaultTimeParser
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="EnglishTimeTimeParser"/> class.
+        /// Initializes a new instance of the <see cref="EnglishTimeParser"/> class.
         /// </summary>
         /// <param name="clockType">Sets the clock type to be used.</param>
         /// <param name="input">Sets the input to be parsed.</param>
-        public EnglishTimeTimeParser(ClockType clockType = ClockType.TwelveHour) : base(clockType, new EnglishTimeTokenizer(clockType)) { }
+        public EnglishTimeParser(TimeParsingCulture cultureInfo = null)
+            : base(cultureInfo ?? TimeParsingCulture.DefaultInstance,
+                new EnglishTimeTokenizer(cultureInfo ?? TimeParsingCulture.DefaultInstance)) { }
         
     }
 }

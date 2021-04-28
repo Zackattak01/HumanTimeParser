@@ -10,7 +10,7 @@ namespace HumanTimeParser.English.Tests
         
         private const int FivePmHourCount = 17;
 
-        private static readonly EnglishTimeTimeParser EnglishTimeTimeParser = new();
+        private static readonly EnglishTimeParser EnglishTimeParser = new();
 
         [TestMethod]
         public void StressTest()

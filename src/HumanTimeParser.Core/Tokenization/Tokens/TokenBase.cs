@@ -8,8 +8,7 @@ namespace HumanTimeParser.Core.Tokenization.Tokens
 
         /// <inheritdoc/>
         public T Value { get; }
-
-        // How do i doc abstract ctors?
+        
         /// <summary>
         /// Initializes a new instance of the base <see cref="TokenBase{T}"/> class.
         /// </summary>
