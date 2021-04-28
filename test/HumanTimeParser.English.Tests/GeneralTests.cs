@@ -167,5 +167,53 @@ namespace HumanTimeParser.English.Tests
 
             Assert.AreEqual(expected, result.Value);
         }
+        
+        [TestMethod]
+        public void Twelve_Oclock_Test()
+        {
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("12:34"));
+            
+            
+            var expected = DateTime.Parse("12:34");
+            if (expected < DateTime.Now)
+                expected = expected.Add(new TimeSpan(12, 0, 0));
+
+            Assert.AreEqual(expected, result.Value);
+        }
+        
+        
+        [TestMethod]
+        public void Number_As_Time_Period_Specifier()
+        {
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("6pm"));
+
+            var expected = DateTime.Parse("6pm");
+
+            Assert.AreEqual(expected, result.Value);
+        }
+        
+        [TestMethod]
+        public void Number_As_Time_Period_Specifier_Spaced()
+        {
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("6 pm"));
+
+            var expected = DateTime.Parse("6pm");
+
+            Assert.AreEqual(expected, result.Value);
+        }
+        
+        [TestMethod]
+        public void Number_As_Time_Overflow()
+        {
+            Assert.IsInstanceOfType(EnglishTimeParser.Parse("600pm"), typeof(IFailedTimeParsingResult));        
+        }
+        
+        [TestMethod]
+        public void Number_As_Time_Overflow_Spaced()
+        {
+            Assert.IsInstanceOfType(EnglishTimeParser.Parse("600 pm"), typeof(IFailedTimeParsingResult));        
+        }
+        
+        
     }
 }

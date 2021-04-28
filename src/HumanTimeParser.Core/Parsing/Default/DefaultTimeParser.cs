@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using HumanTimeParser.Core.Culture;
+using HumanTimeParser.Core.Extensions;
 using HumanTimeParser.Core.Parsing.State;
 using HumanTimeParser.Core.Sectioning;
 using HumanTimeParser.Core.TimeConstructs;
@@ -88,14 +89,35 @@ namespace HumanTimeParser.Core.Parsing.Default
         {
             var nextToken = Tokenizer.PeekNextToken();
 
-            if (nextToken is RelativeTimeFormatToken relativeTimeFormatToken && !State.ParsedRelativeTimeFormats.Contains(relativeTimeFormatToken.Value))
+            switch (nextToken)
             {
-                State.RelativeTimeFunctions.Add(ParseRelativeTime(token.Value, relativeTimeFormatToken.Value));
-                State.ParsedRelativeTimeFormats.Add(relativeTimeFormatToken.Value);
+                case RelativeTimeFormatToken relativeTimeFormatToken when !State.ParsedRelativeTimeFormats.Contains(relativeTimeFormatToken.Value):
+                    State.RelativeTimeFunctions.Add(ParseRelativeTime(token.Value, relativeTimeFormatToken.Value));
+                    State.ParsedRelativeTimeFormats.Add(relativeTimeFormatToken.Value);
 
-                //make sure to advance token
-                Tokenizer.SkipToken();
-                return true;
+                    //make sure to advance token
+                    Tokenizer.SkipToken();
+                    return true;
+                case PeriodSpecifierToken specifierToken when (State.ParsedDate is null && Culture.ClockType != ClockType.TwentyFourHour): 
+                {
+                    // This functionality is not supported for 24 clocks, since the TimePeriod marker would not exist
+                    // At that point the parser would be relying on the fact that a number would always be a time which obviously isn't the case
+                    var hours = (int) token.Value;
+
+                    if (specifierToken.Value == TimePeriod.Pm)
+                        hours += 12;
+
+                    var ts = new TimeSpan(hours, 0, 0);
+
+                    // by this point the time may have been converted to a 24 hour clock type
+                    if (!ts.IsValidTimeOfDay(ClockType.TwentyFourHour))
+                        return false;
+                    
+                    State.ParsedTime = ts;
+                    //make sure to advance token
+                    Tokenizer.SkipToken();
+                    return true;
+                }
             }
 
             return false;
@@ -165,7 +187,7 @@ namespace HumanTimeParser.Core.Parsing.Default
         
         protected virtual bool ParseQualifiedTimeOfDayToken(QualifiedTimeOfDayToken token)
         {
-            if (State.ParsedTime is not null)
+            if (State.ParsedTime is not null || !token.Value.IsValid())
                 return false;
             
             State.ParsedTime = token.Value.Time; 

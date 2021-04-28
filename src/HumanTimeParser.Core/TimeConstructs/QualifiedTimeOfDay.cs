@@ -1,4 +1,5 @@
 using System;
+using HumanTimeParser.Core.Extensions;
 
 namespace HumanTimeParser.Core.TimeConstructs
 {
@@ -27,9 +28,9 @@ namespace HumanTimeParser.Core.TimeConstructs
         {
             return mode switch
             {
-                ClockType.TwelveHour => IsValid(12),
+                ClockType.TwelveHour => Time.IsValidTimeOfDay(13),
                 ClockType.TwentyFourHour => throw  new NotSupportedException("A qualified time of day cannot be judged based on a twenty four hour clock style."),
-                _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, null) //resharper on crack? dont know
+                _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, null)
             };
         }
     }

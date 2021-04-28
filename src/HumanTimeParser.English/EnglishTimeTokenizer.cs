@@ -57,20 +57,32 @@ namespace HumanTimeParser.English
         private bool TryTokenizeTimeAndTwelveHourSpecifier(Section section, out IToken result)
         {
             var span = section.Value.AsSpan();
-            if (span.TryParseEndingTimePeriodSpecifier(out var timePeriod) && TokenizerUtils.TryParseTimeSpan(span[..^2], _timeParsingCulture, out var parsedQualifiedTimeSpan))
+            if (span.TryParseEndingTimePeriodSpecifier(out var timePeriod))
             {
-                result = _timeParsingCulture.ClockType switch
+                var truncatedSpan = span[..^2];
+                
+                if (TokenizerUtils.TryParseNumber(truncatedSpan, _timeParsingCulture, out var parsedNumber))
                 {
-                    ClockType.TwelveHour => new QualifiedTimeOfDayToken(section.Position,
-                        new QualifiedTimeOfDay(timePeriod, parsedQualifiedTimeSpan)),
-                    ClockType.TwentyFourHour => new TimeOfDayToken(section.Position,
-                        new TimeOfDay(parsedQualifiedTimeSpan)),
-                    _ => null
-                };
+                    result = new QualifiedTimeOfDayToken(section.Position,
+                        new QualifiedTimeOfDay(timePeriod, new TimeSpan((int) parsedNumber, 0, 0)));
+                    return true;
+                }
+                else if (TokenizerUtils.TryParseTimeSpan(truncatedSpan, _timeParsingCulture, out var parsedQualifiedTimeSpan))
+                {
+                    result = _timeParsingCulture.ClockType switch
+                    {
+                        ClockType.TwelveHour => new QualifiedTimeOfDayToken(section.Position,
+                            new QualifiedTimeOfDay(timePeriod, parsedQualifiedTimeSpan)),
+                        ClockType.TwentyFourHour => new TimeOfDayToken(section.Position,
+                            new TimeOfDay(parsedQualifiedTimeSpan)),
+                        _ => null
+                    };
+                    return true;
+                }
 
-                return true;
+
             }
-            else if(TokenizerUtils.TryParseTimeSpan(span, _timeParsingCulture, out var parsedTimeSpanSpan))
+            else if(TimeSpan.TryParse(span, out var parsedTimeSpanSpan))
             {
                 result = new TimeOfDayToken(section.Position, new TimeOfDay(parsedTimeSpanSpan));
                 return true;
