@@ -39,7 +39,7 @@ namespace HumanTimeParser.Core.Tokenization
             if (token is null)
                 return NextToken();
 
-            CurrentToken = token;
+            CurrentToken = token; //TODO: This causes problems
             return token;
         }
 
