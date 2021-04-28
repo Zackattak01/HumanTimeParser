@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using HumanTimeParser.Core.Extensions;
 using HumanTimeParser.Core.TimeConstructs;
 using HumanTimeParser.Core.Tokenization;
 using HumanTimeParser.Core.Tokenization.Tokens;
@@ -122,7 +123,13 @@ namespace HumanTimeParser.Core.Parsing.Default
                     if (specifierToken.Value == TimePeriod.Pm)
                         hours += 12;
 
-                    ParsedTime = new TimeSpan(hours, 0, 0);
+                    var ts = new TimeSpan(hours, 0, 0);
+
+                    // by this point the time may have been converted to a 24 hour clock type
+                    if (!ts.IsValidTimeOfDay(ClockType.TwentyFourHour))
+                        return false;
+                    
+                    ParsedTime = ts;
                     //make sure to advance token
                     Tokenizer.SkipToken();
                     return true;
@@ -196,7 +203,7 @@ namespace HumanTimeParser.Core.Parsing.Default
         
         protected virtual bool ParseQualifiedTimeOfDayToken(QualifiedTimeOfDayToken token)
         {
-            if (ParsedTime is not null)
+            if (ParsedTime is not null || !token.Value.IsValid())
                 return false;
             
             ParsedTime = token.Value.Time; 

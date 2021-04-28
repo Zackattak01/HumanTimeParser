@@ -199,5 +199,17 @@ namespace HumanTimeParser.English.Tests
 
             Assert.AreEqual(expected, result.Value);
         }
+        
+        [TestMethod]
+        public void Number_As_Time_Overflow()
+        {
+            Assert.IsInstanceOfType(EnglishTimeParser.Parse("600pm"), typeof(IFailedTimeParsingResult));        
+        }
+        
+        [TestMethod]
+        public void Number_As_Time_Overflow_Spaced()
+        {
+            Assert.IsInstanceOfType(EnglishTimeParser.Parse("600 pm"), typeof(IFailedTimeParsingResult));        
+        }
     }
 }

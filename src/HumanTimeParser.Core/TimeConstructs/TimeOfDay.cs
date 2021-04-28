@@ -1,4 +1,5 @@
 using System;
+using HumanTimeParser.Core.Extensions;
 
 namespace HumanTimeParser.Core.TimeConstructs
 {
@@ -31,21 +32,11 @@ namespace HumanTimeParser.Core.TimeConstructs
         {
             return mode switch
             {
-                ClockType.TwelveHour => IsValid(13), //thirteen because 12:34 is a valid time
-                ClockType.TwentyFourHour => IsValid(24),
+                ClockType.TwelveHour => Time.IsValidTimeOfDay(13), //thirteen because 12:34 is a valid time
+                ClockType.TwentyFourHour => Time.IsValidTimeOfDay(24),
                 _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, null) //resharper on crack? dont know
             };
         }
 
-        protected bool IsValid(int maxNumberOfHours)
-        {
-            if (Time.TotalHours >= maxNumberOfHours)
-                return false;
-            if (Time.TotalSeconds < 1)
-                return false;
-
-            return true;
-        }
-        
     }
 }
