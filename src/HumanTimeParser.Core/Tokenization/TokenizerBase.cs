@@ -23,7 +23,7 @@ namespace HumanTimeParser.Core.Tokenization
         public virtual IToken NextToken()
         {
             var token = TokenizeSection(Sectionizer.NextSection());
-            if (token is null)
+            if (token is UnknownToken)
                 return NextToken();
 
             CurrentToken = token;

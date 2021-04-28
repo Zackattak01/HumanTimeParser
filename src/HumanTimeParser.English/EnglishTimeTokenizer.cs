@@ -51,7 +51,7 @@ namespace HumanTimeParser.English
                 return periodSpecifierToken;
 
 
-            return null; //no token was found. return null to let TokenizerBase recurse
+            return new UnknownToken(section.Position, section.Value); //no token was found. return an unknown token to let TokenizerBase recurse
         }
 
         private bool TryTokenizeTimeAndTwelveHourSpecifier(Section section, out IToken result)
