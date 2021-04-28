@@ -12,6 +12,7 @@ namespace HumanTimeParser.Core.Sectioning
         private readonly string[] _sections;
 
         private int _currentIndex;
+        private int _currentInputLength;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultSectionizer"/> class.
@@ -28,6 +29,7 @@ namespace HumanTimeParser.Core.Sectioning
             _sections = input.Split(splitOn);
             SplitString = splitOn;
             _currentIndex = -1;
+            _currentInputLength = 0;
         }
 
         /// <inheritdoc/>
@@ -36,7 +38,11 @@ namespace HumanTimeParser.Core.Sectioning
             if (++_currentIndex >= _sections.Length)
                 return null;
 
-            return new Section(_currentIndex, _sections[_currentIndex]);
+            _currentInputLength += _currentIndex == 0 ? 
+                _sections[_currentIndex].Length :
+                _sections[_currentIndex].Length + 1; // add one for the separator char which isn't included here
+            
+            return new Section(_currentInputLength, _sections[_currentIndex]);
         }
 
         /// <inheritdoc/>
