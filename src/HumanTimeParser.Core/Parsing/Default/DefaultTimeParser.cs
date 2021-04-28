@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using HumanTimeParser.Core.Culture;
 using HumanTimeParser.Core.Extensions;
 using HumanTimeParser.Core.Parsing.State;

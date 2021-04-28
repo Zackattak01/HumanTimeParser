@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using HumanTimeParser.Core.Culture;
 using HumanTimeParser.Core.Sectioning;
 using HumanTimeParser.Core.TimeConstructs;

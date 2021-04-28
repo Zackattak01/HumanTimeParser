@@ -1,6 +1,5 @@
 using System;
 using HumanTimeParser.Core.TimeConstructs;
-using HumanTimeParser.Core.Tokenization.Tokens;
 
 namespace HumanTimeParser.English.Extensions
 {

@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-using HumanTimeParser.Core.Parsing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HumanTimeParser.English.Tests
