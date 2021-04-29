@@ -14,15 +14,25 @@ namespace HumanTimeParser.Core.Parsing.Default
     /// </summary>
     public class DefaultTimeParser : TimeParserBase
     {
+        /// <summary>
+        /// Timespan useful for adding twelve hours to other timespans
+        /// </summary>
         protected static readonly TimeSpan TwelveHourTimeSpan = TimeSpan.FromHours(12);
         
+        /// <summary>
+        /// The culture this parser uses
+        /// </summary>
         public ITimeParsingCulture Culture { get; }
+        
+        /// <summary>
+        /// The parser's state
+        /// </summary>
         protected DefaultTimeParserState State { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultTimeParser"/> class.
         /// </summary>
-        /// <param name="clockType">The type of clock to use for this operation.</param>
+        /// <param name="culture">The culture this parser will use.</param>
         /// <inheritdoc/>
         public DefaultTimeParser(ITimeParsingCulture culture, ITokenizer tokenizer) : base(tokenizer)
         {
@@ -84,6 +94,11 @@ namespace HumanTimeParser.Core.Parsing.Default
             return new DefaultSuccessfulTimeParsingResult(ConstructDateTime(), State.FirstParsedTokenPosition, State.LastParsedTokenPosition);
         }
 
+        /// <summary>
+        /// Responsible for parsing a <see cref="NumberToken"/>
+        /// </summary>
+        /// <param name="token">The token</param>
+        /// <returns>Whether the parse was successful</returns>
         protected virtual bool ParseNumberToken(NumberToken token)
         {
             var nextToken = Tokenizer.PeekNextToken();
@@ -122,6 +137,11 @@ namespace HumanTimeParser.Core.Parsing.Default
             return false;
         }
 
+        /// <summary>
+        /// Responsible for parsing a <see cref="QualifiedRelativeTimeToken"/>
+        /// </summary>
+        /// <param name="token">The token</param>
+        /// <returns>Whether the parse was successful</returns>
         protected virtual bool ParseFullyQualifiedRelativeTimeToken(QualifiedRelativeTimeToken token)
         {
             if (State.ParsedRelativeTimeFormats.Contains(token.Value.Format))
@@ -133,6 +153,11 @@ namespace HumanTimeParser.Core.Parsing.Default
             return true;
         }
 
+        /// <summary>
+        /// Responsible for parsing a <see cref="TimeOfDayToken"/>
+        /// </summary>
+        /// <param name="timeOfDayToken">The token</param>
+        /// <returns>Whether the parse was successful</returns>
         protected virtual bool ParseTimeOfDayToken(TimeOfDayToken timeOfDayToken)
         {
             if (!timeOfDayToken.Value.IsValid(Culture.ClockType) || State.ParsedTime is not null)
@@ -184,6 +209,11 @@ namespace HumanTimeParser.Core.Parsing.Default
             }
         }
         
+        /// <summary>
+        /// Responsible for parsing a <see cref="QualifiedTimeOfDayToken"/>
+        /// </summary>
+        /// <param name="token">The token</param>
+        /// <returns>Whether the parse was successful</returns>
         protected virtual bool ParseQualifiedTimeOfDayToken(QualifiedTimeOfDayToken token)
         {
             if (State.ParsedTime is not null || !token.Value.IsValid())
@@ -197,6 +227,11 @@ namespace HumanTimeParser.Core.Parsing.Default
             return true;
         }
 
+        /// <summary>
+        /// Responsible for parsing a <see cref="DateToken"/>
+        /// </summary>
+        /// <param name="token">The token</param>
+        /// <returns>Whether the parse was successful</returns>
         protected virtual bool ParseDateToken(DateToken token)
         {
             if (State.ParsedDate is not null)
@@ -207,6 +242,11 @@ namespace HumanTimeParser.Core.Parsing.Default
             return true;
         }
 
+        /// <summary>
+        /// Responsible for parsing a <see cref="DayOfWeekToken"/>
+        /// </summary>
+        /// <param name="token">The token</param>
+        /// <returns>Whether the parse was successful</returns>
         protected virtual bool ParseDayOfWeekToken(DayOfWeekToken token)
         {
             if (State.ParsedDayOfWeek is not null)
@@ -230,14 +270,29 @@ namespace HumanTimeParser.Core.Parsing.Default
             return true;
         }
 
+        /// <summary>
+        /// Responsible for handling an unknown or unexpected token; is a nop by default
+        /// </summary>
+        /// <param name="token">The unknown token</param>
         protected virtual void HandleUnexpectedToken(IToken token)
         {
             // do nothing by default
         }
 
+        /// <summary>
+        /// Function for creating the failed result when no tokens could be parsed
+        /// </summary>
+        /// <returns>A failed result indicating no tokens could be parsed</returns>
         protected virtual IFailedTimeParsingResult NoParseableTokensFound()
             => new DefaultFailedTimeParsingResult("No parseable time formats were found.");
 
+        /// <summary>
+        /// Responsible for converting a relative time format and value into a delegate
+        /// </summary>
+        /// <param name="number">The amount of units</param>
+        /// <param name="format">The time unit</param>
+        /// <returns>A delegate that will be used to construct the final result</returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         protected virtual Func<DateTime, DateTime> ParseRelativeTime(double number, RelativeTimeFormat format)
         {
             const int daysPerWeek = 7;
@@ -255,6 +310,10 @@ namespace HumanTimeParser.Core.Parsing.Default
             };
         }
 
+        /// <summary>
+        /// Constructs the final <see cref="DateTime"/>
+        /// </summary>
+        /// <returns>The final <see cref="DateTime"/></returns>
         protected virtual DateTime ConstructDateTime()
         {
             var date = State.ParsedDate ?? State.StartingDate;
