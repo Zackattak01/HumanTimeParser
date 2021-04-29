@@ -47,12 +47,12 @@ namespace HumanTimeParser.English.Tests
             Assert.AreEqual(7, result.LastParsedTokenIndex);
         }
         
-        [TestMethod]
-        public void Number_At_End()
-        {
-            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("saturday at 1:30 finish 2.0"));
-
-            Assert.AreEqual(2, result.LastParsedTokenIndex);
-        }
+        // [TestMethod]
+        // public void Number_At_End()
+        // {
+        //     var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("saturday at 1:30 finish 2.0"));
+        //
+        //     Assert.AreEqual(2, result.LastParsedTokenIndex);
+        // }
     }
 }
