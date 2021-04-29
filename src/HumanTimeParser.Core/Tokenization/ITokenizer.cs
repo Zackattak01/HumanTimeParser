@@ -1,3 +1,4 @@
+using HumanTimeParser.Core.Sectioning;
 using HumanTimeParser.Core.Tokenization.Tokens;
 
 namespace HumanTimeParser.Core.Tokenization
@@ -7,6 +8,11 @@ namespace HumanTimeParser.Core.Tokenization
     /// </summary>
     public interface ITokenizer
     {
+        /// <summary>
+        /// The sectionizer to be used for tokenizing
+        /// </summary>
+        public ISectionizer Sectionizer { get; set; }
+        
         /// <summary>
         /// Gets the current token.
         /// </summary>

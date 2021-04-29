@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-using HumanTimeParser.Core.Parsing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HumanTimeParser.English.Tests
@@ -8,11 +5,14 @@ namespace HumanTimeParser.English.Tests
     [TestClass]
     public class LastTokenPositionTests
     {
+        private static readonly EnglishTimeParser EnglishTimeParser = new();
+
+        
         [TestMethod]
         public void LastTokenPositionTest()
         {
             var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("in 5 s do things cool stuff"));
-            Assert.AreEqual(2, result.LastParsedTokenIndex);
+            Assert.AreEqual(6, result.LastParsedTokenIndex);
         }
 
         [TestMethod]
@@ -20,7 +20,7 @@ namespace HumanTimeParser.English.Tests
         {
             var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("10s gamer time"));
 
-            Assert.AreEqual(0, result.LastParsedTokenIndex);
+            Assert.AreEqual(3, result.LastParsedTokenIndex);
         }
 
         [TestMethod]
@@ -28,7 +28,7 @@ namespace HumanTimeParser.English.Tests
         {
             var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("5:30pm files"));
 
-            Assert.AreEqual(0, result.LastParsedTokenIndex);
+            Assert.AreEqual(6, result.LastParsedTokenIndex);
         }
 
         [TestMethod]
@@ -36,7 +36,7 @@ namespace HumanTimeParser.English.Tests
         {
             var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("5:30pm .files"));
 
-            Assert.AreEqual(0, result.LastParsedTokenIndex);
+            Assert.AreEqual(6, result.LastParsedTokenIndex);
         }
 
         [TestMethod]
@@ -44,7 +44,7 @@ namespace HumanTimeParser.English.Tests
         {
             var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("5:30 PM"));
 
-            Assert.AreEqual(1, result.LastParsedTokenIndex);
+            Assert.AreEqual(7, result.LastParsedTokenIndex);
         }
         
         [TestMethod]

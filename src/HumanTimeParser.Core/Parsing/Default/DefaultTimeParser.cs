@@ -1,56 +1,39 @@
 using System;
-using System.Collections.Generic;
+using HumanTimeParser.Core.Culture;
 using HumanTimeParser.Core.Extensions;
+using HumanTimeParser.Core.Parsing.State;
+using HumanTimeParser.Core.Sectioning;
 using HumanTimeParser.Core.TimeConstructs;
 using HumanTimeParser.Core.Tokenization;
 using HumanTimeParser.Core.Tokenization.Tokens;
 
 namespace HumanTimeParser.Core.Parsing.Default
 {
-
-    public class DefaultParser : ParserBase
+    /// <summary>
+    /// A default time parser
+    /// </summary>
+    public class DefaultTimeParser : TimeParserBase
     {
-        public ClockType ClockType { get; }
-        
         protected static readonly TimeSpan TwelveHourTimeSpan = TimeSpan.FromHours(12);
         
-        protected HashSet<RelativeTimeFormat> ParsedRelativeTimeFormats { get; }
-        protected List<Func<DateTime, DateTime>> RelativeTimeFunctions { get; }
+        public ITimeParsingCulture Culture { get; }
+        protected DefaultTimeParserState State { get; private set; }
 
-        protected DateTime StartingDate { get; set; }
-        protected DateTime? ParsedDate { get; set; }
-        
-        protected TimeSpan? ParsedTime { get; set; }
-        
-        protected DayOfWeek? ParsedDayOfWeek { get; set; }
-
-        protected int FirstParsedTokenPosition { get; set; }
-        protected int LastParsedTokenPosition { get; set; }
-
-
-        /// <inheritdoc/>
-        public DefaultParser(ITokenizer tokenizer) : this(ClockType.TwelveHour, tokenizer) { }
-        
         /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultParser"/> class.
+        /// Initializes a new instance of the <see cref="DefaultTimeParser"/> class.
         /// </summary>
         /// <param name="clockType">The type of clock to use for this operation.</param>
         /// <inheritdoc/>
-        public DefaultParser(ClockType clockType, ITokenizer tokenizer) : base(tokenizer)
+        public DefaultTimeParser(ITimeParsingCulture culture, ITokenizer tokenizer) : base(tokenizer)
         {
-            ParsedRelativeTimeFormats = new HashSet<RelativeTimeFormat>();
-            RelativeTimeFunctions = new List<Func<DateTime, DateTime>>();
-
-            FirstParsedTokenPosition = -1;
-            LastParsedTokenPosition = -1;
-
-            ClockType = clockType;
+            Culture = culture;
         }
 
         /// <inheritdoc/>
-        public override ITimeParsingResult Parse()
+        public override ITimeParsingResult Parse(string input)
         {
-            StartingDate = DateTime.Now;
+            Tokenizer.Sectionizer = new DefaultSectionizer(input);
+            State = new DefaultTimeParserState();
             IToken token;
 
             do
@@ -87,18 +70,18 @@ namespace HumanTimeParser.Core.Parsing.Default
                 if (parsedCurrentToken)
                 {
                     //Prefer 'CurrentToken' instead of the 'token' var because some of the parse funcs advance the token
-                    LastParsedTokenPosition = Tokenizer.CurrentToken is not EOFToken ? Tokenizer.CurrentToken.Position : token.Position; 
+                    State.LastParsedTokenPosition = Tokenizer.CurrentToken is not EOFToken ? Tokenizer.CurrentToken.Position : token.Position; 
 
-                    if (FirstParsedTokenPosition == -1)
-                        FirstParsedTokenPosition = token.Position;
+                    if (State.FirstParsedTokenPosition == -1)
+                        State.FirstParsedTokenPosition = token.Position;
                 }
 
             } while (token is not EOFToken);
 
-            if (LastParsedTokenPosition == -1)
+            if (State.LastParsedTokenPosition == -1)
                 return NoParseableTokensFound();
 
-            return new DefaultSuccessfulTimeParsingResult(ConstructDateTime(), FirstParsedTokenPosition, LastParsedTokenPosition);
+            return new DefaultSuccessfulTimeParsingResult(ConstructDateTime(), State.FirstParsedTokenPosition, State.LastParsedTokenPosition);
         }
 
         protected virtual bool ParseNumberToken(NumberToken token)
@@ -107,14 +90,14 @@ namespace HumanTimeParser.Core.Parsing.Default
 
             switch (nextToken)
             {
-                case RelativeTimeFormatToken relativeTimeFormatToken when !ParsedRelativeTimeFormats.Contains(relativeTimeFormatToken.Value):
-                    RelativeTimeFunctions.Add(ParseRelativeTime(token.Value, relativeTimeFormatToken.Value));
-                    ParsedRelativeTimeFormats.Add(relativeTimeFormatToken.Value);
+                case RelativeTimeFormatToken relativeTimeFormatToken when !State.ParsedRelativeTimeFormats.Contains(relativeTimeFormatToken.Value):
+                    State.RelativeTimeFunctions.Add(ParseRelativeTime(token.Value, relativeTimeFormatToken.Value));
+                    State.ParsedRelativeTimeFormats.Add(relativeTimeFormatToken.Value);
 
                     //make sure to advance token
                     Tokenizer.SkipToken();
                     return true;
-                case PeriodSpecifierToken specifierToken when (ParsedTime is null && ClockType != ClockType.TwentyFourHour): 
+                case PeriodSpecifierToken specifierToken when (State.ParsedDate is null && Culture.ClockType != ClockType.TwentyFourHour): 
                 {
                     // This functionality is not supported for 24 clocks, since the TimePeriod marker would not exist
                     // At that point the parser would be relying on the fact that a number would always be a time which obviously isn't the case
@@ -129,7 +112,7 @@ namespace HumanTimeParser.Core.Parsing.Default
                     if (!ts.IsValidTimeOfDay(ClockType.TwentyFourHour))
                         return false;
                     
-                    ParsedTime = ts;
+                    State.ParsedTime = ts;
                     //make sure to advance token
                     Tokenizer.SkipToken();
                     return true;
@@ -141,24 +124,24 @@ namespace HumanTimeParser.Core.Parsing.Default
 
         protected virtual bool ParseFullyQualifiedRelativeTimeToken(QualifiedRelativeTimeToken token)
         {
-            if (ParsedRelativeTimeFormats.Contains(token.Value.Format))
+            if (State.ParsedRelativeTimeFormats.Contains(token.Value.Format))
                 return false;
 
-            RelativeTimeFunctions.Add(ParseRelativeTime(token.Value.Amount, token.Value.Format));
-            ParsedRelativeTimeFormats.Add(token.Value.Format);
+            State.RelativeTimeFunctions.Add(ParseRelativeTime(token.Value.Amount, token.Value.Format));
+            State.ParsedRelativeTimeFormats.Add(token.Value.Format);
             
             return true;
         }
 
         protected virtual bool ParseTimeOfDayToken(TimeOfDayToken timeOfDayToken)
         {
-            if (!timeOfDayToken.Value.IsValid(ClockType) || ParsedTime is not null)
+            if (!timeOfDayToken.Value.IsValid(Culture.ClockType) || State.ParsedTime is not null)
                 return false;
             
             // no additional parsing is required for 24 hour clocks
-            if(ClockType == ClockType.TwentyFourHour)
+            if(Culture.ClockType == ClockType.TwentyFourHour)
             {
-                ParsedTime = timeOfDayToken.Value.Time;
+                State.ParsedTime = timeOfDayToken.Value.Time;
                 return true;
             }
             
@@ -171,30 +154,30 @@ namespace HumanTimeParser.Core.Parsing.Default
                     time = time.Add(TwelveHourTimeSpan);
 
                 
-                ParsedTime = time;
+                State.ParsedTime = time;
                 Tokenizer.SkipToken();  // make sure to actually advance the token
                 return true;
                 
             }
             else 
             {
-                if (timeOfDayToken.Value.Time < StartingDate.TimeOfDay) // implied am/pm parsing
+                if (timeOfDayToken.Value.Time < State.StartingDate.TimeOfDay) // implied am/pm parsing
                 {
                     var impliedTime = timeOfDayToken.Value.Time.Add(TwelveHourTimeSpan);
-                    if (impliedTime >= StartingDate.TimeOfDay)
+                    if (impliedTime >= State.StartingDate.TimeOfDay)
                     {
-                        ParsedTime = impliedTime;
+                        State.ParsedTime = impliedTime;
                         return true;
                     }
                     else
                     {
-                        ParsedTime = timeOfDayToken.Value.Time; // implied parsing was not successful... fallback to original value
+                        State.ParsedTime = timeOfDayToken.Value.Time; // implied parsing was not successful... fallback to original value
                         return true;
                     }
                 }
                 else // no need for implied parsing
                 {
-                    ParsedTime = timeOfDayToken.Value.Time;
+                    State.ParsedTime = timeOfDayToken.Value.Time;
                     return true;
                 }
                     
@@ -203,12 +186,12 @@ namespace HumanTimeParser.Core.Parsing.Default
         
         protected virtual bool ParseQualifiedTimeOfDayToken(QualifiedTimeOfDayToken token)
         {
-            if (ParsedTime is not null || !token.Value.IsValid())
+            if (State.ParsedTime is not null || !token.Value.IsValid())
                 return false;
             
-            ParsedTime = token.Value.Time; 
+            State.ParsedTime = token.Value.Time; 
             if (token.Value.Period == TimePeriod.Pm) 
-                ParsedTime = ParsedTime.Value.Add(TwelveHourTimeSpan);
+                State.ParsedTime = State.ParsedTime.Value.Add(TwelveHourTimeSpan);
 
             
             return true;
@@ -216,20 +199,20 @@ namespace HumanTimeParser.Core.Parsing.Default
 
         protected virtual bool ParseDateToken(DateToken token)
         {
-            if (ParsedDate is not null)
+            if (State.ParsedDate is not null)
                 return false;
 
-            ParsedDate = token.Value;
+            State.ParsedDate = token.Value;
 
             return true;
         }
 
         protected virtual bool ParseDayOfWeekToken(DayOfWeekToken token)
         {
-            if (ParsedDayOfWeek is not null)
+            if (State.ParsedDayOfWeek is not null)
                 return false;
 
-            ParsedDayOfWeek = token.Value;
+            State.ParsedDayOfWeek = token.Value;
 
             DateTime CalculateDay(DateTime dt)
             {
@@ -242,7 +225,7 @@ namespace HumanTimeParser.Core.Parsing.Default
                 return dt.AddDays(difference);
             }
             
-            RelativeTimeFunctions.Add(CalculateDay);
+            State.RelativeTimeFunctions.Add(CalculateDay);
             
             return true;
         }
@@ -274,12 +257,12 @@ namespace HumanTimeParser.Core.Parsing.Default
 
         protected virtual DateTime ConstructDateTime()
         {
-            var date = ParsedDate ?? StartingDate;
+            var date = State.ParsedDate ?? State.StartingDate;
 
-            if (ParsedTime is not null)
-                date = date.Date.Add(ParsedTime.Value);
+            if (State.ParsedTime is not null)
+                date = date.Date.Add(State.ParsedTime.Value);
 
-            foreach (var func in RelativeTimeFunctions)
+            foreach (var func in State.RelativeTimeFunctions)
             {
                 date = func(date);
             }

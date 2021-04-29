@@ -1,6 +1,5 @@
 using System;
 using HumanTimeParser.Core.TimeConstructs;
-using Microsoft.VisualBasic;
 
 namespace HumanTimeParser.English.Extensions
 {

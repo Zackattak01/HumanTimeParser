@@ -7,9 +7,11 @@ namespace HumanTimeParser.English.Tests
     [TestClass]
     public class GeneralTests
     {
-        private const int FivePmHourCount = 17;
-        private const int SixPmHourCount = 18;
         
+        private const int FivePmHourCount = 17;
+
+        private static readonly EnglishTimeParser EnglishTimeParser = new();
+
         [TestMethod]
         public void StressTest()
         {
@@ -50,13 +52,8 @@ namespace HumanTimeParser.English.Tests
 
             var expected = DateTime.Now.AddSeconds(33).AddMinutes(30);
 
-            //the following chunk of code checks to see if the two time values are "close enough"
-            //execution time effects the final parsed time.  It is usually around a difference of 100 ticks or 10000 nano seconds
-            // 1s accuracy.  Seeing as the lib can only parse seconds as its lowest value it should be fine
-            var closeEnough = expected.Ticks - result.Value.Ticks < 10000000;
 
-
-            Assert.IsTrue(closeEnough);
+            TestHelper.AssertCloseEnough(expected, result.Value);
         }
 
         [TestMethod]
@@ -109,18 +106,7 @@ namespace HumanTimeParser.English.Tests
 
             var expected = DateTime.Now.AddDays(1);
 
-            //the following chunk of code checks to see if the two time values are "close enough"
-            //execution time effects the final parsed time.  It is usually around a difference of 100 ticks or 10000 nano seconds
-            // 1s accuracy.  Seeing as the lib can only parse seconds as its lowest value it should be fine
-            var closeEnough = expected.Ticks - result.Value.Ticks < 10000000;
-
-
-            Console.WriteLine(result.Value);
-            Console.WriteLine(expected);
-
-            Console.WriteLine(expected.Ticks - result.Value.Ticks);
-
-            Assert.IsTrue(closeEnough);
+            TestHelper.AssertCloseEnough(expected, result.Value);
         }
         
         [TestMethod]
@@ -165,7 +151,7 @@ namespace HumanTimeParser.English.Tests
 
             Assert.AreEqual(expected, result.Value);
         }
-
+        
         [TestMethod]
         public void Twelve_Oclock_Test()
         {
@@ -211,5 +197,7 @@ namespace HumanTimeParser.English.Tests
         {
             Assert.IsInstanceOfType(EnglishTimeParser.Parse("600 pm"), typeof(IFailedTimeParsingResult));        
         }
+        
+        
     }
 }

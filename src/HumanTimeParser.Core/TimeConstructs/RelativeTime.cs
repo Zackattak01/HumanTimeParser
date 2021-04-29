@@ -15,6 +15,11 @@ namespace HumanTimeParser.Core.TimeConstructs
         /// </summary>
         public double Amount { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RelativeTime"/> class.
+        /// </summary>
+        /// <param name="amount">The amount of time</param>
+        /// <param name="format">The time unit to use</param>
         public RelativeTime(double amount, RelativeTimeFormat format)
         {
             Amount = amount;

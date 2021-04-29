@@ -8,7 +8,8 @@ namespace HumanTimeParser.Core.Parsing
         /// <summary>
         /// Parses the input.
         /// </summary>
+        /// <param name="input">The input to parse.</param>
         /// <returns>A result indicating success or failure.</returns>
-        public ITimeParsingResult Parse();
+        public ITimeParsingResult Parse(string input);
     }
 }

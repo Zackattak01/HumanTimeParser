@@ -11,5 +11,11 @@ namespace HumanTimeParser.English.Tests
             Assert.IsInstanceOfType(result, typeof(ISuccessfulTimeParsingResult<DateTime>));
             return result as ISuccessfulTimeParsingResult<DateTime>;
         }
+
+        public static void AssertCloseEnough(DateTime expected, DateTime actual)
+        {
+            var closeEnough = expected.Ticks - actual.Ticks < 10000000;
+            Assert.IsTrue(closeEnough);
+        }
     }
 }
