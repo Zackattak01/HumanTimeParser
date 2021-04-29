@@ -83,7 +83,7 @@ namespace HumanTimeParser.Core.Parsing.Default
                     State.LastParsedTokenPosition = Tokenizer.CurrentToken is not EOFToken ? Tokenizer.CurrentToken.Position : token.Position; 
 
                     if (State.FirstParsedTokenPosition == -1)
-                        State.FirstParsedTokenPosition = token.Position;
+                        State.FirstParsedTokenPosition = token.Position - token.Length; // want the first char of the token 
                 }
 
             } while (token is not EOFToken);

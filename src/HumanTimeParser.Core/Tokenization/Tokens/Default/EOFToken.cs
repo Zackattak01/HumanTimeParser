@@ -13,5 +13,12 @@ namespace HumanTimeParser.Core.Tokenization.Tokens
         /// <exception cref="NotSupportedException"></exception>
         public int Position =>
             throw new NotSupportedException($"{typeof(EOFToken)} does not support {nameof(Position)}");
+
+        /// <summary>
+        /// This property is not supported on <see cref="EOFToken"/>
+        /// </summary>
+        /// <exception cref="NotSupportedException"></exception>
+        public int Length =>
+            throw new NotSupportedException($"{typeof(EOFToken)} does not support {nameof(Position)}");
     }
 }

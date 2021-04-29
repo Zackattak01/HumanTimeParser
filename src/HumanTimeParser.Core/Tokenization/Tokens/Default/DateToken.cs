@@ -8,6 +8,6 @@ namespace HumanTimeParser.Core.Tokenization.Tokens
     public sealed class DateToken : TokenBase<DateTime>
     {
         /// <inheritdoc/>
-        public DateToken(int position, DateTime value) : base(position, value) { }
+        public DateToken(int position, int length, DateTime value) : base(position, length, value) { }
     }
 }

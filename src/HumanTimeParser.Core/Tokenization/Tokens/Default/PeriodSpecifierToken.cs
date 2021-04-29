@@ -8,6 +8,6 @@ namespace HumanTimeParser.Core.Tokenization.Tokens
     public sealed class PeriodSpecifierToken : TokenBase<TimePeriod>
     {
         /// <inheritdoc/>
-        public PeriodSpecifierToken(int position, TimePeriod value) : base(position, value) { }
+        public PeriodSpecifierToken(int position, int length, TimePeriod value) : base(position, length, value) { }
     }
 }

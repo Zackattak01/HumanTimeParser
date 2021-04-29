@@ -8,6 +8,6 @@ namespace HumanTimeParser.Core.Tokenization.Tokens
     public sealed class QualifiedTimeOfDayToken : TokenBase<QualifiedTimeOfDay>
     {
         /// <inheritdoc/>
-        public QualifiedTimeOfDayToken(int position, QualifiedTimeOfDay value) : base(position, value) { }
+        public QualifiedTimeOfDayToken(int position, int length, QualifiedTimeOfDay value) : base(position, length, value) { }
     }
 }

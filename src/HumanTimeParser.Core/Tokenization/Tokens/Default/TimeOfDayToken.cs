@@ -8,6 +8,6 @@ namespace HumanTimeParser.Core.Tokenization.Tokens
     public sealed class TimeOfDayToken : TokenBase<TimeOfDay>
     {
         /// <inheritdoc/>
-        public TimeOfDayToken(int position, TimeOfDay value) : base(position, value) { }
+        public TimeOfDayToken(int position, int length, TimeOfDay value) : base(position, length, value) { }
     }
 }

@@ -8,6 +8,6 @@ namespace HumanTimeParser.Core.Tokenization.Tokens
     public class DayOfWeekToken : TokenBase<DayOfWeek>
     {
         /// <inheritdoc/>
-        public DayOfWeekToken(int position, DayOfWeek value) : base(position, value) { }
+        public DayOfWeekToken(int position, int length, DayOfWeek value) : base(position, length, value) { }
     }
 }

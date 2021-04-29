@@ -1,7 +1,11 @@
 namespace HumanTimeParser.Core.Tokenization.Tokens
 {
+    /// <summary>
+    /// An unknown token
+    /// </summary>
     public class UnknownToken : TokenBase<string>
     {
-        public UnknownToken(int position, string value) : base(position, value) { }
+        /// <inheritdoc/>
+        public UnknownToken(int position, int length, string value) : base(position, length, value) { }
     }
 }

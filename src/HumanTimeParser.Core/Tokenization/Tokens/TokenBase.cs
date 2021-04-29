@@ -7,6 +7,9 @@ namespace HumanTimeParser.Core.Tokenization.Tokens
         public int Position { get; }
 
         /// <inheritdoc/>
+        public int Length { get; }
+
+        /// <inheritdoc/>
         public T Value { get; }
         
         /// <summary>
@@ -14,10 +17,11 @@ namespace HumanTimeParser.Core.Tokenization.Tokens
         /// </summary>
         /// <param name="position"></param>
         /// <param name="value"></param>
-        protected TokenBase(int position, T value)
+        protected TokenBase(int position, int length, T value)
         {
             Position = position;
             Value = value;
+            Length = length;
         }
     }
 }

@@ -11,6 +11,11 @@ namespace HumanTimeParser.Core.Sectioning
         public int Position { get; }
 
         /// <summary>
+        /// Gets the length of the section
+        /// </summary>
+        public int Length => Value.Length;
+        
+        /// <summary>
         /// Gets the raw value of this section
         /// </summary>
         public string Value { get; }

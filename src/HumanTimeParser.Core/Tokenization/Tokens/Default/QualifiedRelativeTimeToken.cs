@@ -7,6 +7,7 @@ namespace HumanTimeParser.Core.Tokenization.Tokens
     /// </summary>
     public sealed class QualifiedRelativeTimeToken : TokenBase<RelativeTime>
     {
-        public QualifiedRelativeTimeToken(int position, RelativeTime value) : base(position, value) { }
+        /// <inheritdoc/>
+        public QualifiedRelativeTimeToken(int position, int length, RelativeTime value) : base(position, length, value) { }
     }
 }

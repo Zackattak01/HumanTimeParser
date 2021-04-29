@@ -6,6 +6,6 @@ namespace HumanTimeParser.Core.Tokenization.Tokens
     public sealed class NumberToken : TokenBase<double>
     {
         /// <inheritdoc/>
-        public NumberToken(int position, double value) : base(position, value) { }
+        public NumberToken(int position, int length, double value) : base(position, length, value) { }
     }
 }

@@ -33,13 +33,13 @@ namespace HumanTimeParser.English
             var span = section.Value.AsSpan();
             
             if (TokenizerUtils.TryParseNumber(span, _timeParsingCulture, out var number))
-                return new NumberToken(section.Position, number);
+                return new NumberToken(section.Position, section.Length, number);
 
             if (TryTokenizeTimeAndTwelveHourSpecifier(section, out var timeToken))
                 return timeToken;
 
             if (TokenizerUtils.TryParseDate(span, _timeParsingCulture, out var dateTime))
-                return new DateToken(section.Position, dateTime);
+                return new DateToken(section.Position, section.Length, dateTime);
 
             if (TryTokenizeNumberAndRelativeTimeFormat(section, out var relativeToken))
                 return relativeToken;
@@ -51,7 +51,7 @@ namespace HumanTimeParser.English
                 return periodSpecifierToken;
 
 
-            return new UnknownToken(section.Position, section.Value); //no token was found. return an unknown token to let TokenizerBase recurse
+            return new UnknownToken(section.Position, section.Length, section.Value); //no token was found. return an unknown token to let TokenizerBase recurse
         }
 
         private bool TryTokenizeTimeAndTwelveHourSpecifier(Section section, out IToken result)
@@ -63,7 +63,7 @@ namespace HumanTimeParser.English
                 
                 if (TokenizerUtils.TryParseNumber(truncatedSpan, _timeParsingCulture, out var parsedNumber))
                 {
-                    result = new QualifiedTimeOfDayToken(section.Position,
+                    result = new QualifiedTimeOfDayToken(section.Position, section.Length,
                         new QualifiedTimeOfDay(timePeriod, new TimeSpan((int) parsedNumber, 0, 0)));
                     return true;
                 }
@@ -71,9 +71,9 @@ namespace HumanTimeParser.English
                 {
                     result = _timeParsingCulture.ClockType switch
                     {
-                        ClockType.TwelveHour => new QualifiedTimeOfDayToken(section.Position,
+                        ClockType.TwelveHour => new QualifiedTimeOfDayToken(section.Position, section.Length,
                             new QualifiedTimeOfDay(timePeriod, parsedQualifiedTimeSpan)),
-                        ClockType.TwentyFourHour => new TimeOfDayToken(section.Position,
+                        ClockType.TwentyFourHour => new TimeOfDayToken(section.Position, section.Length,
                             new TimeOfDay(parsedQualifiedTimeSpan)),
                         _ => null
                     };
@@ -84,7 +84,7 @@ namespace HumanTimeParser.English
             }
             else if(TimeSpan.TryParse(span, out var parsedTimeSpanSpan))
             {
-                result = new TimeOfDayToken(section.Position, new TimeOfDay(parsedTimeSpanSpan));
+                result = new TimeOfDayToken(section.Position, section.Length, new TimeOfDay(parsedTimeSpanSpan));
                 return true;
             }
 
@@ -108,12 +108,12 @@ namespace HumanTimeParser.English
             {
                 if (relativeTimeFormat == RelativeTimeFormat.Tomorrow)// special case with the "tomorrow" keyword
                 {
-                    result = new QualifiedRelativeTimeToken(section.Position, new RelativeTime(1, relativeTimeFormat));
+                    result = new QualifiedRelativeTimeToken(section.Position, section.Length, new RelativeTime(1, relativeTimeFormat));
                     return true;
                 }
                 else if (splitPos == 0) 
                 {
-                    result = new RelativeTimeFormatToken(section.Position, relativeTimeFormat);
+                    result = new RelativeTimeFormatToken(section.Position, section.Length, relativeTimeFormat);
                     return true;
                 }
                 else
@@ -121,7 +121,7 @@ namespace HumanTimeParser.English
                     var parseSpan = section.Value.AsSpan()[..splitPos]; // resharper suggestion here
                     TokenizerUtils.TryParseNumber(parseSpan, _timeParsingCulture, out var number);
                     
-                    result = new QualifiedRelativeTimeToken(section.Position, new RelativeTime(number, relativeTimeFormat));
+                    result = new QualifiedRelativeTimeToken(section.Position, section.Length, new RelativeTime(number, relativeTimeFormat));
                     return true;
                 }
                     
@@ -135,7 +135,7 @@ namespace HumanTimeParser.English
         {
             if (EnglishTimeKeywordConstants.DayOfWeekKeywordDictionary.TryGetValue(section.Value, out var dayOfWeek))
             {
-                result = new DayOfWeekToken(section.Position, dayOfWeek);
+                result = new DayOfWeekToken(section.Position, section.Length, dayOfWeek);
                 return true;
             }
 
@@ -147,7 +147,7 @@ namespace HumanTimeParser.English
         {
             if (section.Value.TryParseTimePeriodSpecifier(out var timePeriod))
             {
-                result = new PeriodSpecifierToken(section.Position, timePeriod);
+                result = new PeriodSpecifierToken(section.Position, section.Length, timePeriod);
                 return true;
             }
             else
