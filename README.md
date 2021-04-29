@@ -1,6 +1,6 @@
 <div align="center">
   <h1>HumanTimeParser</h1>
-  <p>A library for parsing human time formats into useable objects.</p>
+  <p>An easy to use library for parsing human time formats into useable objects.</p>
 </div>
 
 ## Installing
@@ -13,8 +13,10 @@ Any prerelease packages are CI/CD builds.
 ## Example
 A small example to demonstrate how the [EnglishTimeParser](https://github.com/Zackattak01/HumanTimeParser/blob/main/src/HumanTimeParser.English/EnglishTimeParser.cs) works.
 ```csharp
+// instantiate a reusable time parser.
+var parser = new EnglishTimeParser();
 // returns a generic ITimeParsingResult
-var result = EnglishTimeParser.Parse("6 minutes from now"); 
+var result = parser.Parse("6 minutes from now"); 
 
 // to determine if the result is successful or not we pattern match.  Pattern matching for DefaultTimeParsingResult also works.
 if (result is ISuccessfulTimeParsingResult<DateTime> successfulResult) 
