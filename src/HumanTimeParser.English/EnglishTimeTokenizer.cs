@@ -82,7 +82,7 @@ namespace HumanTimeParser.English
 
 
             }
-            else if(TimeSpan.TryParse(span, out var parsedTimeSpanSpan))
+            else if(TokenizerUtils.TryParseTimeSpan(span, _timeParsingCulture, out var parsedTimeSpanSpan))
             {
                 result = new TimeOfDayToken(section.Position, section.Length, new TimeOfDay(parsedTimeSpanSpan));
                 return true;
