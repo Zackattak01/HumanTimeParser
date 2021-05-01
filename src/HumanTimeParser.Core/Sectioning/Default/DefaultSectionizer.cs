@@ -58,7 +58,7 @@ namespace HumanTimeParser.Core.Sectioning
         }
 
         /// <inheritdoc/>
-        public void SkipSection()
+        public void AdvanceSection()
             => _currentIndex++;
         
     }

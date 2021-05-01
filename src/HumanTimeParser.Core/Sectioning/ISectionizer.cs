@@ -20,6 +20,6 @@ namespace HumanTimeParser.Core.Sectioning
         /// <summary>
         /// Moves to the next section, without doing any processing.
         /// </summary>
-        public void SkipSection();
+        public void AdvanceSection();
     }
 }
