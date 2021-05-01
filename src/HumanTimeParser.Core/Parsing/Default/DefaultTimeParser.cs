@@ -25,7 +25,7 @@ namespace HumanTimeParser.Core.Parsing.Default
         public ITimeParsingCulture Culture { get; }
         
         /// <summary>
-        /// The parser's state
+        /// This parser's state
         /// </summary>
         protected DefaultTimeParserState State { get; private set; }
 
@@ -52,6 +52,7 @@ namespace HumanTimeParser.Core.Parsing.Default
                 token = Tokenizer.NextToken();
                 switch (token)
                 {
+                    case UnknownToken:
                     case EOFToken:
                         break;
                     case NumberToken numberToken:
@@ -73,7 +74,7 @@ namespace HumanTimeParser.Core.Parsing.Default
                         parsedCurrentToken = ParseDayOfWeekToken(dayOfWeekToken);
                         break;
                     default:
-                        HandleUnexpectedToken(token);
+                        parsedCurrentToken = ParseUnexpectedToken(token);
                         break;
                 }
 
@@ -274,9 +275,16 @@ namespace HumanTimeParser.Core.Parsing.Default
         /// Responsible for handling an unknown or unexpected token; is a nop by default
         /// </summary>
         /// <param name="token">The unknown token</param>
-        protected virtual void HandleUnexpectedToken(IToken token)
+        /// <returns>Whether the parse was successful</returns>
+        /// <remarks>
+        /// This method is meant to be overriden to support custom tokens.
+        /// <see cref="UnknownToken"/>'s will not be passed to this method.
+        /// Create a custom implantation of <see cref="ITokenizer"/> to properly tokenize them instead. 
+        /// </remarks>
+        protected virtual bool ParseUnexpectedToken(IToken token)
         {
             // do nothing by default
+            return false;
         }
 
         /// <summary>

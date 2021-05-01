@@ -9,6 +9,8 @@ namespace HumanTimeParser.Core.Tokenization
     {
         private ISectionizer _sectionizer;
 
+        private IToken _peekedToken;
+
         /// <inheritdoc/>
         public IToken CurrentToken { get; private set; }
 
@@ -23,9 +25,6 @@ namespace HumanTimeParser.Core.Tokenization
         public virtual IToken NextToken()
         {
             var token = TokenizeSection(Sectionizer.NextSection());
-            if (token is UnknownToken)
-                return NextToken();
-
             CurrentToken = token;
             return token;
         }
@@ -34,21 +33,25 @@ namespace HumanTimeParser.Core.Tokenization
         public virtual IToken PeekNextToken()
         {
             var token = TokenizeSection(Sectionizer.PeekNextSection());
-            if (token is null)
-                return NextToken();
 
-            CurrentToken = token; //TODO: This causes problems
+            _peekedToken = token;
             return token;
         }
 
         /// <inheritdoc/>
-        public void SkipToken() => Sectionizer.SkipSection();
-        
+        public void SkipToken()
+        {
+            Sectionizer.AdvanceSection();
+            
+            if(_peekedToken is not null)
+                CurrentToken = _peekedToken;
+        }
+
         /// <summary>
         /// Tokenizes the given section.
         /// </summary>
         /// <param name="section">The section to be tokenized</param>
-        /// <returns>A token, null if no token was found</returns>
+        /// <returns>A token, <see cref="UnknownToken"/> if no token was found</returns>
         protected abstract IToken TokenizeSection(Section section);
     }
 }
