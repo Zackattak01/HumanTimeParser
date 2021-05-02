@@ -21,7 +21,7 @@ namespace HumanTimeParser.Core.Sectioning
         /// Initializes a new instance of the <see cref="DefaultSectionizer"/> class.
         /// </summary>
         /// <param name="input">The raw input to sectionize.</param>
-        /// <param name="splitOn">The string to split the <see cref="input"/> on/</param>
+        /// <param name="splitOn">The string to split the <paramref name="input"/> on</param>
         /// <exception cref="ArgumentNullException"></exception>
         public DefaultSectionizer(string input, string splitOn = DefaultSplitString)
         {
