@@ -33,6 +33,7 @@ namespace HumanTimeParser.Core.Parsing.Default
         /// Initializes a new instance of the <see cref="DefaultTimeParser"/> class.
         /// </summary>
         /// <param name="culture">The culture this parser will use.</param>
+        /// <param name="tokenizer">The <see cref="ITokenizer"/> instance this parser will use</param>
         /// <inheritdoc/>
         public DefaultTimeParser(ITimeParsingCulture culture, ITokenizer tokenizer) : base(tokenizer)
         {

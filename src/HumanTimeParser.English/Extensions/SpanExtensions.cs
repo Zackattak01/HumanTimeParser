@@ -3,7 +3,7 @@ using HumanTimeParser.Core.TimeConstructs;
 
 namespace HumanTimeParser.English.Extensions
 {
-    public static class SpanExtensions
+    internal static class SpanExtensions
     {
         public static bool TryParseEndingTimePeriodSpecifier(this ReadOnlySpan<char> input, out TimePeriod result)
         {

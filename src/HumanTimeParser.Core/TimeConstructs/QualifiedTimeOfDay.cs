@@ -16,7 +16,8 @@ namespace HumanTimeParser.Core.TimeConstructs
         /// <summary>
         /// Initializes a new instance of the <see cref="QualifiedTimeOfDay"/> class.
         /// </summary>
-        /// <param name="period"></param>
+        /// <param name="period">The time period</param>
+        /// <param name="time">The time</param>
         /// <inheritdoc/>
         public QualifiedTimeOfDay(TimePeriod period, TimeSpan time) : base(time)
         {
