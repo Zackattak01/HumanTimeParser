@@ -1,6 +1,7 @@
 <div align="center">
   <h1>HumanTimeParser</h1>
   <img src="https://img.shields.io/github/workflow/status/Zackattak01/HumanTimeParser/publish/main?style=flat-square"/>
+  <img src="https://img.shields.io/nuget/v/HumanTimeParser.Core?style=flat-square"/>
   <img src="https://img.shields.io/tokei/lines/github/Zackattak01/HumanTimeParser?style=flat-square"/>
   <p>An easy to use library for parsing human time formats into useable objects.</p>
 </div>
