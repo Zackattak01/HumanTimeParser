@@ -6,7 +6,7 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <Authors>Zackattak01</Authors>
         <description>A parser capable of parsing english human time formats and returning a usable time structure.</description>
-        <VersionPrefix>2.0.0</VersionPrefix>
+        <VersionPrefix>2.0.1</VersionPrefix>
         <RepositoryUrl>https://github.com/Zackattak01/HumanTimeParser</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
