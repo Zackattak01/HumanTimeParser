@@ -20,6 +20,6 @@ namespace HumanTimeParser.English.Benchmarks
         //stress test
         [Benchmark]
         public ITimeParsingResult StressTest() => parser.Parse("6 s 5 m 7 h 1 d 2 mth 3 y on 3/24/2021 at 4:56am");
-        }
+    }
     
 }
