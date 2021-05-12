@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using HumanTimeParser.Core.Extensions;
 using HumanTimeParser.Core.TimeConstructs;
 using HumanTimeParser.English.Extensions;
 
