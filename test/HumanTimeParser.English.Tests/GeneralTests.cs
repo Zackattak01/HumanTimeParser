@@ -197,7 +197,19 @@ namespace HumanTimeParser.English.Tests
         {
             Assert.IsInstanceOfType(EnglishTimeParser.Parse("600 pm"), typeof(IFailedTimeParsingResult));        
         }
+
+        [TestMethod]
+        public void Tomorrow_Exclusivity_Test()
+        {
+            TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("Tmr 6 pm"));
+        }
         
-        
+        [TestMethod]
+        public void Tomorrow_Exclusivity_Test_2()
+        {
+            TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("Tmr 6 pm"));
+        }
+
+
     }
 }
