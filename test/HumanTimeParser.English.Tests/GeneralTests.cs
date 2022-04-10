@@ -210,6 +210,14 @@ namespace HumanTimeParser.English.Tests
             TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("Tmr 6 pm"));
         }
 
+        [TestMethod]
+        public void Tomorrow_12pm_Test()
+        {
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("tmr 12:30pm"));
 
+            var expected = DateTime.Today.AddDays(1).AddHours(12.5);
+
+            Assert.AreEqual(expected, result.Value);
+        }
     }
 }

@@ -222,7 +222,7 @@ namespace HumanTimeParser.Core.Parsing.Default
                 return false;
             
             State.ParsedTime = token.Value.Time; 
-            if (token.Value.Period == TimePeriod.Pm && token.Value.Time.TotalHours != 12) 
+            if (token.Value.Period == TimePeriod.Pm && token.Value.Time.Hours != 12) 
                 State.ParsedTime = State.ParsedTime.Value.Add(TwelveHourTimeSpan);
 
             
