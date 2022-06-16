@@ -10,7 +10,6 @@
         <RepositoryUrl>https://github.com/Zackattak01/HumanTimeParser</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-        <LangVersion>11</LangVersion>
     </PropertyGroup>
 
     <PropertyGroup>
