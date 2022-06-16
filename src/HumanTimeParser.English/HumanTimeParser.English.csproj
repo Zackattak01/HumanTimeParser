@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <PackageId>HumanTimeParser.English</PackageId>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <Authors>Zackattak01</Authors>
@@ -10,6 +10,7 @@
         <RepositoryUrl>https://github.com/Zackattak01/HumanTimeParser</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <LangVersion>11</LangVersion>
     </PropertyGroup>
 
     <PropertyGroup>
