@@ -25,9 +25,9 @@ namespace HumanTimeParser.Core.Parsing.State
         public DateTime StartingDate { get; set; }
         
         /// <summary>
-        /// The date that has been parsed from the input; null if one has not been parsed
+        /// State representing a parsed date
         /// </summary>
-        public DateTime? ParsedDate { get; set; }
+        public IParsedDateState ParsedDateState { get; set; }
 
         /// <summary>
         /// The time of day that has been parsed from the input; null if one has not been parsed
