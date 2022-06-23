@@ -13,7 +13,7 @@ namespace HumanTimeParser.English.Tests
         private static readonly EnglishTimeParser EnglishTimeParser = new();
 
         [TestMethod]
-        public void StressTest()
+        public void Stress_Test()
         {
             var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("6 s 5 m 7 h 1 d 2 mth 3 y on 3/24/2021 at 4:56am"));
 
@@ -24,7 +24,7 @@ namespace HumanTimeParser.English.Tests
         }
 
         [TestMethod]
-        public void StressTest_Alt_1()
+        public void Stress_Test_Alt_1()
         {
             var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("6 seconds 5 m 7 HOURS 1 d 2 mth 3 year on 3/24/2021 at 4:56am"));
 
@@ -35,7 +35,7 @@ namespace HumanTimeParser.English.Tests
         }
 
         [TestMethod]
-        public void StressTest_Alt_2()
+        public void Stress_Test_Alt_2()
         {
             var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("6s 5m 7h 1d 2MTH 3y on 3/24/2021 at 4:56am"));
 
@@ -46,7 +46,7 @@ namespace HumanTimeParser.English.Tests
         }
 
         [TestMethod]
-        public void RelativeTimeTest()
+        public void Relative_Time()
         {
             var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("30m 33s"));
 
@@ -57,7 +57,7 @@ namespace HumanTimeParser.English.Tests
         }
 
         [TestMethod]
-        public void IgnoreEnglish()
+        public void Ignore_English()
         {
             var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("33.5 minutes after 6:50am on 1/7/2021"));
 
@@ -68,7 +68,7 @@ namespace HumanTimeParser.English.Tests
         }
 
         [TestMethod]
-        public void EmptyString()
+        public void Empty_String()
         {
             var result = EnglishTimeParser.Parse("");
 
@@ -77,7 +77,7 @@ namespace HumanTimeParser.English.Tests
         }
 
         [TestMethod]
-        public void TimeTest()
+        public void Time()
         {
             var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("4:56pm"));
 
@@ -99,7 +99,7 @@ namespace HumanTimeParser.English.Tests
         }
         
         [TestMethod]
-        public void TomorrowTest()
+        public void Tomorrow()
         {
             var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("Tomorrow"));
 
@@ -110,7 +110,7 @@ namespace HumanTimeParser.English.Tests
         }
         
         [TestMethod]
-        public void Weekday_Test()
+        public void Weekday()
         {
             var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("monday at 5:00"));
 
@@ -153,7 +153,7 @@ namespace HumanTimeParser.English.Tests
         }
         
         [TestMethod]
-        public void Twelve_Oclock_Test()
+        public void Twelve_Oclock()
         {
             var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("12:34"));
             
@@ -199,24 +199,100 @@ namespace HumanTimeParser.English.Tests
         }
 
         [TestMethod]
-        public void Tomorrow_Exclusivity_Test()
+        public void Tomorrow_Exclusivity()
         {
             TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("Tmr 6 pm"));
         }
         
         [TestMethod]
-        public void Tomorrow_Exclusivity_Test_2()
+        public void Tomorrow_Exclusivity_2()
         {
             TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("Tmr 6 pm"));
         }
 
         [TestMethod]
-        public void Tomorrow_12pm_Test()
+        public void Tomorrow_12pm()
         {
             var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("tmr 12:30pm"));
 
             var expected = DateTime.Today.AddDays(1).AddHours(12.5);
 
+            Assert.AreEqual(expected, result.Value);
+        }
+
+        [TestMethod]
+        public void Long_Form_Date()
+        {
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("May testing 22 stuff 2022"));
+
+            var expected = new DateTime(2022, 5, 22);
+            
+            Assert.AreEqual(expected, result.Value);
+        }
+        
+        [TestMethod]
+        public void Long_Form_Date_Ordinal()
+        {
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("May testing 22nd stuff 2022"));
+
+            var expected = new DateTime(2022, 5, 22);
+            
+            Assert.AreEqual(expected, result.Value);
+        }
+        
+        [TestMethod]
+        public void Long_Form_Date_No_Year()
+        {
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("May testing 22 stuff"));
+
+            var expected = new DateTime(DateTime.Today.Year, 5, 22);
+            
+            Assert.AreEqual(expected, result.Value);
+        }
+        
+        [TestMethod]
+        public void Long_Form_Date_No_Year_Ordinal()
+        {
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("May testing 22nd stuff"));
+
+            var expected = new DateTime(DateTime.Today.Year, 5, 22);
+            
+            Assert.AreEqual(expected, result.Value);
+        }
+        
+        [TestMethod]
+        public void Implied_Month_And_Year_Ordinal_Day()
+        {
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("22nd do stuff"));
+
+            var expected = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 22);
+            
+            Assert.AreEqual(expected, result.Value);
+        }
+        
+        [TestMethod]
+        public void Ignore_Day()
+            => TestHelper.AssertFailedTimeParsingResult(EnglishTimeParser.Parse("22 do stuff"));
+
+        [TestMethod]
+        public void Ignore_Month()
+            => TestHelper.AssertFailedTimeParsingResult(EnglishTimeParser.Parse("Do things in may"));
+        
+        [TestMethod]
+        public void Ignore_Year()
+            => TestHelper.AssertFailedTimeParsingResult(EnglishTimeParser.Parse("Do things in 2026"));
+        
+        [TestMethod]
+        public void Ignore_Month_And_Year()
+            => TestHelper.AssertFailedTimeParsingResult(EnglishTimeParser.Parse("Do things in may 2023"));
+        
+        [TestMethod]
+        public void Prefer_Short_Form_Date()
+        {
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("may 22nd 1/20/25 "));
+
+            var expected = new DateTime(2025, 1, 20);
+            
             Assert.AreEqual(expected, result.Value);
         }
     }
