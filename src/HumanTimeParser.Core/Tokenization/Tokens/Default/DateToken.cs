@@ -3,7 +3,7 @@ using System;
 namespace HumanTimeParser.Core.Tokenization.Tokens
 {
     /// <summary>
-    /// Represents a date token.
+    /// A token representing a <see cref="DateTime"/>
     /// </summary>
     public sealed class DateToken : TokenBase<DateTime>
     {

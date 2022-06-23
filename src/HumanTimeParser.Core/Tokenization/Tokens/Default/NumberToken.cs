@@ -1,9 +1,9 @@
 namespace HumanTimeParser.Core.Tokenization.Tokens
 {
     /// <summary>
-    /// Represents a basic number token
+    /// A token representing a number
     /// </summary>
-    public sealed class NumberToken : TokenBase<double>
+    public class NumberToken : TokenBase<double>
     {
         /// <inheritdoc/>
         public NumberToken(int position, int length, double value) : base(position, length, value) { }

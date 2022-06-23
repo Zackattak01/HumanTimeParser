@@ -3,7 +3,7 @@ using System;
 namespace HumanTimeParser.Core.Tokenization.Tokens
 {
     /// <summary>
-    /// Represents a day of the week token
+    /// A token representing a <see cref="DayOfWeek"/>
     /// </summary>
     public class DayOfWeekToken : TokenBase<DayOfWeek>
     {
