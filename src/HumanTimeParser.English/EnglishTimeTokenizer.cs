@@ -13,7 +13,12 @@ namespace HumanTimeParser.English
     /// </summary>
     public sealed class EnglishTimeTokenizer : TokenizerBase
     {
+        private const int MinNumberOfDaysInMonth = 1;
+        private const int MaxNumberOfDaysInMonth = 31;
 
+        private const int MinYear = 1;
+        private const int MaxYear = 9999;
+        
         private readonly ITimeParsingCulture _timeParsingCulture;
 
         /// <summary>
@@ -28,12 +33,27 @@ namespace HumanTimeParser.English
         protected override IToken TokenizeSection(Section section)
         {
             if (section is null)
-                return new EOFToken();
+                return EOFToken;
 
             var span = section.Value.AsSpan();
-            
+
             if (TokenizerUtils.TryParseNumber(span, _timeParsingCulture, out var number))
+            {
+                var numberInt = (int)number;
+                // check if number is a whole number
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (number == numberInt)
+                {
+                    switch (numberInt)
+                    {
+                        case >= MinNumberOfDaysInMonth and <= MaxNumberOfDaysInMonth:
+                            return new DayOfMonthToken(section.Position, section.Length, numberInt);
+                        case >= MinYear and <= MaxYear:
+                            return new YearToken(section.Position, section.Length, numberInt);
+                    }
+                }
                 return new NumberToken(section.Position, section.Length, number);
+            }
 
             if (TryTokenizeTimeAndTwelveHourSpecifier(section, out var timeToken))
                 return timeToken;
@@ -43,9 +63,15 @@ namespace HumanTimeParser.English
 
             if (TryTokenizeNumberAndRelativeTimeFormat(section, out var relativeToken))
                 return relativeToken;
-
+            
             if (TryTokenizeDayOfWeek(section, out var dayOfWeekToken))
                 return dayOfWeekToken;
+            
+            if (TryTokenizeQualifiedDayOfMonth(section, out var dayOfMonthToken))
+                return dayOfMonthToken;
+
+            if (TryTokenizeMonth(section, out var monthToken))
+                return monthToken;
 
             if (TryTokenizePeriodSpecifier(section, out var periodSpecifierToken))
                 return periodSpecifierToken;
@@ -94,19 +120,17 @@ namespace HumanTimeParser.English
 
         private bool TryTokenizeNumberAndRelativeTimeFormat(Section section, out IToken result)
         {
+            result = null;
             var splitPos = section.Value.FirstNonNumberPos();
 
             if (splitPos == -1)
-            {
-                result = null;
                 return false;
-            }
 
             var unparsedAbbreviation = section.Value[splitPos..];
 
             if (EnglishTimeKeywordConstants.RelativeTimeKeywordDictionary.TryGetValue(unparsedAbbreviation, out var relativeTimeFormat))
             {
-                if (relativeTimeFormat == RelativeTimeFormat.Tomorrow)// special case with the "tomorrow" keyword
+                if (relativeTimeFormat == RelativeTimeFormat.Tomorrow) // special case with the "tomorrow" keyword
                 {
                     result = new QualifiedRelativeTimeToken(section.Position, section.Length, new RelativeTime(1, relativeTimeFormat));
                     return true;
@@ -118,13 +142,46 @@ namespace HumanTimeParser.English
                 }
                 else
                 {
-                    var parseSpan = section.Value.AsSpan()[..splitPos]; // resharper suggestion here
-                    TokenizerUtils.TryParseNumber(parseSpan, _timeParsingCulture, out var number);
+                    var numberSpan = section.Value.AsSpan()[..splitPos];
+                    TokenizerUtils.TryParseNumber(numberSpan, _timeParsingCulture, out var number);
                     
                     result = new QualifiedRelativeTimeToken(section.Position, section.Length, new RelativeTime(number, relativeTimeFormat));
                     return true;
                 }
                     
+            }
+            
+            return false;
+        }
+
+        private bool TryTokenizeQualifiedDayOfMonth(Section section, out QualifiedDayOfMonthToken result)
+        {
+            result = null;
+            var splitPos = section.Value.FirstNonNumberPos();
+
+            if (splitPos == -1)
+                return false;
+
+            var unparsedText = section.Value[splitPos..];
+
+            if (EnglishTimeKeywordConstants.OrdinalNumberIndicators.Contains(unparsedText))
+            {
+                var numberSpan = section.Value.AsSpan()[..splitPos];
+                TokenizerUtils.TryParseNumber(numberSpan, _timeParsingCulture, out var number);
+
+                result = new QualifiedDayOfMonthToken(section.Position, section.Length, (int)number);
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool TryTokenizeMonth(Section section, out MonthToken result)
+        {
+            if (EnglishTimeKeywordConstants.MonthKeywordDictionary.TryGetValue(section.Value, out var month))
+            {
+                result = new MonthToken(section.Position, section.Length, month);
+                return true;
             }
 
             result = null;
@@ -142,7 +199,7 @@ namespace HumanTimeParser.English
             result = null;
             return false;
         }
-        
+
         private bool TryTokenizePeriodSpecifier(Section section, out PeriodSpecifierToken result)
         {
             if (section.Value.TryParseTimePeriodSpecifier(out var timePeriod))
