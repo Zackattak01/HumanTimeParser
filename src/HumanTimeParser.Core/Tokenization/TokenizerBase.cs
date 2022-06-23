@@ -11,6 +11,11 @@ namespace HumanTimeParser.Core.Tokenization
 
         private IToken _peekedToken;
 
+        /// <summary>
+        /// A reusable <see cref="EOFToken"/> to avoid initializing one each parse
+        /// </summary>
+        protected static readonly EOFToken EOFToken = new EOFToken(); 
+
         /// <inheritdoc/>
         public IToken CurrentToken { get; private set; }
 
