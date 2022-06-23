@@ -31,6 +31,7 @@ namespace HumanTimeParser.Core.Parsing.State
             LastParsedTokenPosition = -1;
         }
 
+        /// <inheritdoc/>
         public bool CanConstructValidDate()
             => Date is not null || 
                (LastParsedTokenPosition != -1 && Day is not null && (ParsedQualifiedDay || Month is not null || Year is not null));
