@@ -57,15 +57,15 @@ Notable features:
 ### Performance
 The following benchmark was run on:
 * AMD Ryzen 3 1200 (4 core)
-* Dotnet 5.0.102
+* Dotnet 6.0.301
 * Linux
 
 |    Intensity |  # of Tokens |      Mean |     Error |    StdDev |  Gen 0 | Allocated |
 |------------- |--------------|-----------|-----------|-----------|--------|-----------|
-|      Toddler |            1 | 2.628 us  | 0.0118 us | 0.0111 us | 0.0114 | 1216 B    |
-|       Simple |            2 | 2.906 us  | 0.0174 us | 0.0146 us | 0.0076 | 928 B     |
-| Intermediate |            4 | 6.408 us  | 0.0272 us | 0.0227 us | 0.0153 | 1808 B    |
-|  Stress Test |           14 | 12.525 us | 0.0720 us | 0.0638 us | 0.0305 | 3688 B    |
+|      Toddler |            1 | 2.101 us  | 0.0151 us | 0.0141 us | 0.0114 | 1192 B    |
+|       Simple |            2 | 2.562 us  | 0.0164 us | 0.0146 us | 0.0114 | 976 B     |
+| Intermediate |            4 | 5.548 us  | 0.0245 us | 0.0217 us | 0.0229 | 1928 B    |
+|  Stress Test |           14 | 10.751 us | 0.0475 us | 0.0444 us | 0.0458 | 3840 B    |
 
 ## Other language implementations
 None ;)
