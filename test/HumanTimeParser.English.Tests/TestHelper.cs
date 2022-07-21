@@ -8,8 +8,14 @@ namespace HumanTimeParser.English.Tests
     {
         public static ISuccessfulTimeParsingResult<DateTime> AssertSuccessfulTimeParsingResult(ITimeParsingResult result)
         {
-            Assert.IsInstanceOfType(result, typeof(ISuccessfulTimeParsingResult<DateTime>));
+            Assert.IsInstanceOfType(result, typeof(ISuccessfulTimeParsingResult<DateTime>), (result as IFailedTimeParsingResult)?.ErrorReason);
             return result as ISuccessfulTimeParsingResult<DateTime>;
+        }
+        
+        public static IFailedTimeParsingResult AssertFailedTimeParsingResult(ITimeParsingResult result)
+        {
+            Assert.IsInstanceOfType(result, typeof(IFailedTimeParsingResult));
+            return result as IFailedTimeParsingResult;
         }
 
         public static void AssertCloseEnough(DateTime expected, DateTime actual)

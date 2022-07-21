@@ -67,5 +67,53 @@ namespace HumanTimeParser.English.Tests
         
             Assert.AreEqual(16, result.LastParsedTokenIndex);
         }
+        
+        [TestMethod]
+        public void Long_Form_Date()
+        {
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("May testing 22 stuff 2022"));
+            
+            Assert.AreEqual(25, result.LastParsedTokenIndex);
+        }
+        
+        [TestMethod]
+        public void Long_Form_Date_Ordinal()
+        {
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("May testing 22nd stuff 2022"));
+            
+            Assert.AreEqual(27, result.LastParsedTokenIndex);
+        }
+        
+        [TestMethod]
+        public void Long_Form_Date_No_Year()
+        {
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("May testing 22 stuff"));
+
+            Assert.AreEqual(14, result.LastParsedTokenIndex);
+        }
+        
+        [TestMethod]
+        public void Long_Form_Date_No_Year_Ordinal()
+        {
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("May testing 22nd stuff"));
+            
+            Assert.AreEqual(16, result.LastParsedTokenIndex);
+        }
+        
+        [TestMethod]
+        public void Implied_Month_And_Year_Ordinal_Day()
+        {
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("22nd do stuff"));
+
+            Assert.AreEqual(4, result.LastParsedTokenIndex);
+        }
+        
+        [TestMethod]
+        public void Short_Form_Date_Over_Long_Form_Index()
+        {
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("1/20/25 may 22nd"));
+
+            Assert.AreEqual(7, result.LastParsedTokenIndex);
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace HumanTimeParser.Core.Parsing.State
         public DateTime StartingDate { get; set; }
 
         /// <inheritdoc/>
-        public DateTime? ParsedDate { get; set; }
+        public IParsedDateState ParsedDateState { get; set; }
 
         /// <inheritdoc/>
         public TimeSpan? ParsedTime { get; set; }
@@ -38,7 +38,9 @@ namespace HumanTimeParser.Core.Parsing.State
         {
             ParsedRelativeTimeFormats = new HashSet<RelativeTimeFormat>();
             RelativeTimeFunctions = new List<Func<DateTime, DateTime>>();
-         
+
+            ParsedDateState = new DefaultParsedDateState();
+            
             StartingDate = DateTime.Now;
 
             FirstParsedTokenPosition = -1;

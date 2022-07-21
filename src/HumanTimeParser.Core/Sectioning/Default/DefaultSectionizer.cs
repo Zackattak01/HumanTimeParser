@@ -35,31 +35,37 @@ namespace HumanTimeParser.Core.Sectioning
             _currentInputLength = 0;
         }
 
-        /// <inheritdoc/>
-        public Section NextSection()
+        private int GetSectionLength(int index) 
+            => index == 0 ? 
+                _sections[index].Length :
+                _sections[index].Length + SplitString.Length; // add one for the separator char which isn't included here
+
+        private Section NextSection(bool peeking)
         {
-            if (++_currentIndex >= _sections.Length)
+            var currentIndex = peeking ? _currentIndex + 1 : ++_currentIndex;
+
+            if (currentIndex >= _sections.Length)
                 return null;
 
-            _currentInputLength += _currentIndex == 0 ? 
-                _sections[_currentIndex].Length :
-                _sections[_currentIndex].Length + SplitString.Length; // add one for the separator char which isn't included here
-            
-            return new Section(_currentInputLength, _sections[_currentIndex]);
+            var sectionLength = GetSectionLength(currentIndex);
+            var sectionPosition = peeking ? _currentInputLength + sectionLength : _currentInputLength += sectionLength;
+
+            return new Section(sectionPosition, _sections[currentIndex]);
         }
+
+        /// <inheritdoc/>
+        public Section NextSection()
+            => NextSection(false);
 
         /// <inheritdoc/>
         public Section PeekNextSection()
-        {
-            var nextSection = NextSection();
-            _currentIndex--;
-
-            return nextSection;
-        }
+            => NextSection(true);
 
         /// <inheritdoc/>
         public void AdvanceSection()
-            => _currentIndex++;
-        
+        {
+            _currentIndex++;
+            _currentInputLength += GetSectionLength(_currentIndex);
+        }
     }
 }

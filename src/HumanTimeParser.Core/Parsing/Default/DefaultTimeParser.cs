@@ -74,6 +74,12 @@ namespace HumanTimeParser.Core.Parsing.Default
                     case DayOfWeekToken dayOfWeekToken:
                         parsedCurrentToken = ParseDayOfWeekToken(dayOfWeekToken);
                         break;
+                    case QualifiedDayOfMonthToken qualifiedDayOfMonthToken:
+                        parsedCurrentToken = ParseQualifiedDayOfMonthToken(qualifiedDayOfMonthToken);
+                        break;
+                    case MonthToken monthToken:
+                        parsedCurrentToken = ParseMonthToken(monthToken);
+                        break;
                     default:
                         parsedCurrentToken = ParseUnexpectedToken(token);
                         break;
@@ -90,7 +96,7 @@ namespace HumanTimeParser.Core.Parsing.Default
 
             } while (token is not EOFToken);
 
-            if (State.LastParsedTokenPosition == -1)
+            if (State.LastParsedTokenPosition == -1 && !State.ParsedDateState.CanConstructValidDate())
                 return NoParseableTokensFound();
 
             return new DefaultSuccessfulTimeParsingResult(ConstructDateTime(), State.FirstParsedTokenPosition, State.LastParsedTokenPosition);
@@ -108,13 +114,15 @@ namespace HumanTimeParser.Core.Parsing.Default
             switch (nextToken)
             {
                 case RelativeTimeFormatToken relativeTimeFormatToken when !State.ParsedRelativeTimeFormats.Contains(relativeTimeFormatToken.Value):
+                {
                     State.RelativeTimeFunctions.Add(ParseRelativeTime(token.Value, relativeTimeFormatToken.Value));
                     State.ParsedRelativeTimeFormats.Add(relativeTimeFormatToken.Value);
 
                     //make sure to advance token
                     Tokenizer.SkipToken();
                     return true;
-                case PeriodSpecifierToken specifierToken when (State.ParsedDate is null && Culture.ClockType != ClockType.TwentyFourHour): 
+                }
+                case PeriodSpecifierToken specifierToken when State.ParsedTime is null && Culture.ClockType != ClockType.TwentyFourHour: 
                 {
                     // This functionality is not supported for 24 clocks, since the TimePeriod marker would not exist
                     // At that point the parser would be relying on the fact that a number would always be a time which obviously isn't the case
@@ -136,6 +144,24 @@ namespace HumanTimeParser.Core.Parsing.Default
                 }
             }
 
+            // If there is already a parsed date no need to collect day, month, year tokens
+            if (State.ParsedDateState.Date is not null)
+                return false;
+            
+            switch (token)
+            {
+                case DayOfMonthToken dayOfMonthToken when State.ParsedDateState.Day is null: 
+                    State.ParsedDateState.Day = (int)dayOfMonthToken.Value;
+                    State.ParsedDateState.LastParsedTokenPosition = token.Position;
+                    break;
+                case YearToken yearToken when State.ParsedDateState.Year is null:
+                    State.ParsedDateState.Year = (int)yearToken.Value;
+                    State.ParsedDateState.LastParsedTokenPosition = token.Position;
+                    break;
+            }
+
+            // return false despite possibly adding date info to state because the info is not guaranteed to be used
+            // therefore the token position should not be advanced.
             return false;
         }
 
@@ -158,17 +184,17 @@ namespace HumanTimeParser.Core.Parsing.Default
         /// <summary>
         /// Responsible for parsing a <see cref="TimeOfDayToken"/>
         /// </summary>
-        /// <param name="timeOfDayToken">The token</param>
+        /// <param name="token">The token</param>
         /// <returns>Whether the parse was successful</returns>
-        protected virtual bool ParseTimeOfDayToken(TimeOfDayToken timeOfDayToken)
+        protected virtual bool ParseTimeOfDayToken(TimeOfDayToken token)
         {
-            if (!timeOfDayToken.Value.IsValid(Culture.ClockType) || State.ParsedTime is not null)
+            if (!token.Value.IsValid(Culture.ClockType) || State.ParsedTime is not null)
                 return false;
             
             // no additional parsing is required for 24 hour clocks
             if(Culture.ClockType == ClockType.TwentyFourHour)
             {
-                State.ParsedTime = timeOfDayToken.Value.Time;
+                State.ParsedTime = token.Value.Time;
                 return true;
             }
             
@@ -176,7 +202,7 @@ namespace HumanTimeParser.Core.Parsing.Default
             
             if (nextToken is PeriodSpecifierToken periodSpecifierToken)
             {
-                var time = timeOfDayToken.Value.Time;
+                var time = token.Value.Time;
                 if (periodSpecifierToken.Value == TimePeriod.Pm)
                     time = time.Add(TwelveHourTimeSpan);
 
@@ -188,9 +214,9 @@ namespace HumanTimeParser.Core.Parsing.Default
             }
             else 
             {
-                if (timeOfDayToken.Value.Time < State.StartingDate.TimeOfDay) // implied am/pm parsing
+                if (token.Value.Time < State.StartingDate.TimeOfDay) // implied am/pm parsing
                 {
-                    var impliedTime = timeOfDayToken.Value.Time.Add(TwelveHourTimeSpan);
+                    var impliedTime = token.Value.Time.Add(TwelveHourTimeSpan);
                     if (impliedTime >= State.StartingDate.TimeOfDay)
                     {
                         State.ParsedTime = impliedTime;
@@ -198,19 +224,19 @@ namespace HumanTimeParser.Core.Parsing.Default
                     }
                     else
                     {
-                        State.ParsedTime = timeOfDayToken.Value.Time; // implied parsing was not successful... fallback to original value
+                        State.ParsedTime = token.Value.Time; // implied parsing was not successful... fallback to original value
                         return true;
                     }
                 }
                 else // no need for implied parsing
                 {
-                    State.ParsedTime = timeOfDayToken.Value.Time;
+                    State.ParsedTime = token.Value.Time;
                     return true;
                 }
                     
             }
         }
-        
+
         /// <summary>
         /// Responsible for parsing a <see cref="QualifiedTimeOfDayToken"/>
         /// </summary>
@@ -236,10 +262,10 @@ namespace HumanTimeParser.Core.Parsing.Default
         /// <returns>Whether the parse was successful</returns>
         protected virtual bool ParseDateToken(DateToken token)
         {
-            if (State.ParsedDate is not null)
+            if (State.ParsedDateState.Date is not null)
                 return false;
 
-            State.ParsedDate = token.Value;
+            State.ParsedDateState.Date = token.Value;
 
             return true;
         }
@@ -270,6 +296,43 @@ namespace HumanTimeParser.Core.Parsing.Default
             State.RelativeTimeFunctions.Add(CalculateDay);
             
             return true;
+        }
+
+        /// <summary>
+        /// Responsible for parsing a <see cref="QualifiedDayOfMonthToken"/>
+        /// </summary>
+        /// <param name="token">The token</param>
+        /// <returns>Whether the parse was successful</returns>
+        protected virtual bool ParseQualifiedDayOfMonthToken(QualifiedDayOfMonthToken token)
+        {
+            if (State.ParsedDateState.ParsedQualifiedDay)
+                return false;
+
+            State.ParsedDateState.Day = token.Value;
+            State.ParsedDateState.ParsedQualifiedDay = true;
+            State.ParsedDateState.LastParsedTokenPosition = token.Position;
+            
+            // return false despite possibly adding date info to state because the info is not guaranteed to be used
+            // therefore the token position should not be advanced.
+            return false;
+        }
+
+        /// <summary>
+        /// Responsible for parsing a <see cref="MonthToken"/>
+        /// </summary>
+        /// <param name="token">The token</param>
+        /// <returns>Whether the parse was successful</returns>
+        private bool ParseMonthToken(MonthToken token)
+        {
+            if (State.ParsedDateState.Month is null)
+            {
+                State.ParsedDateState.Month = token.Value;
+                State.ParsedDateState.LastParsedTokenPosition = token.Position;
+            }
+            
+            // return false despite possibly adding date info to state because the info is not guaranteed to be used
+            // therefore the token position should not be advanced.
+            return false;
         }
 
         /// <summary>
@@ -325,16 +388,45 @@ namespace HumanTimeParser.Core.Parsing.Default
         /// <returns>The final <see cref="DateTime"/></returns>
         protected virtual DateTime ConstructDateTime()
         {
-            var date = State.ParsedDate ?? State.StartingDate;
+            var dateState = State.ParsedDateState;
+            
+            DateTime date;
+            // always prefer a date in the form mm/dd/yy 
+            if (dateState.Date is not null)
+                date = dateState.Date.Value;
+            else
+            {
+                if (dateState.Day is not null)
+                {
+                    if (dateState.Month is not null) 
+                    {
+                        date = dateState.Year is null
+                            ? new DateTime(State.StartingDate.Year, dateState.Month.Value, dateState.Day.Value)
+                            : new DateTime(dateState.Year.Value, dateState.Month.Value, dateState.Day.Value);
+                        
+                        if (State.LastParsedTokenPosition < dateState.LastParsedTokenPosition)
+                            State.LastParsedTokenPosition = dateState.LastParsedTokenPosition;
+                    }
+                    else if (dateState.ParsedQualifiedDay)
+                    {
+                        date = new DateTime(State.StartingDate.Year, State.StartingDate.Month, dateState.Day.Value);
+
+                        if (State.LastParsedTokenPosition < dateState.LastParsedTokenPosition)
+                            State.LastParsedTokenPosition = dateState.LastParsedTokenPosition;
+                    }
+                    else
+                        date = State.StartingDate;
+                }
+                else
+                    date = State.StartingDate;
+            }
 
             if (State.ParsedTime is not null)
                 date = date.Date.Add(State.ParsedTime.Value);
 
             foreach (var func in State.RelativeTimeFunctions)
-            {
                 date = func(date);
-            }
-
+            
             return date;
         }
     }
