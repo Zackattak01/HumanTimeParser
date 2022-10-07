@@ -29,5 +29,38 @@ namespace HumanTimeParser.English.Extensions
             result = default;
             return false;
         }
+        
+        public static ReadOnlySpan<char> GetNextNumber(this ReadOnlySpan<char> chars, int startPos = 0)
+        {
+            if (startPos > chars.Length)
+                return ReadOnlySpan<char>.Empty;
+
+            var lastDigitPos = startPos;
+
+            while (lastDigitPos < chars.Length && (char.IsDigit(chars[lastDigitPos]) || char.IsPunctuation(chars[lastDigitPos])))
+            {
+                lastDigitPos++;
+            }
+
+            if (lastDigitPos == startPos)
+                return ReadOnlySpan<char>.Empty;
+
+            return chars.Slice(startPos, lastDigitPos - startPos);
+        }
+
+        public static ReadOnlySpan<char> GetNextWord(this ReadOnlySpan<char> chars, int startPos = 0)
+        {
+            var lastDigitPos = startPos;
+
+            while (lastDigitPos < chars.Length && char.IsLetter(chars[lastDigitPos]))
+            {
+                lastDigitPos++;
+            }
+
+            if (lastDigitPos == startPos)
+                return ReadOnlySpan<char>.Empty;
+
+            return chars.Slice(startPos, lastDigitPos - startPos);
+        }
     }
 }

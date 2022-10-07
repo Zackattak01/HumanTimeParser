@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using HumanTimeParser.Core.Culture;
 using HumanTimeParser.Core.Sectioning;
 using HumanTimeParser.Core.TimeConstructs;
@@ -121,36 +122,49 @@ namespace HumanTimeParser.English
         private bool TryTokenizeNumberAndRelativeTimeFormat(Section section, out IToken result)
         {
             result = null;
-            var splitPos = section.Value.FirstNonNumberPos();
+            
+            var value = section.Value.AsSpan();
+            var numberSpan = value.GetNextNumber();
+            var pos = numberSpan.Length;
+            var letterSpan = value.GetNextWord(pos);
+            pos += letterSpan.Length;
 
-            if (splitPos == -1)
-                return false;
+            var relativeTimes = new List<RelativeTime>();
 
-            var unparsedAbbreviation = section.Value[splitPos..];
-
-            if (EnglishTimeKeywordConstants.RelativeTimeKeywordDictionary.TryGetValue(unparsedAbbreviation, out var relativeTimeFormat))
+            if (numberSpan.Length == 0 && letterSpan.Length != 0 && EnglishTimeKeywordConstants.RelativeTimeKeywordDictionary.TryGetValue(letterSpan.ToString(), out var relativeTimeFormat))
             {
-                if (relativeTimeFormat == RelativeTimeFormat.Tomorrow) // special case with the "tomorrow" keyword
+                if (relativeTimeFormat == RelativeTimeFormat.Tomorrow)
                 {
-                    result = new QualifiedRelativeTimeToken(section.Position, section.Length, new RelativeTime(1, relativeTimeFormat));
-                    return true;
-                }
-                else if (splitPos == 0) 
-                {
-                    result = new RelativeTimeFormatToken(section.Position, section.Length, relativeTimeFormat);
+                    relativeTimes.Add(new RelativeTime(1, RelativeTimeFormat.Tomorrow));
+                    result = new QualifiedRelativeTimeToken(section.Position, section.Length, relativeTimes);
                     return true;
                 }
                 else
                 {
-                    var numberSpan = section.Value.AsSpan()[..splitPos];
-                    TokenizerUtils.TryParseNumber(numberSpan, _timeParsingCulture, out var number);
-                    
-                    result = new QualifiedRelativeTimeToken(section.Position, section.Length, new RelativeTime(number, relativeTimeFormat));
+                    result = new RelativeTimeFormatToken(section.Position, section.Length, relativeTimeFormat);
                     return true;
                 }
-                    
             }
-            
+
+            while (numberSpan.Length != 0 && letterSpan.Length != 0)
+            {
+                if (TokenizerUtils.TryParseNumber(numberSpan, _timeParsingCulture, out var number) && EnglishTimeKeywordConstants.RelativeTimeKeywordDictionary.TryGetValue(letterSpan.ToString(), out relativeTimeFormat))
+                {
+                    relativeTimes.Add(new RelativeTime(number, relativeTimeFormat));
+                }
+
+                numberSpan = value.GetNextNumber(pos);
+                pos += numberSpan.Length;
+                letterSpan = value.GetNextWord(pos);
+                pos += letterSpan.Length;
+            }
+
+            if (relativeTimes.Count != 0)
+            {
+                result = new QualifiedRelativeTimeToken(section.Position, section.Length, relativeTimes);
+                return true;
+            }
+
             return false;
         }
 

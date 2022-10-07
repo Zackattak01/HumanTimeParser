@@ -46,8 +46,5 @@ namespace HumanTimeParser.English.Extensions
                 return false;
             }
         }
-        //
-        // public static bool IsAmPmSpecifier(this string str)
-        //     => str.Equals(Constants.Am, StringComparison.OrdinalIgnoreCase) || str.Equals(Constants.Pm, StringComparison.OrdinalIgnoreCase);
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using HumanTimeParser.Core.Culture;
 using HumanTimeParser.Core.Extensions;
 using HumanTimeParser.Core.Parsing.State;
@@ -172,13 +173,17 @@ namespace HumanTimeParser.Core.Parsing.Default
         /// <returns>Whether the parse was successful</returns>
         protected virtual bool ParseFullyQualifiedRelativeTimeToken(QualifiedRelativeTimeToken token)
         {
-            if (State.ParsedRelativeTimeFormats.Contains(token.Value.Format))
-                return false;
+            var parsedFormatsCount = State.ParsedRelativeTimeFormats.Count;
+            foreach (var relativeTime in token.Value)
+            {
+                if (State.ParsedRelativeTimeFormats.Contains(relativeTime.Format))
+                    continue;
 
-            State.RelativeTimeFunctions.Add(ParseRelativeTime(token.Value.Amount, token.Value.Format));
-            State.ParsedRelativeTimeFormats.Add(token.Value.Format);
+                State.RelativeTimeFunctions.Add(ParseRelativeTime(relativeTime.Amount, relativeTime.Format));
+                State.ParsedRelativeTimeFormats.Add(relativeTime.Format);
+            }
             
-            return true;
+            return State.ParsedRelativeTimeFormats.Count != parsedFormatsCount;
         }
 
         /// <summary>

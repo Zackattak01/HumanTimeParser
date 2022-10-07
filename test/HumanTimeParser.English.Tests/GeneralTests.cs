@@ -57,6 +57,17 @@ namespace HumanTimeParser.English.Tests
         }
 
         [TestMethod]
+        public void Relative_Time_No_Whitespace()
+        {
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("30m33s"));
+
+            var expected = DateTime.Now.AddSeconds(33).AddMinutes(30);
+
+
+            TestHelper.AssertCloseEnough(expected, result.Value);
+        }
+
+        [TestMethod]
         public void Ignore_English()
         {
             var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("33.5 minutes after 6:50am on 1/7/2021"));
