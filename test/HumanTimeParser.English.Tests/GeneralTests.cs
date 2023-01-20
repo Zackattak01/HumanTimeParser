@@ -175,6 +175,34 @@ namespace HumanTimeParser.English.Tests
 
             Assert.AreEqual(expected, result.Value);
         }
+
+        [TestMethod]
+        public void Twelve_Specifier_Spaced()
+        {
+            // Find out if noon has passed
+            var isAfternoon = DateTime.Now.Hour >= 12;
+            var testInput = isAfternoon ? "tmr 12 pm" : "12 pm";
+
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse(testInput));
+
+            var expected = isAfternoon ? DateTime.Parse("12pm").AddDays(1) : DateTime.Parse("12pm");
+            
+            Assert.AreEqual(expected, result.Value);
+        }
+        
+        [TestMethod]
+        public void Twelve_Long_Form_Specifier_Spaced()
+        {
+            // Find out if noon has passed
+            var isAfternoon = DateTime.Now.Hour >= 12;
+            var testInput = isAfternoon ? "tmr 12:00 pm" : "12:00 pm";
+
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse(testInput));
+
+            var expected = isAfternoon ? DateTime.Parse("12pm").AddDays(1) : DateTime.Parse("12pm");
+            
+            Assert.AreEqual(expected, result.Value);
+        }
         
         
         [TestMethod]

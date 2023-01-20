@@ -129,12 +129,12 @@ namespace HumanTimeParser.Core.Parsing.Default
                     // At that point the parser would be relying on the fact that a number would always be a time which obviously isn't the case
                     var hours = (int) token.Value;
 
-                    if (specifierToken.Value == TimePeriod.Pm)
+                    if (specifierToken.Value == TimePeriod.Pm && hours != 12)
                         hours += 12;
 
                     var ts = new TimeSpan(hours, 0, 0);
 
-                    // by this point the time may have been converted to a 24 hour clock type
+                    // use TwentyFourHour check because adding twelve hours pushes the ts over a valid twelve hour clock time
                     if (!ts.IsValidTimeOfDay(ClockType.TwentyFourHour))
                         return false;
                     
@@ -208,7 +208,7 @@ namespace HumanTimeParser.Core.Parsing.Default
             if (nextToken is PeriodSpecifierToken periodSpecifierToken)
             {
                 var time = token.Value.Time;
-                if (periodSpecifierToken.Value == TimePeriod.Pm)
+                if (periodSpecifierToken.Value == TimePeriod.Pm && time.Hours != 12)
                     time = time.Add(TwelveHourTimeSpan);
 
                 
