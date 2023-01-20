@@ -175,36 +175,67 @@ namespace HumanTimeParser.English.Tests
 
             Assert.AreEqual(expected, result.Value);
         }
-
+        
         [TestMethod]
-        public void Twelve_Specifier_Spaced()
+        public void Twelve_Am()
         {
-            // Find out if noon has passed
-            var isAfternoon = DateTime.Now.Hour >= 12;
-            var testInput = isAfternoon ? "tmr 12 pm" : "12 pm";
-
-            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse(testInput));
-
-            var expected = isAfternoon ? DateTime.Parse("12pm").AddDays(1) : DateTime.Parse("12pm");
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("12am"));
+            
+            var expected = DateTime.Parse("12am");
             
             Assert.AreEqual(expected, result.Value);
         }
         
         [TestMethod]
-        public void Twelve_Long_Form_Specifier_Spaced()
+        public void Twelve_Am_Spaced()
         {
-            // Find out if noon has passed
-            var isAfternoon = DateTime.Now.Hour >= 12;
-            var testInput = isAfternoon ? "tmr 12:00 pm" : "12:00 pm";
-
-            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse(testInput));
-
-            var expected = isAfternoon ? DateTime.Parse("12pm").AddDays(1) : DateTime.Parse("12pm");
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("12 am"));
+            
+            var expected = DateTime.Parse("12 am");
             
             Assert.AreEqual(expected, result.Value);
         }
         
+        [TestMethod]
+        public void Twelve_Am_Long_Form_Spaced()
+        {
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("12 am"));
+            
+            var expected = DateTime.Parse("12 am");
+            
+            Assert.AreEqual(expected, result.Value);
+        }
         
+        [TestMethod]
+        public void Twelve_Pm()
+        {
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("12pm"));
+            
+            var expected = DateTime.Parse("12pm");
+            
+            Assert.AreEqual(expected, result.Value);
+        }
+
+        [TestMethod]
+        public void Twelve_Pm_Spaced()
+        {
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("12 pm"));
+
+            var expected = DateTime.Parse("12 pm");
+            
+            Assert.AreEqual(expected, result.Value);
+        }
+
+        [TestMethod]
+        public void Twelve_Pm_Long_Form_Spaced()
+        {
+            var result = TestHelper.AssertSuccessfulTimeParsingResult(EnglishTimeParser.Parse("12:00 pm"));
+
+            var expected = DateTime.Parse("12pm");
+            
+            Assert.AreEqual(expected, result.Value);
+        }
+
         [TestMethod]
         public void Number_As_Time_Period_Specifier()
         {

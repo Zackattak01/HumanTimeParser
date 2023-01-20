@@ -129,7 +129,9 @@ namespace HumanTimeParser.Core.Parsing.Default
                     // At that point the parser would be relying on the fact that a number would always be a time which obviously isn't the case
                     var hours = (int) token.Value;
 
-                    if (specifierToken.Value == TimePeriod.Pm && hours != 12)
+                    if (specifierToken.Value == TimePeriod.Am && hours == 12)
+                        hours -= 12;
+                    else if (specifierToken.Value == TimePeriod.Pm && hours != 12)
                         hours += 12;
 
                     var ts = new TimeSpan(hours, 0, 0);
@@ -208,7 +210,10 @@ namespace HumanTimeParser.Core.Parsing.Default
             if (nextToken is PeriodSpecifierToken periodSpecifierToken)
             {
                 var time = token.Value.Time;
-                if (periodSpecifierToken.Value == TimePeriod.Pm && time.Hours != 12)
+                
+                if (periodSpecifierToken.Value == TimePeriod.Am && time.Hours == 12)
+                    time = time.Subtract(TwelveHourTimeSpan);
+                else if (periodSpecifierToken.Value == TimePeriod.Pm && time.Hours != 12)
                     time = time.Add(TwelveHourTimeSpan);
 
                 
@@ -252,11 +257,13 @@ namespace HumanTimeParser.Core.Parsing.Default
             if (State.ParsedTime is not null || !token.Value.IsValid())
                 return false;
             
-            State.ParsedTime = token.Value.Time; 
-            if (token.Value.Period == TimePeriod.Pm && token.Value.Time.Hours != 12) 
+            State.ParsedTime = token.Value.Time;
+
+            if (token.Value.Period == TimePeriod.Am && token.Value.Time.Hours == 12)
+                State.ParsedTime = State.ParsedTime.Value.Subtract(TwelveHourTimeSpan);
+            else if (token.Value.Period == TimePeriod.Pm && token.Value.Time.Hours != 12) 
                 State.ParsedTime = State.ParsedTime.Value.Add(TwelveHourTimeSpan);
 
-            
             return true;
         }
 

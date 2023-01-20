@@ -33,7 +33,7 @@ namespace HumanTimeParser.Core.Extensions
         /// <returns>A <see cref="bool"/> that determines if the time is valid</returns>
         public static bool IsValidTimeOfDay(this TimeSpan time, int maxNumberOfHours)
         {
-            if (time.TotalHours >= maxNumberOfHours || time.TotalSeconds < 1)
+            if (time.TotalHours >= maxNumberOfHours)
                 return false;
 
             return true;
